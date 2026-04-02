@@ -19,15 +19,15 @@ chapter: 13
 
 ## 13.2 两层门控与会话模式恢复
 
-`coordinatorMode.ts` 中 `isCoordinatorMode()` 的实现极为简短：编译期 feature flag `COORDINATOR_MODE` 和运行时环境变量 `CLAUDE_CODE_COORDINATOR_MODE` 两层都为真才生效。这种双重门控在整个代码库中反复出现——编译期门控用于彻底剥除未发布特性的代码（Bun 的 dead code elimination），运行时变量用于灰度发布和快速关闭。
+协调者模式模块中 `isCoordinatorMode()` 的实现极为简短：编译期 feature flag 和运行时环境变量两层都为真才生效。这种双重门控在整个代码库中反复出现——编译期门控用于彻底剥除未发布特性的代码（Bun 的 dead code elimination），运行时变量用于灰度发布和快速关闭。
 
-一个容易忽略但极为重要的函数是 `matchSessionMode`。当用户恢复一个之前的会话时，系统需要检查："这个会话是在 Coordinator 模式下创建的吗？"如果是，但当前环境没有开启 Coordinator 模式，系统会动态翻转环境变量。
+一个容易忽略但极为重要的函数是会话模式匹配函数。当用户恢复一个之前的会话时，系统需要检查："这个会话是在 Coordinator 模式下创建的吗？"如果是，但当前环境没有开启 Coordinator 模式，系统会动态翻转环境变量。
 
 为什么需要这个？想象用户在开启了 Coordinator 模式的终端里开始一个会话，中途关闭终端，然后在未开启该模式的终端里恢复会话。如果不做模式匹配，恢复后的会话会退回普通模式，但对话历史里全是 Coordinator 风格的交互——Worker 通知、任务编排语境——模型会困惑于"我明明是协调者，怎么现在要自己写代码"。
 
-实现细节也值得注意：`isCoordinatorMode()` 直接读环境变量，没有任何缓存（注释在代码中明确说明 "isCoordinatorMode() reads it live, no caching"）。这意味着运行时修改环境变量就能立即改变行为，不需要重启进程。这种"活变量"设计让模式切换成为一个轻量级操作。切换事件还通过 `logEvent('tengu_coordinator_mode_switched')` 发送到分析系统，记录切换方向——这为后续分析"会话恢复导致的模式不匹配频率"提供了数据支撑。
+实现细节也值得注意：`isCoordinatorMode()` 直接读环境变量，没有任何缓存（注释明确说明不做缓存）。这意味着运行时修改环境变量就能立即改变行为，不需要重启进程。这种"活变量"设计让模式切换成为一个轻量级操作。切换事件还通过分析系统发送日志，记录切换方向——这为后续分析"会话恢复导致的模式不匹配频率"提供了数据支撑。
 
-与 fork 子 Agent 的互斥关系也在这里体现：`forkSubagent.ts` 中，如果 `isCoordinatorMode()` 返回 true，`isForkSubagentEnabled()` 直接返回 false。Coordinator 有自己的委派模型（显式地创建 Worker 并写 prompt），不需要也不应该使用 fork 的隐式继承。
+与 fork 子 Agent 的互斥关系也在这里体现：在子 Agent 分叉模块中，如果 `isCoordinatorMode()` 返回 true，fork 启用检查直接返回 false。Coordinator 有自己的委派模型（显式地创建 Worker 并写 prompt），不需要也不应该使用 fork 的隐式继承。
 
 
 ## 13.3 极简工具集：为什么 Coordinator 不能碰文件
@@ -38,11 +38,11 @@ Coordinator 的工具集极度精简。System prompt 中只列出三个核心工
 
 为什么？因为如果 Coordinator 能直接读写文件，它就会忍不住自己动手——LLM 的本能倾向是"直接解决问题"而非"委派问题"。大量实验表明，当工具集中同时存在"委派"工具和"执行"工具时，模型倾向于走捷径直接执行，而非投入思考做好编排。去掉直接操作工具，就从架构层面强制 Coordinator 必须通过 Worker 间接完成任务。
 
-`INTERNAL_WORKER_TOOLS` 集合定义了从 Worker 工具集中过滤掉的"内部工具"：`TeamCreate`、`TeamDelete`、`SendMessage`、`SyntheticOutput`。Worker 不能创建 Team、不能给其他 Worker 发消息、不能合成输出。它只能用"干活"的工具——Bash、Read、Write、Edit 等。
+内部 Worker 工具集合定义了从 Worker 工具集中过滤掉的"内部工具"：`TeamCreate`、`TeamDelete`、`SendMessage`、`SyntheticOutput`。Worker 不能创建 Team、不能给其他 Worker 发消息、不能合成输出。它只能用"干活"的工具——Bash、Read、Write、Edit 等。
 
 这构成了一个清晰的能力边界：Coordinator 的权力是"编排"（创建、继续、停止 Worker），Worker 的权力是"执行"（读、写、运行代码）。两者的能力域不重叠，避免了角色混淆。
 
-`getCoordinatorUserContext` 函数还有一个 Simple 模式分支：如果启用了 `CLAUDE_CODE_SIMPLE`，Worker 只保留 Bash、Read、Edit 三件套；正常模式下使用 `ASYNC_AGENT_ALLOWED_TOOLS` 定义的完整工具集（减去内部工具）。工具列表经过排序后作为 user context 注入 Coordinator 的上下文。这种可配置性让 Coordinator 模式能适应不同的部署约束——在安全敏感的环境中，限制 Worker 的工具集是合理的。
+Coordinator 用户上下文构建函数还有一个 Simple 模式分支：如果启用了简化模式，Worker 只保留 Bash、Read、Edit 三件套；正常模式下使用完整工具集（减去内部工具）。工具列表经过排序后作为 user context 注入 Coordinator 的上下文。这种可配置性让 Coordinator 模式能适应不同的部署约束——在安全敏感的环境中，限制 Worker 的工具集是合理的。
 
 System prompt 还特别要求 Coordinator 不要使用 Worker 来完成琐碎任务："Do not use workers to trivially report file contents or run commands. Give them higher-level tasks." 这是对工具集精简逻辑的补充——即使 Coordinator 只能通过 Worker 间接操作，也不应该把 Worker 当成简单的命令执行器。创建一个 Worker 的开销（上下文构建、API 调用、任务注册）远大于一次文件读取。
 
@@ -79,11 +79,11 @@ System prompt 还要求 Coordinator 在 prompt 中加入"目的声明"（purpose
 
 Worker 之间互相看不到对方的消息历史——它们运行在隔离的上下文中。Coordinator 的 Synthesis 阶段是知识传递的主要通道。但有时发现太多太细，全部塞进 prompt 不现实——比如一个 Research Worker 发现了二十个相关文件、每个文件的关键段落和依赖关系。把这些全部写进 Implementation prompt 会让 prompt 过长，稀释关键指令的注意力权重。
 
-`getCoordinatorUserContext` 中引入了 Scratchpad 机制：当 `scratchpadDir` 存在且 `tengu_scratch` 门控开启时，在 Coordinator 的 user context 中注入 scratchpad 目录路径。所有 Worker 可以自由读写这个目录，无需权限确认。
+Coordinator 用户上下文构建函数中引入了 Scratchpad 机制：当 scratchpad 目录存在且特性门控开启时，在 Coordinator 的 user context 中注入 scratchpad 目录路径。所有 Worker 可以自由读写这个目录，无需权限确认。
 
 Scratchpad 提供了一条绕过 Coordinator 的"旁路"——Worker A 把详细调研笔记写入 Scratchpad 文件，Worker B 直接读取。这很像大公司里的共享文档系统：项目经理负责主要的信息路由，但工程师之间也可以通过 Confluence 或 Google Docs 直接交换技术细节，不需要事事经过 PM。
 
-Scratchpad 的门控函数 `isScratchpadGateEnabled()` 使用了独立的 feature gate `tengu_scratch`。注释解释了一个重要的架构决策——为什么不直接 import `isScratchpadEnabled()`？因为那会创建循环依赖（`filesystem -> permissions -> ... -> coordinatorMode`）。Scratchpad 路径通过 `getCoordinatorUserContext` 的参数注入（依赖注入），而非直接引用文件系统模块。这种"在代码层面打破循环、用参数传递替代直接引用"的做法在大型 TypeScript 项目中很常见，但往往缺乏注释说明"为什么不直接 import"——Claude Code 的代码在这方面做得很好。
+Scratchpad 的门控函数使用了独立的 feature gate。注释解释了一个重要的架构决策——为什么不直接 import scratchpad 启用函数？因为那会创建循环依赖。Scratchpad 路径通过参数注入（依赖注入），而非直接引用文件系统模块。这种"在代码层面打破循环、用参数传递替代直接引用"的做法在大型 TypeScript 项目中很常见，但往往缺乏注释说明——Claude Code 的代码在这方面做得很好。
 
 Scratchpad 没有并发控制机制——多个 Worker 可以同时写入同一个文件。这是有意为之。Mailbox 系统（第 15 章）用了文件锁，因为消息的顺序和完整性至关重要——丢一条消息就可能导致状态不一致。但 Scratchpad 是知识存储，不是通信通道——最坏情况下一次写入覆盖了另一次，Worker 可以重新生成。对知识存储施加锁协议只会增加延迟而收益甚微。
 
@@ -135,7 +135,7 @@ Coordinator 模式和普通模式的差异不只是工具集不同，而是**思
 
 这种显式化看似增加了开销，但它带来了一个重要好处：**可审计性**。Coordinator 的 Synthesis 步骤就像一份项目会议纪要——清楚记录了"我们知道什么、决定做什么、为什么这么做"。在普通模式下，这些推理散落在几十轮对话的字里行间，几乎不可能回溯。
 
-`getCoordinatorUserContext` 的职责也体现了这种显式化：它不只返回 Coordinator 的 system prompt，还动态生成 Worker 可用工具列表和 MCP 服务器列表，作为 user context 注入。这让 Coordinator 知道 Worker 有哪些能力，从而做出合理的任务分配——而不是猜测 Worker 能做什么。
+Coordinator 用户上下文构建函数的职责也体现了这种显式化：它不只返回 Coordinator 的 system prompt，还动态生成 Worker 可用工具列表和 MCP 服务器列表，作为 user context 注入。这让 Coordinator 知道 Worker 有哪些能力，从而做出合理的任务分配——而不是猜测 Worker 能做什么。
 
 ---
 

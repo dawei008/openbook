@@ -1,6 +1,11 @@
+> **Disclaimer**: This book is an independent educational analysis of AI agent architecture patterns. 
+> All code examples are pseudocode created by the authors for illustrative purposes. 
+> No proprietary source code is reproduced. Product names are used for reference only 
+> and belong to their respective owners.
+
 # OpenBook: 从源码解构 AI Agent
 
-> 基于 Claude Code 源码的 Agent 与 Harness 架构深度解析
+> 基于对 Claude Code 架构的公开分析的 Agent 与 Harness 架构深度解析
 
 ---
 
@@ -58,7 +63,7 @@ Claude Code 不同。它不是一个框架——它是一个**完整的、生产
 
 市面上讲 Agent 的书不少，但多数停留在 Prompt Engineering 和 API 调用的层面。本书要做的是**打开黑箱**——不是教你怎么用 Agent 框架，而是让你看清框架本身的骨架、肌理和设计取舍。
 
-1,884 个源文件、29,411 行 TypeScript。它踩过的坑、做过的权衡、选择的架构，是任何教科书和论文无法替代的实战经验。
+作为大规模生产级代码库，它踩过的坑、做过的权衡、选择的架构，是任何教科书和论文无法替代的实战经验。
 
 ### 本书的方法论
 
@@ -79,7 +84,7 @@ OpenAI 的 Swarm 框架文档说：*"The best way to understand agents is to bui
 - **LLM 研究者**——想理解模型能力如何通过工程手段被放大（或约束）
 - **对 AI Agent 好奇的技术人员**——想超越 Demo 和 Prompt Engineering，看看真正的 Agent 是怎么运转的
 
-你不需要读过 Claude Code 的源码才能理解本书。每章都从问题出发，用类比和叙事引导理解，源码引用作为佐证。但如果你手边有源码（`claude-code-leaked/`），跟着章节阅读会获得更深的体验。
+你不需要读过 Claude Code 的源码才能理解本书。每章都从问题出发，用类比和叙事引导理解，源码引用作为佐证。但如果你对 Claude Code 的架构有所了解，跟着章节阅读会获得更深的体验。
 
 ### 本书结构
 
@@ -179,8 +184,8 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 
 - **22 章 + 4 附录** = 26 个文件
 - **7,583 行** 精炼 Markdown（问题→思路→实现 风格）
-- 基于 **1,884 个源文件、29,411 行 TypeScript** 的深度分析
-- 每章标注具体 **源码路径和行号**
+- 基于对大规模 TypeScript 代码库的深度架构分析
+- 每章对应具体**架构模块和设计决策**
 - 每章附 **思考题**
 
 ## 参考来源
@@ -193,12 +198,8 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 | Andrej Karpathy, *LLM as Operating System* (2023) | LLM 作为新操作系统内核的类比 |
 | OpenAI Agents SDK / Swarm (2024-2025) | Agent 编排框架与多 Agent 模式 |
 | AWS Bedrock Agents | 云原生 Agent 编排层架构 |
-| Claude Code 源码 (2025-2026) | 本书的核心分析对象 |
-
-## 源码
-
-本书分析的源码位于: `claude-code-leaked/`
+| Claude Code 架构 (2025-2026) | 本书的核心分析对象 |
 
 ## 技术栈
 
-源码使用: TypeScript + React (Ink) + Bun Runtime + Commander.js + Zod + OpenTelemetry
+架构基于: TypeScript + React (Ink) + Bun Runtime + Commander.js + Zod + OpenTelemetry

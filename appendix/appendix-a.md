@@ -5,7 +5,7 @@ part: appendix
 
 # Appendix A: 架构总览图与数据流图
 
-6 张核心图，覆盖从系统分层到关键子流程的全貌。每张图附简要说明，帮助定位你需要的源码区域。
+6 张核心图，覆盖从系统分层到关键子流程的全貌。每张图附简要说明，帮助定位你需要了解的功能区域。
 
 ---
 
@@ -17,81 +17,80 @@ part: appendix
 +============================================================================+
 |                           ENTRYPOINTS (入口层)                              |
 |                                                                            |
-|   cli.tsx           CLI 入口，解析 argv，分派子命令                          |
-|   cli/print.ts      Headless / 非交互模式 (--print / -p)                    |
-|   entrypoints/mcp   作为 MCP Server 启动                                    |
-|   entrypoints/sdk/  Agent SDK 入口 (QueryEngine 封装)                       |
-|   bridgeMain.ts     Remote Bridge 入口 (claude remote-control)              |
+|   CLI 入口          解析 argv，分派子命令                                    |
+|   Headless 入口     非交互模式 (--print / -p)                               |
+|   MCP 入口          作为 MCP Server 启动                                    |
+|   SDK 入口          Agent SDK 封装 (QueryEngine)                            |
+|   Bridge 入口       Remote Bridge (远程控制)                                 |
 +============================================================================+
          |                    |                   |                |
          v                    v                   v                v
 +============================================================================+
 |                       APPLICATION SHELL (应用壳层)                           |
 |                                                                            |
-|   main.tsx            初始化、参数解析、工具/Agent 加载                       |
-|   screens/REPL.tsx    交互主循环、UI 渲染、输入处理                           |
-|   setup.ts            启动环境初始化 (sandbox/hooks/plugins)                 |
+|   主初始化模块        初始化、参数解析、工具/Agent 加载                       |
+|   交互主循环          UI 渲染、输入处理                                      |
+|   启动配置            环境初始化 (sandbox/hooks/plugins)                     |
 +============================================================================+
          |                    |                   |
          v                    v                   v
 +============================================================================+
 |                        QUERY ENGINE (查询引擎层)                             |
 |                                                                            |
-|   QueryEngine.ts      SDK/Headless 查询引擎封装                             |
-|   query.ts            核心主循环：流式 API 调用、工具执行、上下文管理          |
-|   query/stopHooks.ts  Turn 结束后处理 Hook                                  |
+|   查询引擎封装        SDK/Headless 查询接口                                  |
+|   核心主循环          流式 API 调用、工具执行、上下文管理                      |
+|   Turn 结束钩子       Turn 结束后处理 Hook                                   |
 +============================================================================+
          |                    |                   |
          v                    v                   v
 +============================================================================+
 |                          TOOL SYSTEM (工具系统层)                             |
 |                                                                            |
-|   Tool.ts             核心接口：Tool / ToolUseContext / ToolResult           |
-|   tools.ts            工具注册表                                             |
-|   services/tools/     编排 (toolOrchestration) 与执行 (toolExecution)        |
+|   工具核心接口        Tool / ToolUseContext / ToolResult                     |
+|   工具注册表          工具注册与查找                                          |
+|   编排与执行          工具编排 (orchestration) 与执行 (execution)             |
 |                                                                            |
-|   Built-in: Bash, Read, Edit, Write, Glob, Grep, Notebook, WebFetch        |
-|   MCP:      MCPTool (动态注册)                                              |
-|   Agent:    AgentTool / forkSubagent / runAgent                             |
-|   Skill:    SkillTool / ToolSearchTool                                      |
+|   内置: Bash, Read, Edit, Write, Glob, Grep, Notebook, WebFetch           |
+|   MCP:  MCPTool (动态注册)                                                 |
+|   Agent: AgentTool / forkSubagent / runAgent                               |
+|   Skill: SkillTool / ToolSearchTool                                        |
 +============================================================================+
          |                    |                   |
          v                    v                   v
 +============================================================================+
 |                      PERMISSION SYSTEM (权限系统层)                           |
 |                                                                            |
-|   types/permissions.ts      核心类型 (PermissionResult/Mode/Rule)            |
-|   utils/permissions/        判定主逻辑、Bash 权限、文件系统路径验证            |
-|   yoloClassifier.ts         Auto 模式 LLM 安全分类器                         |
+|   权限核心类型        PermissionResult / Mode / Rule                         |
+|   判定主逻辑          权限判定、Bash 权限、文件路径验证                        |
+|   安全分类器          Auto 模式 LLM 安全分类器                               |
 +============================================================================+
          |                    |                   |
          v                    v                   v
 +============================================================================+
 |                          SERVICES (服务层)                                    |
 |                                                                            |
-|   services/api/       API 客户端 (claude.ts)、重试 (withRetry.ts)            |
-|   services/mcp/       MCP 服务管理 (连接/配置/类型)                           |
-|   services/compact/   上下文压缩 (auto/micro/session memory)                 |
-|   services/analytics/ 遥测与 GrowthBook Feature Flag                        |
+|   API 客户端层        API 调用、重试逻辑                                     |
+|   MCP 服务管理        连接 / 配置 / 类型                                     |
+|   上下文压缩          auto / micro / session memory                         |
+|   遥测与配置          分析 + Feature Flag                                    |
 +============================================================================+
          |                    |
          v                    v
 +============================================================================+
 |                     STATE & HOOKS (状态与钩子层)                              |
 |                                                                            |
-|   state/AppStateStore.ts   AppState 类型与默认值                             |
-|   state/store.ts           发布/订阅 Store (useSyncExternalStore)            |
-|   types/hooks.ts           Hook 类型定义                                     |
-|   utils/hooks/             Hook 执行引擎                                     |
+|   应用状态            AppState 类型与默认值                                   |
+|   状态存储            发布/订阅 Store (useSyncExternalStore)                  |
+|   Hook 类型           Hook 类型定义                                          |
+|   Hook 引擎           Hook 执行引擎                                          |
 +============================================================================+
          |
          v
 +============================================================================+
 |                      INFRASTRUCTURE (基础设施层)                              |
 |                                                                            |
-|   constants/    常量与系统提示词     memdir/      自动记忆系统                |
-|   skills/       Skill 系统           bridge/      远程桥接模块                |
-|   commands/     Slash 命令           components/  React/Ink UI 组件          |
+|   常量与系统提示词     Skill 系统           自动记忆系统                      |
+|   远程桥接模块         Slash 命令           React/Ink UI 组件                |
 +============================================================================+
 ```
 
@@ -118,39 +117,39 @@ part: appendix
 用户在终端输入消息
        |
        v
-(1) PromptInput.tsx          捕获输入，创建 UserMessage
+(1) 输入组件              捕获输入，创建 UserMessage
        |
        v
-(2) processUserInput.ts      预处理：Slash 命令检测、CLAUDE.md 加载、附件注入
+(2) 输入预处理            预处理：Slash 命令检测、CLAUDE.md 加载、附件注入
        |
        v
-(3) REPL.tsx (handleQuery)   组装查询参数：系统提示词 + 工具列表 + 消息历史
+(3) 交互主循环            组装查询参数：系统提示词 + 工具列表 + 消息历史
        |
        v
-(4) query.ts (主循环开始)    PreQuery Hooks -> 自动压缩检查
+(4) 查询主循环开始        PreQuery Hooks -> 自动压缩检查
        |
        v
-(5) services/api/claude.ts   构建请求 -> 规范化消息 -> 注入 beta headers
+(5) API 客户端层          构建请求 -> 规范化消息 -> 注入 beta headers
        |
        v
-(6) Anthropic API            流式 SSE 响应返回
+(6) Anthropic API         流式 SSE 响应返回
        |
        v  (流式事件)
-(7) query.ts (流处理)        文本块 -> 追加到 AssistantMessage
-       |                     tool_use 块 -> 进入步骤 (8)
-       |                     thinking 块 -> 记录推理过程
+(7) 查询流处理            文本块 -> 追加到 AssistantMessage
+       |                  tool_use 块 -> 进入步骤 (8)
+       |                  thinking 块 -> 记录推理过程
        |
        v  (检测到 tool_use)
-(8) toolExecution.ts         权限检查 -> tool.call() -> ToolResult
+(8) 工具执行层            权限检查 -> tool.call() -> ToolResult
        |
        v  (ToolResult 追加为新 UserMessage)
-(9) query.ts (循环继续)      工具结果发送给 API -> 继续生成 -> 直到 end_turn
+(9) 查询循环继续          工具结果发送给 API -> 继续生成 -> 直到 end_turn
        |
        v
-(10) query.ts (Turn 结束)    stopHooks -> 记忆提取 -> 会话存储
+(10) Turn 结束处理        stopHooks -> 记忆提取 -> 会话存储
        |
        v
-(11) REPL.tsx (渲染)         显示助手文本 + 工具结果 UI + 更新状态栏
+(11) UI 渲染              显示助手文本 + 工具结果 UI + 更新状态栏
        |
        v
 用户看到回复，可继续输入
@@ -177,37 +176,37 @@ part: appendix
 API 返回 tool_use 块 (name, input, id)
        |
        v
-(1) findToolByName()         在注册表中查找 (支持 name + aliases)
+(1) 按名称查找工具        在注册表中查找 (支持 name + aliases)
        |
        v
-(2) tool.isEnabled()         检查 feature flag / 环境变量
+(2) 启用检查              检查 feature flag / 环境变量
        |
        v
-(3) tool.validateInput()     Zod schema 验证 + 自定义校验
+(3) 输入验证              Zod schema 验证 + 自定义校验
        |
        v
-(4) PreToolUse Hooks         可 approve / block / 修改 updatedInput
+(4) PreToolUse Hooks      可 approve / block / 修改 updatedInput
        |
        v
-(5) checkPermissions()       返回 allow / deny / ask / passthrough
+(5) 权限检查              返回 allow / deny / ask / passthrough
        |
        |--- deny ---> 拒绝消息返回给模型
        |--- ask  ---> 显示权限对话框，等用户决定
        |
        v (allow)
-(6) tool.call()              实际执行工具逻辑
+(6) tool.call()           实际执行工具逻辑
        |
        v
-(7) PostToolUse Hooks        可修改输出、注入额外上下文
+(7) PostToolUse Hooks     可修改输出、注入额外上下文
        |
        v
-(8) mapToolResult...()       结果序列化；大结果持久化到磁盘
+(8) 结果序列化            大结果持久化到磁盘
        |
        v
 ToolResult 作为 UserMessage 追加到消息历史
 ```
 
-**并发执行规则**：当一个 `AssistantMessage` 包含多个 `tool_use` 块时，`toolOrchestration.ts` 按 `isConcurrencySafe` 分组：
+**并发执行规则**：当一个 AssistantMessage 包含多个 tool_use 块时，工具编排层按并发安全性分组：
 
 ```
 concurrencySafe = true:    [Read file1, Read file2, Grep]   -> Promise.all()
@@ -228,11 +227,11 @@ concurrencySafe = false:   [Edit file1, Bash cmd]           -> 顺序 await
        |
        | (Hook 未明确决定)
        v
-(2) tool.checkPermissions()       工具自身逻辑；返回 passthrough 交给通用逻辑
+(2) 工具自身权限逻辑              返回 passthrough 交给通用逻辑
        |
        | (passthrough)
        v
-(3) 通用权限逻辑 (permissions.ts)
+(3) 通用权限逻辑
        |
        |  3a. alwaysDeny 规则命中?   -> deny
        |  3b. alwaysAllow 规则命中?  -> allow
@@ -243,7 +242,7 @@ concurrencySafe = false:   [Edit file1, Bash cmd]           -> 顺序 await
        +--- acceptEdits -----> 只允许编辑操作
        +--- bypassPerms -----> 全部允许
        +--- dontAsk ---------> deny (静默拒绝)
-       +--- auto ------------> yoloClassifier.ts (LLM 分类器判定)
+       +--- auto ------------> LLM 安全分类器判定
                                    |
                                    +--- shouldBlock=true  -> ask
                                    +--- shouldBlock=false -> allow
@@ -263,19 +262,19 @@ policySettings > flagSettings > projectSettings > localSettings
 这张图解释了系统如何在长对话中管理上下文窗口。这不是单一机制，而是**多种策略协同工作**的体系：从温和的微压缩到激进的全量压缩，从被动的 413 恢复到主动的响应式监控。
 
 ```
-                        query.ts 每轮开始
+                        查询引擎每轮开始
                               |
          +--------------------+--------------------+
          |                    |                    |
          v                    v                    v
-  autoCompact.ts        microCompact.ts     CONTEXT_COLLAPSE
-  shouldAutoCompact()   (发送前裁剪)        (渐进式折叠)
+  自动压缩模块          微压缩模块           渐进式折叠
+  shouldAutoCompact()   (发送前裁剪)        (标记旧消息为 collapsed)
          |                    |                    |
-  token > 80-90% 窗口?  保留 prompt cache    标记旧消息为 collapsed
-  非首轮? 非冷却中?     只压缩旧工具结果     用占位符替代大文件内容
+  token > 80-90% 窗口?  保留 prompt cache    用占位符替代大文件内容
+  非首轮? 非冷却中?     只压缩旧工具结果
          |                    |                    |
          v                    |                    |
-  compact.ts                  |                    |
+  压缩执行模块                |                    |
   compactMessages()           |                    |
     (1) 构建压缩提示词         |                    |
     (2) 调用 API 生成摘要      |                    |
@@ -289,46 +288,46 @@ policySettings > flagSettings > projectSettings > localSettings
 
 **触发条件汇总**
 
-| 策略 | 触发条件 | 实现位置 |
+| 策略 | 触发条件 | 位置 |
 |------|---------|---------|
-| 自动压缩 | token 用量超阈值 | `autoCompact.ts` |
-| 手动压缩 | 用户执行 `/compact` | `commands/compact/` |
-| 413 恢复 | API 返回 context too long | `query.ts` |
-| 微压缩 | 发送前裁剪大工具结果 | `microCompact.ts` |
-| Context Collapse | 渐进式旧消息折叠 | feature flag 控制 |
-| History Snip | 模型主动裁剪旧消息 | `SnipTool` |
-| Reactive Compact | 实时监控上下文增长率 | feature flag 控制 |
+| 自动压缩 | token 用量超阈值 | 自动压缩模块 |
+| 手动压缩 | 用户执行 `/compact` | compact 命令 |
+| 413 恢复 | API 返回 context too long | 查询引擎 |
+| 微压缩 | 发送前裁剪大工具结果 | 微压缩模块 |
+| 渐进式折叠 | 旧消息渐进折叠 | feature flag 控制 |
+| 历史裁剪 | 模型主动裁剪旧消息 | SnipTool |
+| 响应式压缩 | 实时监控上下文增长率 | feature flag 控制 |
 
 ---
 
 ## A.6 多 Agent 通信
 
-这张图展示 Agent 系统的几种执行模式。关键设计：子 Agent 复用与主线程相同的 `query()` 循环，但拥有独立的工具权限上下文和系统提示词。不同模式的区别在于**隔离程度和通信方式**。
+这张图展示 Agent 系统的几种执行模式。关键设计：子 Agent 复用与主线程相同的查询循环，但拥有独立的工具权限上下文和系统提示词。不同模式的区别在于**隔离程度和通信方式**。
 
 ```
-主线程 (REPL.tsx / query.ts)
+主线程 (交互主循环 / 查询引擎)
        |
        | 模型调用 AgentTool
        v
-AgentTool.tsx -> 判断执行模式
+AgentTool -> 判断执行模式
        |
-       +--- 同步 (in-process) -----> runAgent.ts
-       |    递归调用 query()            共享进程，ToolResult 直接返回
+       +--- 同步 (in-process) -----> runAgent
+       |    递归调用查询循环            共享进程，ToolResult 直接返回
        |
        +--- 后台 (background) -----> LocalAgentTask
        |    独立进程                    通过文件通信，TaskState 更新
        |
-       +--- 隔离 (worktree) -------> worktree.ts
+       +--- 隔离 (worktree) -------> worktree 模式
        |    独立 git 工作树             通过文件 + UDS 通信
        |
        +--- 远程 (CCR) ------------> remoteAgent
             通过 API 通信               远程状态轮询
 
 所有子 Agent 内部结构相同：
-  - createSubagentContext() 继承父级 readFileState、fileHistory
-  - 独立的 toolPermissionContext
+  - 子 Agent 上下文创建函数继承父级文件缓存
+  - 独立的工具权限上下文
   - 系统提示词 = Agent 定义 prompt + 可选 CLAUDE.md
   - 工具列表 = Agent 定义 tools (过滤后)
 ```
 
-**Coordinator 模式**：主 Agent 充当协调器，将用户需求拆分为子任务，分派给 Worker Agent。各 Worker 拥有独立的 query() 循环和权限上下文，通过 SendMessage / Inbox 通信。
+**Coordinator 模式**：主 Agent 充当协调器，将用户需求拆分为子任务，分派给 Worker Agent。各 Worker 拥有独立的查询循环和权限上下文，通过 SendMessage / Inbox 通信。

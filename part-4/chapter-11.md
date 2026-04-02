@@ -31,10 +31,10 @@ Hooks 就是为此而生的：
 
 ## 11.2 四种 Hook 类型：从 shell 脚本到自主验证器
 
-`schemas/hooks.ts` 定义了四种 Hook 类型，
+Hook 配置 schema 模块定义了四种 Hook 类型，
 每种适配不同的复杂度需求。
 
-### Command Hook（第 32-65 行）
+### Command Hook
 
 最直接的形式——执行一个 shell 命令。
 Hook 进程通过 stdin 接收 JSON 格式的事件数据，
@@ -47,7 +47,7 @@ Hook 进程通过 stdin 接收 JSON 格式的事件数据，
 `asyncRewake` 更进一步：在后台执行，但如果退出码为 2，
 会唤醒模型处理 Hook 报告的阻塞性错误。
 
-### Prompt Hook（第 67-95 行）
+### Prompt Hook
 
 用一个独立的 LLM 来评估操作。
 `$ARGUMENTS` 占位符会被替换为 Hook 输入的 JSON。
@@ -61,12 +61,12 @@ Hook 进程通过 stdin 接收 JSON 格式的事件数据，
 `model` 字段允许指定使用哪个模型，
 默认使用轻量快速模型，不会占用主循环模型的资源。
 
-### HTTP Hook（第 97-126 行）
+### HTTP Hook
 
 将事件 POST 到远程 URL。
 适合集成企业级安全审计系统、合规检查服务、SIEM 平台。
 
-`allowedEnvVars` 是一个精心设计的安全边界（第 112-118 行）：
+`allowedEnvVars` 是一个精心设计的安全边界：
 只有显式列出的环境变量才会在 header 中被插值解析，
 未列出的 `$VAR` 引用变为空字符串。
 
@@ -77,7 +77,7 @@ header 中写 `"Authorization": "Bearer $DATABASE_PASSWORD"`。
 这个 Hook 就能通过 HTTP 请求将数据库密码泄露到攻击者的服务器。
 白名单机制确保了只有开发者显式授权的变量才会被解析。
 
-### Agent Hook（第 128-163 行）
+### Agent Hook
 
 启动一个完整的 Agent 来执行验证。
 与 Prompt Hook 的关键区别是：
@@ -91,8 +91,7 @@ Agent Hook 可以多轮推理、调用工具。
 
 ### 共性：`if` 预过滤
 
-四种类型都支持 `if` 字段作为预过滤器
-（第 19-27 行的 `IfConditionSchema`）。
+四种类型都支持 `if` 字段作为预过滤器。
 它使用与权限规则相同的语法（如 `Bash(git *)`），
 在 Hook 进程启动之前做模式匹配。
 
@@ -106,11 +105,11 @@ Agent Hook 可以多轮推理、调用工具。
 ## 11.3 Hook 的响应协议：标准化的决策接口
 
 Hook 通过 stdout 返回 JSON 来影响系统行为。
-`types/hooks.ts` 第 50-166 行定义了完整的响应 schema。
+Hook 类型定义模块定义了完整的响应 schema。
 
 ### 同步响应
 
-`syncHookResponseSchema` 中几个关键字段：
+同步响应 schema 中几个关键字段：
 
 `continue`——设为 false 可以停止 Agent 继续执行。
 配合 `stopReason` 字段，可以给出停止的原因。
@@ -126,7 +125,7 @@ Hook 通过 stdout 返回 JSON 来影响系统行为。
 
 ### PreToolUse 特定输出
 
-对于 `PreToolUse` 事件（第 73-78 行），
+对于 `PreToolUse` 事件，
 Hook 可以返回三个额外字段：
 
 `permissionDecision`（allow/deny/ask）——
@@ -142,7 +141,7 @@ Hook 可以返回三个额外字段：
 
 ### PermissionRequest 特定输出
 
-对于 `PermissionRequest` 事件（第 121-134 行），
+对于 `PermissionRequest` 事件，
 Hook 可以返回结构化的 allow 或 deny 决策。
 
 allow 决策可以附带 `updatedPermissions`——
@@ -150,7 +149,7 @@ allow 决策可以附带 `updatedPermissions`——
 比如"允许这次操作，并将此命令前缀加入会话级白名单"。
 
 deny 决策可以附带 `interrupt: true`——
-不仅拒绝当前操作，还通过 `abortController.abort()` 中止整个 Agent。
+不仅拒绝当前操作，还通过中止控制器中止整个 Agent。
 这是"紧急制动"——
 当 Hook 检测到严重安全威胁（比如疑似 prompt 注入攻击）时，
 可以立即停止一切。
@@ -158,7 +157,7 @@ deny 决策可以附带 `interrupt: true`——
 ### 异步响应
 
 返回 `{async: true}` 表示 Hook 在后台继续执行，
-不阻塞主流程（第 171-174 行）。
+不阻塞主流程。
 可选的 `asyncTimeout` 字段设置后台执行的超时时间。
 适用于审计日志写入、异步通知推送等不需要等待结果的场景。
 
@@ -169,8 +168,7 @@ Hook 在权限流程中有两个截然不同的介入时机。
 ### PreToolUse：在决策链中插入一票否决
 
 PreToolUse Hook 在工具执行前触发。
-`HookResult` 类型（`types/hooks.ts` 第 260-275 行）中的
-`permissionBehavior` 字段可以设为 `allow`、`deny`、`ask` 或 `passthrough`。
+Hook 结果类型中的 `permissionBehavior` 字段可以设为 `allow`、`deny`、`ask` 或 `passthrough`。
 
 如果 Hook 说 deny，
 即使工具自检和规则引擎都通过了也会被拒绝——
@@ -190,8 +188,7 @@ PermissionRequest Hook 与对话框**同时运行**。
 回顾 Chapter 9 的 `resolveOnce` 机制——
 Hook 是那场竞赛的参与者之一。
 
-`coordinatorHandler.ts`（第 26-62 行）
-展示了自动化优先场景的执行顺序：
+协调者处理模块展示了自动化优先场景的执行顺序：
 先跑 Hook（快速、本地），
 再跑分类器（慢、推理），
 都不行才回退到对话框。
@@ -209,12 +206,10 @@ Hook 的存在对用户是透明的——它只加速决策，不增加延迟。
 ## 11.5 配置方式：三层来源，松耦合集成
 
 Hooks 在 `settings.json` 中配置。
-`HooksSchema`（`schemas/hooks.ts` 第 211-213 行）
-定义了顶层结构：
-一个以 Hook 事件名为键、`HookMatcher` 数组为值的偏记录。
+Hook 配置 schema 模块定义了顶层结构：
+一个以 Hook 事件名为键、匹配器数组为值的偏记录。
 
-每个 `HookMatcher`（第 194-204 行）
-包含可选的 `matcher`（工具名过滤）和 `hooks` 数组。
+每个匹配器包含可选的 `matcher`（工具名过滤）和 `hooks` 数组。
 `matcher` 做第一级过滤（只对特定工具触发），
 `if` 做第二级过滤（只对匹配模式的调用启动 Hook）。
 双层过滤确保了 Hook 只在真正需要的时刻执行。
@@ -308,14 +303,12 @@ Hook 脚本必须由用户显式配置在 `settings.json` 中，
 
 **管理策略优先。**
 在企业环境中，`policySettings` 来源的 Hook 优先级最高。
-`shouldAllowManagedHooksOnly` 开关禁止非管理 Hook 执行
+管理 Hook 独占开关禁止非管理 Hook 执行
 ——确保只有企业安全团队审核过的 Hook 能运行。
-`shouldDisableAllHooksIncludingManaged` 开关在紧急情况下
-禁用一切 Hook——这是最后的安全阀。
+全局禁用开关在紧急情况下禁用一切 Hook——这是最后的安全阀。
 
 **输出验证。**
-Hook 的 JSON 输出经过 Zod schema 严格验证
-（`hookJSONOutputSchema`，`types/hooks.ts` 第 169-176 行）。
+Hook 的 JSON 输出经过 Zod schema 严格验证。
 无效的响应被安全忽略而不会导致系统崩溃。
 这是防御性编程的典型实践——永远不信任外部输入，
 即使那个"外部"是用户自己编写的 Hook 脚本。
@@ -329,7 +322,7 @@ HTTP Hook 的 `allowedEnvVars` 使用白名单机制。
 
 ## 11.8 27 种事件：覆盖 Agent 生命周期
 
-Hook 系统的骨架是 27 种事件（定义在 `agentSdkTypes.ts` 中）。
+Hook 系统的骨架是 27 种事件（定义在 Agent SDK 类型模块中）。
 与权限直接相关的三个核心事件——
 `PreToolUse`、`PermissionRequest`、`PermissionDenied`——
 我们已经详细讨论过。

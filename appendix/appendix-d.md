@@ -16,7 +16,7 @@ chapter: D
 
 Agent 的本质是什么？剥去所有复杂性后，核心只剩一个循环：**把用户的话发给 LLM，如果 LLM 要求调用工具就执行工具，把结果送回去，直到 LLM 不再要求工具调用**。
 
-这就是 Claude Code 中 `query()`（`query.ts:219`）作为 AsyncGenerator 循环运转的核心逻辑，只不过它被包裹在错误恢复、自动压缩、流式输出等十几层额外机制中。让我们先抓住骨架。
+这就是 Claude Code 查询引擎中作为 AsyncGenerator 循环运转的核心逻辑，只不过它被包裹在错误恢复、自动压缩、流式输出等十几层额外机制中。让我们先抓住骨架。
 
 ### 实现（保存为 `mini-agent.ts`）
 
@@ -55,7 +55,7 @@ for (let turn = 0; turn < 10; turn++) {
 
 Agent 之所以不同于聊天机器人，在于它能**采取行动**。但行动需要结构化描述——LLM 需要知道有哪些工具可用、每个工具接受什么参数。
 
-Claude Code 用 `Tool` 类型（`Tool.ts`）定义了 20+ 个字段的工具接口，外加 `findToolByName` 做运行时查找。我们只取最核心的五个字段。
+Claude Code 的工具核心接口定义了 20+ 个字段的工具接口，外加按名称查找的运行时查找。我们只取最核心的五个字段。
 
 ### 新增代码
 
@@ -108,7 +108,7 @@ register({
 });
 ```
 
-`registry` 是一个 `Map<string, ToolDef>`——和 Claude Code 的 `findToolByName` 查找逻辑本质相同，只不过后者还支持 alias 和动态注册。
+`registry` 是一个 `Map<string, ToolDef>`——和 Claude Code 的工具查找逻辑本质相同，只不过后者还支持 alias 和动态注册。
 
 现在 LLM 知道有工具可用了，但工具调用后的结果还没送回去。我们需要补上循环的后半段。
 
@@ -120,7 +120,7 @@ register({
 
 LLM 返回 `stop_reason: "tool_use"` 时，响应体里包含 `tool_use` 块——每个块指定工具名、参数和一个唯一 ID。我们需要：执行工具、收集结果、以 `tool_result` 格式送回。
 
-Claude Code 中这对应 `query.ts` 的循环体：识别 `tool_use` 块 → 调用 `findToolByName` → 执行 `tool.call()` → 把 `ToolResultBlockParam` 追加到消息历史。
+Claude Code 中这对应查询引擎的循环体：识别 tool_use 块 -> 查找工具 -> 执行 tool.call() -> 把 ToolResultBlockParam 追加到消息历史。
 
 ### 修改后的循环
 
@@ -174,7 +174,7 @@ for (let turn = 0; turn < 10; turn++) {
 
 Chapter 22 讲了安全优先原则：不确定就问。`run_command` 是高风险操作——我们不能让 LLM 自己决定是否执行，需要人类确认。
 
-Claude Code 的权限系统（`hooks/useCanUseTool.tsx`）支持三种决策行为（allow/deny/ask）、五种权限模式、风险分级和配置文件规则。我们只实现最核心的一层：按 `requiresApproval` 标志决定是否询问用户。
+Claude Code 的权限系统支持三种决策行为（allow/deny/ask）、五种权限模式、风险分级和配置文件规则。我们只实现最核心的一层：按 `requiresApproval` 标志决定是否询问用户。
 
 ### 新增代码
 
@@ -216,10 +216,10 @@ async function checkPermission(tool: ToolDef, input: Record<string, unknown>): P
 
 四步走完，我们的 mini Agent 具备了：
 
-1. **消息循环**——对应 `query.ts` 的 AsyncGenerator
-2. **工具注册与发现**——对应 `Tool.ts` + `findToolByName`
-3. **工具执行与结果收集**——对应各 `tools/` 子目录的 `call()`
-4. **基本权限检查**——对应 `hooks/useCanUseTool.tsx`
+1. **消息循环**——对应查询引擎的 AsyncGenerator
+2. **工具注册与发现**——对应工具核心接口 + 名称查找
+3. **工具执行与结果收集**——对应各工具模块的 call()
+4. **基本权限检查**——对应权限系统
 
 核心模式和 Claude Code 完全一致：**不断调用 LLM，直到它不再请求工具调用**。
 
@@ -239,9 +239,9 @@ while (LLM 返回 tool_use) {
 
 ### P0：没有它就不能上线
 
-**流式输出**。我们等 API 返回完整响应后才显示。用户等 30 秒看到一大段文字弹出。修复方向：`client.messages.stream()` + `for await` 逐 token 处理。Claude Code 将 `query()` 本身定义为 AsyncGenerator（`query.ts:219`），所有消费者通过 `for await` 获取流式事件。
+**流式输出**。我们等 API 返回完整响应后才显示。用户等 30 秒看到一大段文字弹出。修复方向：`client.messages.stream()` + `for await` 逐 token 处理。Claude Code 将查询函数本身定义为 AsyncGenerator，所有消费者通过 `for await` 获取流式事件。
 
-**错误恢复**。API 超时、429 限流、500 服务端错误——我们全部直接崩溃。Claude Code 在 `query.ts:164` 定义了 `MAX_OUTPUT_TOKENS_RECOVERY_LIMIT = 3`，包括触发 reactive compact 来释放空间。最简修复是指数退避重试：
+**错误恢复**。API 超时、429 限流、500 服务端错误——我们全部直接崩溃。Claude Code 定义了最大输出 token 恢复限制为 3 次，包括触发 reactive compact 来释放空间。最简修复是指数退避重试：
 
 ```typescript
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
@@ -256,21 +256,21 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 }
 ```
 
-**上下文管理**。对话历史超过模型窗口时我们直接报错。Claude Code 通过 auto-compact（`services/compact/autoCompact.ts`）在接近上限时自动压缩——保留 20K tokens 余量（第 30 行的 `MAX_OUTPUT_TOKENS_FOR_SUMMARY`），将历史摘要化后继续工作。
+**上下文管理**。对话历史超过模型窗口时我们直接报错。Claude Code 通过自动压缩模块在接近上限时自动压缩——保留 20K tokens 余量，将历史摘要化后继续工作。
 
 ### P1：没有它用户会流失
 
-**成本追踪**。LLM 按 token 计费，用户需要知道每次会话花了多少钱。Claude Code 的 `cost-tracker.ts` 追踪 input/output/cache 各类 token 和美元成本，按模型分类统计（第 49-68 行的完整导出列表）。
+**成本追踪**。LLM 按 token 计费，用户需要知道每次会话花了多少钱。Claude Code 的成本追踪模块追踪 input/output/cache 各类 token 和美元成本，按模型分类统计。
 
-**子 Agent 隔离**。单线程 Agent 无法同时做多件事。Claude Code 通过 `runForkedAgent`（`forkedAgent.ts:489`）创建隔离的子 Agent，文件缓存克隆、UI 回调置空、状态独立，只共享 prompt cache。
+**子 Agent 隔离**。单线程 Agent 无法同时做多件事。Claude Code 通过 fork 运行函数创建隔离的子 Agent，文件缓存克隆、UI 回调置空、状态独立，只共享 prompt cache。
 
-**权限规则引擎**。我们的 boolean `requiresApproval` 太粗糙。Claude Code 支持 glob 模式匹配（`allow: ["read_file:*"]`）、风险分级（`LOW | MEDIUM | HIGH`）、五种权限模式切换。
+**权限规则引擎**。我们的 boolean `requiresApproval` 太粗糙。Claude Code 支持 glob 模式匹配（`allow: ["read_file:*"]`）、风险分级（LOW / MEDIUM / HIGH）、五种权限模式切换。
 
 ### P2：没有它也能用，有了它竞争力翻倍
 
-**Prompt 缓存优化**。保持系统提示和工具定义的字节级一致性，复用 `CacheSafeParams`（`forkedAgent.ts:57-68`），甚至统一 fork 前缀占位文本（`forkSubagent.ts:93`）。一个每天运行数百万次的 Agent，缓存优化直接影响运营成本。
+**Prompt 缓存优化**。保持系统提示和工具定义的字节级一致性，复用缓存安全参数，甚至统一 fork 前缀占位文本。一个每天运行数百万次的 Agent，缓存优化直接影响运营成本。
 
-**记忆系统**。跨会话的持久记忆，包括自动提取（`extractMemories`）和后台整合（Dream）。五层 CLAUDE.md 配置覆盖、四种记忆类型、LLM 驱动的检索。
+**记忆系统**。跨会话的持久记忆，包括自动提取和后台整合（Dream）。五层 CLAUDE.md 配置覆盖、四种记忆类型、LLM 驱动的检索。
 
 **可扩展工具协议**。MCP 协议动态加载第三方工具，而非硬编码。Skills 用 Markdown 教 Agent 新工作流。Hooks 在关键节点注入自定义策略。
 
@@ -283,13 +283,13 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 | 维度 | Mini Agent | Claude Code |
 |------|----------|-------------|
 | 核心循环 | `for` + `if (stop_reason)` | AsyncGenerator + `yield` 多类型事件 |
-| 工具查找 | `Map.get(name)` | `findToolByName` + alias + 动态注册 |
+| 工具查找 | `Map.get(name)` | 名称查找 + alias + 动态注册 |
 | 权限模型 | `boolean requiresApproval` | 三层防线 + 五种模式 + 风险分级 |
 | 错误处理 | 崩溃 | 重试 + reactive compact + 断路器 |
 | 上下文管理 | 无 | auto-compact + session memory + blocking limit |
 | 子任务 | 无 | fork 隔离 + Mailbox 通信 + Task 注册 |
 | 成本 | 不追踪 | 按模型分类的 token/USD 追踪 |
-| 缓存 | 无 | `CacheSafeParams` + 字节级一致前缀 |
+| 缓存 | 无 | 缓存安全参数 + 字节级一致前缀 |
 | 记忆 | 无 | 五层配置 + 四种类型 + Dream 整合 |
 | 可观测性 | `console.log` | 结构化事件 + OTel + 成本 counter |
 
