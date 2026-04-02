@@ -1,0 +1,301 @@
+---
+title: "工具的设计哲学：接口、注册与调度"
+part: 3
+chapter: 6
+---
+
+# Chapter 6: 工具的设计哲学 -- 接口、注册与调度
+
+> LLM 本身不能读文件、不能执行命令、不能访问网络。它唯一能做的事情是输出文本。工具系统的使命，是把文本输出变成真实世界的操作。理解工具系统的设计，是理解整个 Agent 架构的关键转折点。
+
+## 6.1 一个工具应该长什么样？
+
+**问题：如何为 40 多个功能各异的工具定义一个统一的接口？**
+
+这个问题的答案将直接影响系统的扩展性。接口太松散，工具之间无法互操作；接口太严格，新工具的开发成本过高。我们来看 Claude Code 是怎么在这两端之间找到平衡的。
+
+想象你在设计一个插件系统。最朴素的做法是定义一个基类，让每个工具继承它。但继承意味着层级、意味着耦合、意味着一个基类变更牵动所有子类。Claude Code 选择了另一条路：用 TypeScript 的类型系统替代继承层次。
+
+打开 `Tool.ts`，核心定义在第 362 行：
+
+```typescript
+export type Tool<
+  Input extends AnyObject = AnyObject,
+  Output = unknown,
+  P extends ToolProgressData = ToolProgressData,
+> = { ... }
+```
+
+注意，这是一个 `type`，不是一个 `class`。工具在这个系统中是"满足特定结构的对象"，不是"某个类的实例"。三个泛型参数为每个工具提供精确的类型约束：BashTool 的 `Input` 包含 `command` 字段，FileReadTool 的 `Input` 包含 `file_path` 字段 -- 类型系统在编译期就能捕获接口不匹配。
+
+这种选择背后有一个工程理由：当你有 40+ 个工具，且每个工具的输入输出结构完全不同时，类继承几乎无法提供有意义的复用。一个统一的结构类型（structural type）反而更灵活 -- 任何满足接口契约的对象都是合法的工具，不需要知道彼此的存在。
+
+如果你熟悉 Go 语言的接口设计，这里有一个类似的哲学：Go 的接口是隐式满足的（duck typing），不需要显式声明 `implements`。TypeScript 的结构类型系统提供了同样的灵活性，但比 Go 更强 -- 它有泛型，可以在编译时约束输入和输出的精确类型。
+
+顺便说一句，Tool 类型有三个泛型参数，但实际上 `Output` 在运行时几乎不参与类型检查 -- 它主要用于 `mapToolResultToToolResultBlockParam` 的类型推断。真正起约束作用的是 `Input`（Zod schema 驱动的验证）和 `P`（进度事件类型，确保 BashTool 发射 `BashProgress` 而不是 `AgentToolProgress`）。
+
+**思路：Tool 接口的每个字段都在回答一个具体的问题。**
+
+让我们逐一拆解。
+
+### 6.1.1 identity -- 你是谁？
+
+`name`（第 456 行）是工具的主标识符，也是 LLM 在输出 `tool_use` block 时引用的名称。`aliases`（第 371 行）处理重命名的向后兼容 -- 当 `KillShell` 改名为 `TaskStop` 时，旧名称作为别名保留，让历史对话中的调用仍然能路由到正确的工具。
+
+`searchHint`（第 378 行）是一段 3-10 个词的短语，注释要求"no trailing period"（不要尾随句号）。它存在的原因并不直观：当工具被延迟加载时（6.7 节详述），模型只能看到工具名称。但 NotebookEditTool 的名字里没有"jupyter"这个词，用户却会说"编辑我的 jupyter notebook"。`searchHint` 弥补了工具名和用户意图之间的语义鸿沟。注释还强调要"prefer terms not already in the tool name" -- 重复工具名中已有的词是浪费 searchHint 的宝贵空间。
+
+### 6.1.2 execution -- 你怎么干活？
+
+工具接口中与执行相关的方法有三个，各自扮演不同角色。
+
+`call()`（第 379-385 行）是工具的心脏。它的签名揭示了一个重要的设计决策：
+
+```typescript
+call(
+  args: z.infer<Input>,       // Zod 验证后的输入
+  context: ToolUseContext,     // 执行上下文
+  canUseTool: CanUseToolFn,   // 权限检查回调
+  parentMessage: AssistantMessage,  // 触发此调用的消息
+  onProgress?: ToolCallProgress<P>, // 进度回调
+): Promise<ToolResult<Output>>
+```
+
+注意 `args` 的类型是 `z.infer<Input>` -- 传入 `call()` 的数据**已经**经过 Zod schema 验证。这意味着工具实现者不需要再做输入校验，减少了一类重复的防御性代码。
+
+`description()`（第 386-393 行）是动态的，可以根据输入参数变化。BashTool 就利用了这一点：如果模型提供了 `description` 参数（比如"Install package dependencies"），直接使用它；否则返回通用描述 "Run shell command"。这让 UI 对话框能展示有意义的操作描述，而不是千篇一律的工具名。
+
+还有两个值得注意的执行相关方法。`validateInput()`（第 489-492 行）在 `call()` 之前运行，做纯粹的参数合法性检查 -- 路径存在吗？范围有效吗？设备路径安全吗？它不涉及用户交互，失败后直接返回错误消息给模型。而 `checkPermissions()`（第 500-503 行）做权限决策，可能触发 UI 对话框等待用户确认。分离这两步让验证失败快速反馈（毫秒级），权限拒绝走完整的交互流程（可能等待几秒的用户响应）。
+
+### 6.1.3 safety -- 你有多危险？
+
+这是接口设计中最体现"哲学"的部分。三个布尔方法构成了工具的安全分类体系：
+
+- `isConcurrencySafe(input)`（第 402 行）：能否与其他工具并行执行？
+- `isReadOnly(input)`（第 404 行）：这次调用是否只读？
+- `isDestructive(input)`（第 406 行）：是否不可逆？
+
+关键细节：这三个方法都接受 `input` 参数。安全性不是工具的静态属性，而是每次调用的动态判断。同一个 BashTool，执行 `ls` 时是并发安全的，执行 `rm -rf` 时不是。FileReadTool 总是只读的（`isReadOnly` 返回 `true`），但 BashTool 需要解析命令 AST 才能判断。这种"按调用判断"的设计精度，远高于"按工具分类"的粗粒度方案。
+
+另一个容易被忽略的安全方法是 `interruptBehavior()`（第 416 行）。当用户在工具执行中输入新消息时，这个方法决定工具的行为：`'cancel'` 意味着停止并丢弃结果（适合搜索、读取等幂等操作），`'block'` 意味着继续执行直到完成（适合正在写文件或运行构建的操作）。默认是 `'block'` -- 再次体现安全关闭原则：不确定时，不中断。
+
+### 6.1.4 budget -- 你的输出有多大？
+
+`maxResultSizeChars`（第 466 行）控制工具结果的持久化阈值。当输出超过此大小时，系统将完整结果写入磁盘文件，只给模型发送一个 2KB 的预览。
+
+这个字段的取值选择很有讲究。BashTool 设为 30,000 字符，AgentTool 设为 100,000 字符。而 FileReadTool 设为 `Infinity` -- 因为 Read 工具自己有 token 限制，如果它的结果被持久化到文件再让模型用 Read 去读，就形成了"Read -> 文件 -> Read"的循环。`Infinity` 是一种"我自己负责控制大小"的声明。
+
+### 6.1.5 presentation -- 用户看到什么？
+
+Tool 类型中有六个 `render*` 方法（第 605-694 行），控制工具在 UI 中的每一帧呈现：执行中显示什么（`renderToolUseMessage`）、结果显示什么（`renderToolResultMessage`）、进度显示什么（`renderToolUseProgressMessage`）、被拒绝时显示什么（`renderToolUseRejectedMessage`）、出错时显示什么（`renderToolUseErrorMessage`）、多个同类工具并行时怎么分组显示（`renderGroupedToolUse`）。
+
+这些方法全部是可选的 -- 省略任何一个，系统回退到默认呈现。这让简单工具（比如 TodoWriteTool）只需定义 `call()` 和几个必要方法，而复杂工具（比如 BashTool）可以完全控制用户看到的每一帧。这种"渐进式定制"降低了工具开发的入门门槛，同时不限制高级用例的表达力。
+
+
+## 6.2 ToolUseContext -- 工具执行时的世界模型
+
+**问题：一个工具在执行时需要知道多少关于外部世界的信息？**
+
+答案是：相当多。`ToolUseContext`（第 158-300 行）是传递给每个 `call()` 的上下文对象，它描述了工具执行时的完整环境。这个类型有 40 多个字段，初看令人畏惧，但每一组字段都在解决一个具体的问题。
+
+**生命周期控制。** `abortController`（第 180 行）让每个工具执行都绑定到一个取消信号。用户按 Escape、兄弟工具出错、系统超时 -- 都通过这一个通道通知工具停止。这比让每个工具各自实现超时逻辑优雅得多。AbortController 是浏览器 API 的标准模式，但在这里它被嵌套使用（第 8 章将详述三层嵌套的取消体系），形成了精确的取消粒度控制。
+
+**状态共享。** `readFileState`（第 181 行）是一个 LRU 缓存，存储最近读过的文件内容和修改时间。FileReadTool 用它做去重 -- 如果文件没变且读取范围相同，返回一个 `file_unchanged` 存根而不是重新发送全部内容。FileEditTool 编辑文件后也更新这个缓存的 mtime，确保后续 Read 不会错误地认为"文件没变"。
+
+**身份标识。** `agentId`（第 245 行）和 `agentType`（第 246 行）标识了工具所在的 agent。当工具在子 agent 中执行时，权限检查和状态管理需要知道"这是谁在调用"。
+
+**预算跟踪。** `contentReplacementState`（第 292 行）是工具结果预算系统的核心状态，记录了哪些工具结果已经被替换为预览、哪些被保留为原文。这个状态跨 turn 持久化，确保替换决策的一致性以保护 prompt cache（第 8 章详述）。
+
+**交互能力。** `setToolJSX`（第 203 行）让工具可以向终端 UI 注入自定义的 React 组件 -- 比如 BashTool 在权限对话框中展示 sed 命令的 diff 预览。`requestPrompt`（第 270-273 行）让工具请求用户的交互式输入，但只在 REPL（交互式）上下文中可用，SDK 模式下为 undefined。
+
+**全局状态桥接。** `getAppState()` 和 `setAppState()`（第 183-184 行）提供对全局应用状态的读写。但对于子 Agent，`setAppState` 是一个 no-op（防止子 Agent 意外修改主线程状态）。如果子 Agent 需要注册后台任务这种跨生命周期的操作，必须使用 `setAppStateForTasks`（第 192 行）-- 它直接到达根状态存储。
+
+为什么要传这么多东西？因为一个工具调用的语义，远不止"输入 -> 输出"那么简单。它需要知道自己能不能被取消、之前读过什么文件、自己属于哪个 agent、上下文预算还剩多少。ToolUseContext 是一种"依赖注入"的实践 -- 把工具从全局状态中解耦，通过显式参数传递它需要的一切。
+
+
+## 6.3 ToolResult -- 工具能做什么？
+
+**问题：工具返回结果时，除了"数据"以外还能做什么？**
+
+```typescript
+export type ToolResult<T> = {
+  data: T
+  newMessages?: (UserMessage | AssistantMessage | AttachmentMessage | SystemMessage)[]
+  contextModifier?: (context: ToolUseContext) => ToolUseContext
+  mcpMeta?: {
+    _meta?: Record<string, unknown>
+    structuredContent?: Record<string, unknown>
+  }
+}
+```
+
+四个字段，四种能力（`mcpMeta` 是 MCP 协议的元数据透传，用于 SDK 消费者）。我们聚焦前三个：
+
+**返回数据**（`data`）是主输出，经过 `mapToolResultToToolResultBlockParam` 转换后发给模型。
+
+**注入消息**（`newMessages`）让工具在对话中插入额外内容。FileReadTool 读取图片时，会注入一个包含 base64 图片数据的 user message（标记为 `isMeta: true`，表示这不是用户输入而是系统注入的补充信息）；读取 PDF 时，注入 document block。这些注入的消息在用户对话之外，为模型提供了多模态感知能力。图片还可能附带一条元数据文本消息，包含原始尺寸和缩放后尺寸，帮助模型理解坐标映射关系。
+
+**修改上下文**（`contextModifier`）让工具改变后续工具看到的环境。但这里有一条关键约束 -- 第 329 行的注释说得很清楚：`contextModifier is only honored for tools that aren't concurrency safe`。原因很简单：并发工具的执行顺序不确定，如果它们都修改上下文，结果将不可预测。
+
+这三个能力的层次递进 -- 返回数据 < 注入消息 < 修改上下文 -- 构成了工具影响力的光谱。大多数工具只用 `data`，少数多模态工具用 `newMessages`，极少数需要修改全局状态的工具才用 `contextModifier`。
+
+`data` 到 API 的转换由 `mapToolResultToToolResultBlockParam`（第 557-560 行）完成。这个方法的存在揭示了一个重要的关注点分离：工具内部用自己的强类型数据结构（BashTool 用 `{ stdout, stderr, interrupted }`，FileReadTool 用判别联合 `{ type: 'text' | 'image' | 'pdf' | ... }`），而 API 层需要 Anthropic SDK 定义的 `ToolResultBlockParam`。两层之间的转换是显式的，每个工具自己负责 -- 这意味着 BashTool 可以决定把 stdout 中的图像数据编码为 image block，而 FileReadTool 可以决定给文本内容附加安全提醒。转换逻辑和执行逻辑分离，让它们可以独立演进。
+
+
+## 6.4 buildTool() -- 安全的默认值
+
+**问题：Tool 接口有 30+ 个字段，定义一个新工具是否需要全部填写？**
+
+不需要。`buildTool()`（第 783-792 行）是工具的构建工厂，提供了一组经过深思熟虑的默认值：
+
+```typescript
+const TOOL_DEFAULTS = {
+  isEnabled: () => true,
+  isConcurrencySafe: (_input?: unknown) => false,
+  isReadOnly: (_input?: unknown) => false,
+  isDestructive: (_input?: unknown) => false,
+  checkPermissions: (input, _ctx?) =>
+    Promise.resolve({ behavior: 'allow', updatedInput: input }),
+}
+```
+
+注意默认值的倾向性：并发**不**安全、**非**只读、**非**破坏性。当开发者忘记设置这些属性时，系统倾向于更保守的行为 -- 不会并行执行、不会标记为可安全跳过权限。这就是"安全关闭"（fail-closed）原则：未知情况下，选择限制而非放行。
+
+`buildTool` 的类型体操（第 735-741 行的 `BuiltTool<D>` 类型）确保返回值满足完整的 `Tool` 类型，同时保留每个工具定义的精确类型推断。这意味着你在编辑器中对 BashTool 做 `.call()` 调用时，能看到 BashTool 专属的参数类型提示 -- 泛型信息没有在 `buildTool` 的工厂包装中丢失。
+
+理解 `buildTool` 的价值，可以想想没有它会怎样。每个工具定义都要手写 `isConcurrencySafe: () => false`、`isReadOnly: () => false` 等样板代码。忘了写一个？类型检查报错，但错误信息指向一个 30 字段的接口，很难定位遗漏了哪个。有了 `buildTool`，遗漏的字段自动获得安全默认值，开发者只需要关注与自己工具相关的字段。
+
+`ToolDef` 类型（第 721-726 行）进一步简化了工具定义。它用 `Omit` + `Partial` + `Pick` 的组合，把 defaultable 方法标记为可选：
+
+```typescript
+export type ToolDef<Input, Output, P> =
+  Omit<Tool<Input, Output, P>, DefaultableToolKeys> &
+  Partial<Pick<Tool<Input, Output, P>, DefaultableToolKeys>>
+```
+
+这意味着工具定义可以用 `satisfies ToolDef` 做类型检查（确保提供了所有必要字段），而不需要手动填充所有可默认字段。`buildTool` 在运行时完成填充，类型系统在编译时确保结果满足完整的 `Tool` 接口。编译时安全 + 运行时便利，两手都抓。
+
+值得注意的是，`TOOL_DEFAULTS` 中 `checkPermissions` 的默认实现是 `Promise.resolve({ behavior: 'allow', updatedInput: input })` -- 直接放行。这看似与"安全关闭"矛盾，但实际上权限检查有两层：工具自身的 `checkPermissions` 和通用权限系统（`permissions.ts`）。通用系统总是运行的，工具的 `checkPermissions` 是额外的、工具特定的检查。默认放行意味着"我没有额外的权限需求，交给通用系统判断"。
+
+
+## 6.5 工具集合的类型约束
+
+在深入注册机制之前，有一个小但重要的类型细节值得注意。`Tool.ts` 第 701 行定义了：
+
+```typescript
+export type Tools = readonly Tool[]
+```
+
+这不是简单的 `Tool[]`，而是 `readonly Tool[]`。`readonly` 修饰符防止了工具数组在传递过程中被意外修改 -- 添加、删除、替换元素都会导致编译错误。这在一个工具数组被 10+ 个模块引用的系统中至关重要：如果某个过滤函数意外地 `.push()` 了一个元素，它会污染所有持有同一引用的模块。
+
+注释解释了 `Tools` 类型存在的另一个理由："make it easier to track where tool sets are assembled, passed, and filtered across the codebase"。在编辑器中搜索 `Tools` 类型的使用处，比搜索 `Tool[]` 更精确 -- 后者会匹配到无数的数组操作。一个命名类型，就是一个可追踪的契约。
+
+
+## 6.6 注册与过滤 -- 三层门卫
+
+**问题：工具怎么从"定义"变成"可用"？**
+
+工具注册在 `tools.ts` 中完成。与许多插件系统不同，这里没有运行时注册 API -- 所有工具在 `getAllBaseTools()`（第 193-251 行）中以数组形式硬编码。
+
+这种静态注册方式看似原始，实则有几个好处：完整的类型检查、可预测的工具顺序（影响 prompt cache 稳定性）、以及构建时的死代码消除。看第 16-19 行的条件加载模式：
+
+```typescript
+const REPLTool =
+  process.env.USER_TYPE === 'ant'
+    ? require('./tools/REPLTool/REPLTool.js').REPLTool
+    : null
+```
+
+当 `USER_TYPE !== 'ant'` 时，整个 REPLTool 模块不会被加载，打包工具可以将其从最终产物中移除。这种"编译时门控"比运行时 if-else 更高效。
+
+类似的模式遍布整个注册列表。`feature('WEB_BROWSER_TOOL')` 门控 WebBrowserTool（实验性功能），`feature('COORDINATOR_MODE')` 门控协调器模式的工具组合，`isTodoV2Enabled()` 门控任务管理系列工具。每个门控都是一个二元决策：存在或不存在，没有"半启用"的中间状态。这种全有或全无的粒度，在打包和分发时提供了最大的优化空间。
+
+从 `getAllBaseTools()` 到最终的工具池，经过三层过滤：
+
+**第一层：权限过滤。** `filterToolsByDenyRules`（第 262-269 行）移除被 deny 规则完全禁止的工具。如果用户在配置中添加了 `Bash: deny`，BashTool 连模型都看不到。
+
+**第二层：模式过滤。** 当 REPL 模式启用时，底层原始工具（Bash、Read 等）被隐藏，只暴露 REPLTool。这是一种"界面收窄" -- REPL 内部仍然可以使用那些工具，但模型的直接调用路径被关闭了。
+
+**第三层：启用状态过滤。** 每个工具的 `isEnabled()` 做运行时检查。工具可以根据当前环境（操作系统、feature flag、已连接的服务）决定自己是否可用。比如 PowerShellTool 只在 Windows 上启用，WebBrowserTool 只在对应 feature flag 开启时可用。
+
+这三层过滤的顺序是有意义的：权限过滤最先（最便宜的检查），模式过滤次之（影响工具集的结构），启用状态最后（可能涉及运行时检查）。这种"成本递增"的过滤顺序，确保了大部分工具在最早的阶段就被筛除，减少后续阶段的计算量。
+
+最终的工具池由 `assembleToolPool()`（第 345-367 行）组装。内置工具和 MCP 工具合并，按名称排序。排序不是为了美观，而是为了 prompt cache -- 如果工具列表的顺序在两次请求之间变化，API 服务端的 prefix cache 就会失效。注释（第 354-358 行）特别说明了为什么不做全局扁平排序：如果 MCP 工具按字母序插入内置工具之间，就会打破服务端的 `claude_code_system_cache_policy` 在最后一个内置工具后设置的 cache 断点。所以内置工具和 MCP 工具分别排序后拼接，保持内置工具作为连续前缀。`uniqBy` 的 `'name'` 参数确保内置工具在名称冲突时优先，MCP 工具不能覆盖核心功能。
+
+另外值得注意的是 `getTools` 函数（第 271-327 行）中的"简单模式"分支：当 `CLAUDE_CODE_SIMPLE` 环境变量为 true 时，只暴露 Bash、Read 和 Edit 三个最基础的工具。这是一个有意义的降级通道 -- 在调试、测试或极端受限环境中，减少工具数量可以显著降低模型的选择复杂度和 token 消耗。
+
+
+## 6.7 Deferred Tools -- 按需加载
+
+**问题：当工具数量膨胀到 100+ 个时，怎么避免 context 空间被 schema 挤占？**
+
+每个工具的 JSON Schema（参数描述、类型约束、示例）通常占几百到几千个 token。40 个内置工具加上几十个 MCP 工具，光 schema 就可能吃掉 10K+ token。
+
+Deferred Tools 的思路类似于操作系统的"按需分页"：只加载当前需要的，其余的留一个索引。
+
+`isDeferredTool()`（`ToolSearchTool/prompt.ts` 第 62-108 行）定义了规则：
+
+1. `alwaysLoad === true` -- 明确不延迟，无论什么情况。模型必须第一轮就能看到它。MCP 工具可以通过 `_meta['anthropic/alwaysLoad']` 设置这个标记。
+2. `isMcp === true` -- MCP 工具总是延迟（除非 alwaysLoad）。它们是外部服务提供的，数量不可控。
+3. `tool.name === TOOL_SEARCH_TOOL_NAME` -- ToolSearch 自身不延迟。否则模型连搜索工具都找不到，成了"需要钥匙才能打开放钥匙的盒子"的死循环。
+4. `shouldDefer === true` -- 内置工具的显式标记。
+
+被延迟的工具在 API 请求中标记为 `defer_loading: true`，模型只看到工具名称，没有参数 schema。当模型需要使用某个延迟工具时，它调用 ToolSearchTool，通过精确选择（`select:NotebookEdit`）或关键词搜索（`notebook jupyter`）找到目标。ToolSearchTool 返回 `tool_reference` blocks，服务端据此在下一轮请求中附上完整 schema。
+
+这个设计的代价是多一轮交互（model -> ToolSearch -> model -> actual tool），收益是在工具生态爆炸时保持 context 的可用空间。
+
+值得注意的是，某些工具即使在 ToolSearch 启用时也绝不延迟。第 76-81 行的逻辑展示了 AgentTool 在 fork 模式下被豁免 -- 因为分支子 Agent 必须在第一轮就可用，不能等待一轮 ToolSearch 的往返。第 88-94 行的 BriefTool 也被豁免 -- 它是某些部署模式下的主要通信通道，它的 prompt 包含文本可见性契约，模型必须立即看到。
+
+这些豁免规则揭示了一个设计张力：**延迟加载节省 context，但核心能力不能有延迟**。每一条 `return false`（不延迟）的判断，都是在为某个具体的用户场景留一个"快速通道"。
+
+
+## 6.8 工具查找 -- 名称与别名
+
+**问题：当 LLM 输出一个 tool_use block 时，怎么找到对应的工具？**
+
+`findToolByName`（第 358-360 行）和 `toolMatchesName`（第 348-353 行）提供了工具查找的两级机制：先匹配 `name`，如果不匹配就检查 `aliases`。
+
+```typescript
+export function toolMatchesName(
+  tool: { name: string; aliases?: string[] },
+  name: string,
+): boolean {
+  return tool.name === name || (tool.aliases?.includes(name) ?? false)
+}
+```
+
+别名机制的存在让工具重命名成为一个安全的操作。当 `Task` 改名为 `Agent` 时，旧名称 `Task` 成为 alias，历史对话中的 `tool_use` block（引用的是 `Task`）仍然能路由到 `AgentTool`。这在 LLM 应用中尤其重要 -- 训练数据和对话历史中可能包含旧的工具名称，如果不做兼容，模型的已有"记忆"就会失效。
+
+`findToolByName` 的实现非常简洁（第 358-360 行），就是一个 `tools.find()` 调用配合 `toolMatchesName`。没有索引、没有哈希表 -- 因为工具总数是几十个级别，线性搜索的性能足够。在工程中，"足够好"的简单方案往往比"理论最优"的复杂方案更有价值。但这也意味着，如果 MCP 工具的数量增长到数百甚至数千个，这个查找逻辑可能需要重构。
+
+
+## 6.9 设计哲学总结
+
+回看整个工具系统，四条原则贯穿始终：
+
+**类型驱动，不是继承驱动。** Tool 是一个泛型类型，不是类。没有继承层次，没有抽象基类。`buildTool()` 用类型体操填充默认值，同时保留精确的类型推断。这在 40+ 工具的规模下比类继承更灵活。
+
+**安全关闭。** 默认不并发、默认非只读、默认需要权限。开发者必须显式声明 `isConcurrencySafe: true` 才能并行执行。未知等于不安全。
+
+**按调用判断，不是按工具分类。** 安全属性是输入的函数，不是工具的常量。同一个 BashTool，执行 `cat` 时可以并行，执行 `npm install` 时必须独占。
+
+**渐进式暴露。** 不是所有工具一开始就对模型可见。Deferred tools 按需加载，ToolSearch 充当目录。工具的"发现"本身成为了一个可编程的过程。
+
+把这四条原则放在更大的背景下看，它们回答了一个根本性的问题：当一个 AI 系统需要与真实世界交互时，"能力接口"应该长什么样？
+
+传统的 API 设计面向人类开发者，假设调用者理解类型系统、会阅读文档、不会故意传错参数。面向 LLM 的工具接口面临不同的挑战：调用者可能输出 `"true"` 而不是 `true`、可能请求读取 `/dev/zero`、可能在同一轮请求中发出十个工具调用 -- 其中五个可以并行、两个必须顺序执行、三个需要用户确认权限。
+
+Claude Code 的工具系统用结构类型替代类继承、用动态安全判断替代静态分类、用渐进式加载替代一次性暴露，为这些挑战提供了一套务实的解决方案。它不是学术上最优雅的设计，但它在 40+ 工具的生产规模下证明了自己的可行性。下一章，我们将走进三个具体的工具实现，看看这套抽象在血肉中是什么样子。
+
+---
+
+**思考题**
+
+1. `contextModifier` 只对非并发安全工具生效。如果你需要一个并发安全工具也能修改上下文（比如一个读工具在首次读取特定目录时注册一个新的 skill），你会怎么设计？
+
+2. `maxResultSizeChars: Infinity` 意味着工具结果永远不会被持久化到磁盘。除了 FileReadTool 的循环读取问题，还有哪些场景适合使用 `Infinity`？
+
+3. 工具注册是静态数组而非动态注册机制。如果要支持"用户通过配置文件自定义工具"，你会修改哪一层？为什么？
+
+4. `assembleToolPool` 按名称排序工具以保持 prompt cache 稳定性。如果两个 MCP 服务器提供了同名工具（比如都叫 `search`），当前的 `uniqBy` 策略会保留哪一个？这种行为是否合理？
+
+5. ToolUseContext 有 40+ 个字段，其中很多是可选的（用 `?` 标记）。如果你要为一个全新的执行环境（比如浏览器扩展）实现工具系统，你会保留哪些字段？哪些是真正"普适"的，哪些是 Claude Code 特有的？
