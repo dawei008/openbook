@@ -6,7 +6,7 @@ chapter: D
 
 # Appendix D: 从零构建 Mini Agent Harness
 
-> 前面的章节拆解了 Claude Code 这座大厦的每一根梁柱。现在我们自己动手盖一间小屋——不是一次性贴出 100 行代码，而是逐步构建，每一步解决一个具体问题。
+> 前面的章节拆解了该 Agent 系统这座大厦的每一根梁柱。现在我们自己动手盖一间小屋——不是一次性贴出 100 行代码，而是逐步构建，每一步解决一个具体问题。
 
 ---
 
@@ -16,7 +16,7 @@ chapter: D
 
 Agent 的本质是什么？剥去所有复杂性后，核心只剩一个循环：**把用户的话发给 LLM，如果 LLM 要求调用工具就执行工具，把结果送回去，直到 LLM 不再要求工具调用**。
 
-这就是 Claude Code 查询引擎中作为 AsyncGenerator 循环运转的核心逻辑，只不过它被包裹在错误恢复、自动压缩、流式输出等十几层额外机制中。让我们先抓住骨架。
+这就是该系统查询引擎中作为 AsyncGenerator 循环运转的核心逻辑，只不过它被包裹在错误恢复、自动压缩、流式输出等十几层额外机制中。让我们先抓住骨架。
 
 ### 实现（保存为 `mini-agent.ts`）
 
@@ -55,7 +55,7 @@ for (let turn = 0; turn < 10; turn++) {
 
 Agent 之所以不同于聊天机器人，在于它能**采取行动**。但行动需要结构化描述——LLM 需要知道有哪些工具可用、每个工具接受什么参数。
 
-Claude Code 的工具核心接口定义了 20+ 个字段的工具接口，外加按名称查找的运行时查找。我们只取最核心的五个字段。
+该系统的工具核心接口定义了 20+ 个字段的工具接口，外加按名称查找的运行时查找。我们只取最核心的五个字段。
 
 ### 新增代码
 
@@ -108,7 +108,7 @@ register({
 });
 ```
 
-`registry` 是一个 `Map<string, ToolDef>`——和 Claude Code 的工具查找逻辑本质相同，只不过后者还支持 alias 和动态注册。
+`registry` 是一个 `Map<string, ToolDef>`——和该系统的工具查找逻辑本质相同，只不过后者还支持 alias 和动态注册。
 
 现在 LLM 知道有工具可用了，但工具调用后的结果还没送回去。我们需要补上循环的后半段。
 
@@ -120,7 +120,7 @@ register({
 
 LLM 返回 `stop_reason: "tool_use"` 时，响应体里包含 `tool_use` 块——每个块指定工具名、参数和一个唯一 ID。我们需要：执行工具、收集结果、以 `tool_result` 格式送回。
 
-Claude Code 中这对应查询引擎的循环体：识别 tool_use 块 -> 查找工具 -> 执行 tool.call() -> 把 ToolResultBlockParam 追加到消息历史。
+该系统中这对应查询引擎的循环体：识别 tool_use 块 -> 查找工具 -> 执行 tool.call() -> 把 ToolResultBlockParam 追加到消息历史。
 
 ### 修改后的循环
 
@@ -174,7 +174,7 @@ for (let turn = 0; turn < 10; turn++) {
 
 Chapter 22 讲了安全优先原则：不确定就问。`run_command` 是高风险操作——我们不能让 LLM 自己决定是否执行，需要人类确认。
 
-Claude Code 的权限系统支持三种决策行为（allow/deny/ask）、五种权限模式、风险分级和配置文件规则。我们只实现最核心的一层：按 `requiresApproval` 标志决定是否询问用户。
+该系统的权限系统支持三种决策行为（allow/deny/ask）、五种权限模式、风险分级和配置文件规则。我们只实现最核心的一层：按 `requiresApproval` 标志决定是否询问用户。
 
 ### 新增代码
 
@@ -208,7 +208,7 @@ async function checkPermission(tool: ToolDef, input: Record<string, unknown>): P
       const result = allowed ? tool.execute(b.input as Record<string, unknown>) : "Permission denied by user.";
 ```
 
-现在用户可以拒绝危险命令了。但和 Claude Code 相比，我们的权限检查是**同步阻塞的**——等待用户输入时整个 Agent 停住。Claude Code 的权限弹窗是异步的，用户思考期间 Agent 可以继续其他工作。这是单线程和异步架构的本质差异。
+现在用户可以拒绝危险命令了。但和该系统相比，我们的权限检查是**同步阻塞的**——等待用户输入时整个 Agent 停住。该系统的权限弹窗是异步的，用户思考期间 Agent 可以继续其他工作。这是单线程和异步架构的本质差异。
 
 ---
 
@@ -221,7 +221,7 @@ async function checkPermission(tool: ToolDef, input: Record<string, unknown>): P
 3. **工具执行与结果收集**——对应各工具模块的 call()
 4. **基本权限检查**——对应权限系统
 
-核心模式和 Claude Code 完全一致：**不断调用 LLM，直到它不再请求工具调用**。
+核心模式和该系统完全一致：**不断调用 LLM，直到它不再请求工具调用**。
 
 ```
 while (LLM 返回 tool_use) {
@@ -235,13 +235,13 @@ while (LLM 返回 tool_use) {
 
 ## D.6 差距在哪里：从玩具到生产
 
-我们的 50 行和 Claude Code 的十几万行之间，差距不在于「功能多少」，而在于**「失败时怎么办」**和**「规模大了怎么办」**。按优先级排序：
+我们的 50 行和该系统的十几万行之间，差距不在于「功能多少」，而在于**「失败时怎么办」**和**「规模大了怎么办」**。按优先级排序：
 
 ### P0：没有它就不能上线
 
-**流式输出**。我们等 API 返回完整响应后才显示。用户等 30 秒看到一大段文字弹出。修复方向：`client.messages.stream()` + `for await` 逐 token 处理。Claude Code 将查询函数本身定义为 AsyncGenerator，所有消费者通过 `for await` 获取流式事件。
+**流式输出**。我们等 API 返回完整响应后才显示。用户等 30 秒看到一大段文字弹出。修复方向：`client.messages.stream()` + `for await` 逐 token 处理。该系统将查询函数本身定义为 AsyncGenerator，所有消费者通过 `for await` 获取流式事件。
 
-**错误恢复**。API 超时、429 限流、500 服务端错误——我们全部直接崩溃。Claude Code 定义了最大输出 token 恢复限制为 3 次，包括触发 reactive compact 来释放空间。最简修复是指数退避重试：
+**错误恢复**。API 超时、429 限流、500 服务端错误——我们全部直接崩溃。该系统定义了最大输出 token 恢复限制为 3 次，包括触发 reactive compact 来释放空间。最简修复是指数退避重试：
 
 ```typescript
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
@@ -256,15 +256,15 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 }
 ```
 
-**上下文管理**。对话历史超过模型窗口时我们直接报错。Claude Code 通过自动压缩模块在接近上限时自动压缩——保留 20K tokens 余量，将历史摘要化后继续工作。
+**上下文管理**。对话历史超过模型窗口时我们直接报错。该系统通过自动压缩模块在接近上限时自动压缩——保留 20K tokens 余量，将历史摘要化后继续工作。
 
 ### P1：没有它用户会流失
 
-**成本追踪**。LLM 按 token 计费，用户需要知道每次会话花了多少钱。Claude Code 的成本追踪模块追踪 input/output/cache 各类 token 和美元成本，按模型分类统计。
+**成本追踪**。LLM 按 token 计费，用户需要知道每次会话花了多少钱。该系统的成本追踪模块追踪 input/output/cache 各类 token 和美元成本，按模型分类统计。
 
-**子 Agent 隔离**。单线程 Agent 无法同时做多件事。Claude Code 通过 fork 运行函数创建隔离的子 Agent，文件缓存克隆、UI 回调置空、状态独立，只共享 prompt cache。
+**子 Agent 隔离**。单线程 Agent 无法同时做多件事。该系统通过 fork 运行函数创建隔离的子 Agent，文件缓存克隆、UI 回调置空、状态独立，只共享 prompt cache。
 
-**权限规则引擎**。我们的 boolean `requiresApproval` 太粗糙。Claude Code 支持 glob 模式匹配（`allow: ["read_file:*"]`）、风险分级（LOW / MEDIUM / HIGH）、五种权限模式切换。
+**权限规则引擎**。我们的 boolean `requiresApproval` 太粗糙。该系统支持 glob 模式匹配（`allow: ["read_file:*"]`）、风险分级（LOW / MEDIUM / HIGH）、五种权限模式切换。
 
 ### P2：没有它也能用，有了它竞争力翻倍
 
@@ -278,9 +278,9 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 
 ## D.7 一个有趣的对照
 
-把我们的 mini Agent 和 Claude Code 放在一起：
+把我们的 mini Agent 和该系统放在一起：
 
-| 维度 | Mini Agent | Claude Code |
+| 维度 | Mini Agent | 生产级系统 |
 |------|----------|-------------|
 | 核心循环 | `for` + `if (stop_reason)` | AsyncGenerator + `yield` 多类型事件 |
 | 工具查找 | `Map.get(name)` | 名称查找 + alias + 动态注册 |
@@ -295,7 +295,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 
 两者的骨架完全一致——都是「LLM 循环 + 工具回调」。所有差异都是对同一类问题的不同深度回答：**失败时怎么办、规模大了怎么办、长期运行怎么办**。
 
-理解 mini Agent 的四个组件，你就理解了 Agent 的本质。理解 Claude Code 在这个骨架上添加的每一层，你就理解了什么叫「生产级」。两者之间的距离，就是软件工程这门手艺要解决的全部问题。
+理解 mini Agent 的四个组件，你就理解了 Agent 的本质。理解该系统在这个骨架上添加的每一层，你就理解了什么叫「生产级」。两者之间的距离，就是软件工程这门手艺要解决的全部问题。
 
 ---
 

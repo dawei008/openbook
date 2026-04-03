@@ -83,7 +83,7 @@ Coordinator 用户上下文构建函数中引入了 Scratchpad 机制：当 scra
 
 Scratchpad 提供了一条绕过 Coordinator 的"旁路"——Worker A 把详细调研笔记写入 Scratchpad 文件，Worker B 直接读取。这很像大公司里的共享文档系统：项目经理负责主要的信息路由，但工程师之间也可以通过 Confluence 或 Google Docs 直接交换技术细节，不需要事事经过 PM。
 
-Scratchpad 的门控函数使用了独立的 feature gate。注释解释了一个重要的架构决策——为什么不直接 import scratchpad 启用函数？因为那会创建循环依赖。Scratchpad 路径通过参数注入（依赖注入），而非直接引用文件系统模块。这种"在代码层面打破循环、用参数传递替代直接引用"的做法在大型 TypeScript 项目中很常见，但往往缺乏注释说明——Claude Code 的代码在这方面做得很好。
+Scratchpad 的门控函数使用了独立的 feature gate。注释解释了一个重要的架构决策——为什么不直接 import scratchpad 启用函数？因为那会创建循环依赖。Scratchpad 路径通过参数注入（依赖注入），而非直接引用文件系统模块。这种"在代码层面打破循环、用参数传递替代直接引用"的做法在大型 TypeScript 项目中很常见，但往往缺乏注释说明——该系统的代码在这方面做得很好。
 
 Scratchpad 没有并发控制机制——多个 Worker 可以同时写入同一个文件。这是有意为之。Mailbox 系统（第 15 章）用了文件锁，因为消息的顺序和完整性至关重要——丢一条消息就可能导致状态不一致。但 Scratchpad 是知识存储，不是通信通道——最坏情况下一次写入覆盖了另一次，Worker 可以重新生成。对知识存储施加锁协议只会增加延迟而收益甚微。
 

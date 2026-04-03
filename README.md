@@ -5,7 +5,7 @@
 
 # OpenBook: 从源码解构 AI Agent
 
-> 基于对 Claude Code 架构的公开分析的 Agent 与 Harness 架构深度解析
+> 基于对某生产级 Agent 系统架构的公开分析的 Harness 架构深度解析
 
 ---
 
@@ -13,7 +13,7 @@
 
 ### 为什么写这本书
 
-2025 到 2026 年，AI Agent 经历了从概念到产品的爆发。OpenAI 的 Sam Altman 宣称「Agent 将成为 AI 的杀手级应用」；Anthropic CEO Dario Amodei 在《Machines of Loving Grace》中描绘了 Agent 深度参与软件工程的未来；Andrew Ng 在多次演讲中强调「Agentic Workflow 是释放 LLM 真正潜力的关键」——不是让模型一次性给出答案，而是让它像人类一样迭代：思考、行动、观察、调整。到了 2026 年，Claude Code、Cursor、Windsurf、Devin 等 Agent 产品已成为开发者的日常工具。**Agent 的时代不是即将到来——它已经到来了。**
+2025 到 2026 年，AI Agent 经历了从概念到产品的爆发。OpenAI 的 Sam Altman 宣称「Agent 将成为 AI 的杀手级应用」；Anthropic CEO Dario Amodei 在《Machines of Loving Grace》中描绘了 Agent 深度参与软件工程的未来；Andrew Ng 在多次演讲中强调「Agentic Workflow 是释放 LLM 真正潜力的关键」——不是让模型一次性给出答案，而是让它像人类一样迭代：思考、行动、观察、调整。到了 2026 年，各种 Agent 产品（Cursor、Windsurf、Devin 等）已成为开发者的日常工具。**Agent 的时代不是即将到来——它已经到来了。**
 
 但当我们打开一个真正的 Agent 产品的源码时，会发现一个令人惊讶的事实：**LLM 本身只占代码量的极小部分**。绝大多数代码在做另一件事——构建围绕 LLM 的运行时框架。
 
@@ -45,13 +45,13 @@ Andrej Karpathy 曾将 LLM 类比为「新的操作系统内核」。如果 LLM 
 
 LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这本书讲的就是 Harness 怎么造。**
 
-### 为什么选 Claude Code
+### 为什么选这个案例
 
 2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents……但绝大多数框架做的是**编排层的抽象**，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。
 
-Claude Code 不同。它不是一个框架——它是一个**完整的、生产级的 Agent 产品**，日活数百万开发者，每周产生超过 3400 万次子 Agent 调用。更重要的是，它的源码覆盖了 Agent Harness 的**每一个关键维度**：
+本书分析的 Agent 产品不同。它不是一个框架——它是一个**完整的、生产级的 Agent 产品**，日活数百万开发者，每周产生超过 3400 万次子 Agent 调用。更重要的是，它的源码覆盖了 Agent Harness 的**每一个关键维度**：
 
-| Agent 核心能力 | Claude Code 的实现 | 本书章节 |
+| Agent 核心能力 | 该系统的实现 | 本书章节 |
 |---|---|---|
 | **规划与编排** | 协调者模式、四阶段编排、Plan Mode | Part V, Ch 13 |
 | **记忆与状态** | 五层 CLAUDE.md、四类自动记忆、Dream 整合 | Part VI, Ch 17 |
@@ -84,7 +84,7 @@ OpenAI 的 Swarm 框架文档说：*"The best way to understand agents is to bui
 - **LLM 研究者**——想理解模型能力如何通过工程手段被放大（或约束）
 - **对 AI Agent 好奇的技术人员**——想超越 Demo 和 Prompt Engineering，看看真正的 Agent 是怎么运转的
 
-你不需要读过 Claude Code 的源码才能理解本书。每章都从问题出发，用类比和叙事引导理解，源码引用作为佐证。但如果你对 Claude Code 的架构有所了解，跟着章节阅读会获得更深的体验。
+你不需要读过该系统的源码才能理解本书。每章都从问题出发，用类比和叙事引导理解，源码引用作为佐证。但如果你对该 Agent 系统的架构有所了解，跟着章节阅读会获得更深的体验。
 
 ### 本书结构
 
@@ -112,7 +112,7 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
 | [Chapter 1](part-1/chapter-01.md) | 从 LLM 到 Agent：Harness 的角色 | LLM 缺什么？Harness 补了什么？ |
-| [Chapter 2](part-1/chapter-02.md) | Claude Code 全景：一个 Agent 的解剖图 | 架构分层与数据流动 |
+| [Chapter 2](part-1/chapter-02.md) | 系统全景：一个 Agent 的解剖图 | 架构分层与数据流动 |
 
 ### Part II: Agent Loop — 循环的艺术
 
@@ -198,7 +198,7 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 | Andrej Karpathy, *LLM as Operating System* (2023) | LLM 作为新操作系统内核的类比 |
 | OpenAI Agents SDK / Swarm (2024-2025) | Agent 编排框架与多 Agent 模式 |
 | AWS Bedrock Agents | 云原生 Agent 编排层架构 |
-| Claude Code 架构 (2025-2026) | 本书的核心分析对象 |
+| 某生产级 Agent 系统架构 (2025-2026) | 本书的核心分析对象 |
 
 ## 技术栈
 
