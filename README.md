@@ -3,6 +3,10 @@
 > No proprietary source code is reproduced. Product names are used for reference only 
 > and belong to their respective owners.
 
+<p align="center">
+  <img src="cover.png" alt="OpenBook Cover" width="480" />
+</p>
+
 # OpenBook: 构建 AI Agent 的 Harness 工程学
 
 > Agent = LLM + Harness —— 这本书讲的是 Harness 怎么造
