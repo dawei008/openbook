@@ -32,7 +32,7 @@ const messages: Anthropic.MessageParam[] = [
 
 for (let turn = 0; turn < 10; turn++) {
   const res = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "your-preferred-model",
     max_tokens: 4096,
     system: "You are a helpful assistant.",
     messages,
@@ -133,7 +133,7 @@ const tools = [...registry.values()].map(t => ({
 
 for (let turn = 0; turn < 10; turn++) {
   const res = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "your-preferred-model",
     max_tokens: 4096,
     system: "You are a helpful assistant. Use tools when needed.",
     tools: tools as Anthropic.Tool[],
@@ -270,7 +270,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 
 **Prompt 缓存优化**。保持系统提示和工具定义的字节级一致性，复用缓存安全参数，甚至统一 fork 前缀占位文本。一个每天运行数百万次的 Agent，缓存优化直接影响运营成本。
 
-**记忆系统**。跨会话的持久记忆，包括自动提取和后台整合（Dream）。五层 CLAUDE.md 配置覆盖、四种记忆类型、LLM 驱动的检索。
+**记忆系统**。跨会话的持久记忆，包括自动提取和后台整合（Dream）。五层 AGENT.md 配置覆盖、四种记忆类型、LLM 驱动的检索。
 
 **可扩展工具协议**。MCP 协议动态加载第三方工具，而非硬编码。Skills 用 Markdown 教 Agent 新工作流。Hooks 在关键节点注入自定义策略。
 

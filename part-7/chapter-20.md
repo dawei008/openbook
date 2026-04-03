@@ -8,6 +8,25 @@ chapter: 20
 
 > 80+ 个命令如何从一堆 import 变成可发现、可扩展、可控的交互体系？
 
+```
+     ┌──────────────────────────────┐
+     │         User Input           │
+     │            │                 │
+     │      / (slash prefix)        │
+     │            │                 │
+     │ ★ Command System ★          │  ◄── 本章聚焦
+     │ ┌──────────────────────────┐ │
+     │ │ Builtin │ Skill │ Plugin │ │
+     │ │  local  │prompt │  MCP   │ │
+     │ │local-jsx│      │ hooks  │ │
+     │ └─────┬────┬──────┬───────┘ │
+     │       │    │      │         │
+     │   execute inject connect    │
+     │       ▼    ▼      ▼         │
+     │   [Result/Prompt/Service]   │
+     └──────────────────────────────┘
+```
+
 ## 20.1 问题：用户交互的入口
 
 前两章讲了 Agent 如何连接外部世界（MCP）和安装专业知识（Skills）。但用户怎么触发这一切？
@@ -133,7 +152,7 @@ function meetsAvailability(cmd: Command): boolean {
     if !cmd.availability: return true
     for a in cmd.availability:
         switch a:
-            case 'claude-ai':
+            case 'web-app':
                 if isSubscriber(): return true; break
             case 'console':
                 if !isSubscriber() && !isThirdParty() && isFirstPartyUrl():
@@ -142,7 +161,7 @@ function meetsAvailability(cmd: Command): boolean {
 }
 ```
 
-某些命令只对 claude.ai 订阅者可见，某些只对 API 控制台用户可见。注意这个函数**没有被 memoize** -- 注释明确说明：认证状态可能在会话中改变（用户执行了 `/login`），每次调用都必须重新评估。
+某些命令只对 Web 端订阅者可见，某些只对 API 控制台用户可见。注意这个函数**没有被 memoize** -- 注释明确说明：认证状态可能在会话中改变（用户执行了 `/login`），每次调用都必须重新评估。
 
 **动态 Skill 插入**。运行时发现的 Skill 被插入到内建命令之前、其他扩展命令之后：
 

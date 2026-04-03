@@ -69,7 +69,7 @@
 | Tanenbaum, A. | *Modern Operating Systems* | 经典操作系统教科书，进程调度、虚拟内存、文件系统等概念在本书中被反复类比（Task System 之于进程调度器，AutoCompact 之于虚拟内存页换出） |
 | Fowler, M. | *Patterns of Enterprise Application Architecture* (2002) | 分层架构、Repository、Unit of Work 等模式，与本书六层架构模型的设计思路相通 |
 | Brooks, F. | *The Mythical Man-Month* (1975) | "没有银弹" 和系统复杂性管理思想，与 Coordinator 模式 "理解问题和解决问题应该分离" 的原则呼应 |
-| CSS Working Group | *CSS Cascading and Inheritance* | CSS 层叠规则，本书多次用于类比 CLAUDE.md 五层优先级叠加和权限规则的层叠覆盖机制 |
+| CSS Working Group | *CSS Cascading and Inheritance* | CSS 层叠规则，本书多次用于类比 AGENT.md 五层优先级叠加和权限规则的层叠覆盖机制 |
 
 ---
 

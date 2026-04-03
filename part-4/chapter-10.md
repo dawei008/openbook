@@ -8,6 +8,28 @@ chapter: 10
 
 > 读文件和删文件，风险完全不同。自动化的安全判断如何区分这两者？
 
+```
+         tool_use request
+              │
+       ┌──────▼──────┐
+       │  Permission  │
+       │    Check     │
+       │      │       │
+       │  ┌───▼────┐  │
+       │  │Allowlist│  │   Fast paths
+       │  └───┬────┘  │
+       │  ┌───▼────┐  │
+       │  │Denylist │  │
+       │  └───┬────┘  │
+       │      │       │
+       │ ★ Risk       │
+       │ ★ Classifier ★   ◄── 本章聚焦
+       │  Stage1→Stage2│
+       │      │       │
+       │  allow/deny   │
+       └──────────────┘
+```
+
 ## 10.1 不是所有操作都一样危险
 
 上一章我们看到，当权限决策落入 `ask` 分支时，auto 模式可以让 ML 分类器
@@ -103,7 +125,7 @@ REPL 代码可能在内部工具调用之间包含 VM 逃逸代码——
 任何自动化手段都不能代替人类判断。
 
 当 `classifierApprovable` 为 true 时——
-比如 `.claude/` 下的文件操作——
+比如 `.agent/` 下的文件操作——
 分类器可以看到完整上下文来判断是否是用户主动请求的行为。
 这个布尔值精确地划定了"机器可以代劳"和"必须人类确认"的边界。
 
@@ -113,7 +135,7 @@ REPL 代码可能在内部工具调用之间包含 VM 逃逸代码——
 
 `DANGEROUS_FILES` 包括 `.gitconfig`、`.bashrc`、`.zshrc`、
 `.mcp.json`、`.ripgreprc` 等。
-`DANGEROUS_DIRECTORIES` 包括 `.git`、`.vscode`、`.idea`、`.claude`。
+`DANGEROUS_DIRECTORIES` 包括 `.git`、`.vscode`、`.idea`、`.agent`。
 
 为什么这些文件和目录需要特别保护？
 因为它们有一个共同特征：
@@ -122,7 +144,7 @@ REPL 代码可能在内部工具调用之间包含 VM 逃逸代码——
 `.gitconfig` 可以设置 `core.sshCommand` 在每次 git 操作时执行任意命令。
 `.bashrc` 在每次终端启动时运行。
 `.mcp.json` 可以注册恶意的 MCP 服务器。
-`.claude/settings.json` 可以修改权限规则本身
+`.agent/settings.json` 可以修改权限规则本身
 ——一个能修改自己权限规则的 Agent，等于没有权限限制。
 
 路径安全检查函数是这道防线的核心。
@@ -149,16 +171,16 @@ DOS 设备名（`.git.CON` 是特殊设备文件）、
 只在 Windows/WSL 上检查，因为 Linux/macOS 上冒号是合法的文件名字符，
 NTFS 上的 ADS 通过 xattrs 而非冒号语法访问。
 
-**Claude 配置文件检测。**
+**Agent 配置文件检测。**
 配置文件路径检查函数不仅检查 settings 文件，
-还检查 `.claude/commands/`、`.claude/agents/`、`.claude/skills/` 目录。
+还检查 `.agent/commands/`、`.agent/agents/`、`.agent/skills/` 目录。
 路径比较使用大小写不敏感的规范化函数，
-防止在 macOS/Windows 上通过 `.cLauDe/Settings.json` 绕过检查。
+防止在 macOS/Windows 上通过 `.aGeNt/Settings.json` 绕过检查。
 
 **危险文件/目录检测。**
 危险路径检测函数遍历路径段与黑名单做大小写不敏感匹配。
-其中有一个精巧的特例：`.claude/worktrees/` 路径被豁免，
-因为这是 Claude 存储 git worktree 的结构性目录，而非用户创建的敏感目录。
+其中有一个精巧的特例：`.agent/worktrees/` 路径被豁免，
+因为这是系统存储 git worktree 的结构性目录，而非用户创建的敏感目录。
 
 ## 10.4 双阶段分类器：宁可误杀的快速阶段，深思熟虑的纠偏阶段
 

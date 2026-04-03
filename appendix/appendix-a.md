@@ -120,7 +120,7 @@ part: appendix
 (1) 输入组件              捕获输入，创建 UserMessage
        |
        v
-(2) 输入预处理            预处理：Slash 命令检测、CLAUDE.md 加载、附件注入
+(2) 输入预处理            预处理：Slash 命令检测、AGENT.md 加载、附件注入
        |
        v
 (3) 交互主循环            组装查询参数：系统提示词 + 工具列表 + 消息历史
@@ -160,7 +160,7 @@ part: appendix
 | 阶段 | 输入 | 输出 | 关键转换 |
 |------|------|------|----------|
 | (1) | 原始字符串 | `UserMessage` | 封装为消息对象 |
-| (2) | `UserMessage` | `UserMessage` + 附件 | 注入 CLAUDE.md / Memory |
+| (2) | `UserMessage` | `UserMessage` + 附件 | 注入 AGENT.md / Memory |
 | (4) | 查询参数 | API 请求 | Hook 执行、压缩检查 |
 | (7) | SSE 事件 | `AssistantMessage` | 内容块分类 |
 | (8) | `tool_use` 块 | `ToolResult` | 权限 + 执行 + 结果封装 |
@@ -326,7 +326,7 @@ AgentTool -> 判断执行模式
 所有子 Agent 内部结构相同：
   - 子 Agent 上下文创建函数继承父级文件缓存
   - 独立的工具权限上下文
-  - 系统提示词 = Agent 定义 prompt + 可选 CLAUDE.md
+  - 系统提示词 = Agent 定义 prompt + 可选 AGENT.md
   - 工具列表 = Agent 定义 tools (过滤后)
 ```
 

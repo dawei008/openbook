@@ -278,70 +278,70 @@ part: appendix
 
 ## C.3 环境变量 Flag
 
-以 `CLAUDE_CODE_` 前缀，启动时通过 shell 环境读取。
+以 `AGENT_` 前缀，启动时通过 shell 环境读取。
 
 ### API 与后端
 
 | 环境变量 | 类型 | 用途 |
 |---------|------|------|
-| `CLAUDE_CODE_API_BASE_URL` | string | 自定义 API 基础 URL |
-| `CLAUDE_CODE_USE_BEDROCK` | boolean | 使用 Amazon Bedrock |
-| `CLAUDE_CODE_USE_VERTEX` | boolean | 使用 Google Vertex AI |
-| `CLAUDE_CODE_USE_FOUNDRY` | boolean | 使用 Foundry |
-| `CLAUDE_CODE_SKIP_BEDROCK_AUTH` | boolean | 跳过 Bedrock 认证 |
-| `CLAUDE_CODE_SKIP_VERTEX_AUTH` | boolean | 跳过 Vertex AI 认证 |
-| `CLAUDE_CODE_SKIP_FOUNDRY_AUTH` | boolean | 跳过 Foundry 认证 |
-| `CLAUDE_CODE_MAX_RETRIES` | number | API 最大重试次数 |
-| `CLAUDE_CODE_MAX_OUTPUT_TOKENS` | number | 最大输出 token 数 |
-| `CLAUDE_CODE_EXTRA_BODY` | JSON | API 请求体额外参数 |
-| `CLAUDE_CODE_EXTRA_METADATA` | JSON | API 请求元数据额外参数 |
-| `CLAUDE_CODE_UNATTENDED_RETRY` | boolean | 无人值守自动重试 429/529 |
-| `CLAUDE_CODE_DISABLE_THINKING` | boolean | 禁用 extended thinking |
-| `CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING` | boolean | 禁用自适应思考 |
-| `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK` | boolean | 禁用非流式降级 |
-| `CLAUDE_CODE_ADDITIONAL_PROTECTION` | string | 额外安全保护配置 |
+| `AGENT_API_BASE_URL` | string | 自定义 API 基础 URL |
+| `AGENT_USE_BEDROCK` | boolean | 使用 Amazon Bedrock |
+| `AGENT_USE_VERTEX` | boolean | 使用 Google Vertex AI |
+| `AGENT_USE_FOUNDRY` | boolean | 使用 Foundry |
+| `AGENT_SKIP_BEDROCK_AUTH` | boolean | 跳过 Bedrock 认证 |
+| `AGENT_SKIP_VERTEX_AUTH` | boolean | 跳过 Vertex AI 认证 |
+| `AGENT_SKIP_FOUNDRY_AUTH` | boolean | 跳过 Foundry 认证 |
+| `AGENT_MAX_RETRIES` | number | API 最大重试次数 |
+| `AGENT_MAX_OUTPUT_TOKENS` | number | 最大输出 token 数 |
+| `AGENT_EXTRA_BODY` | JSON | API 请求体额外参数 |
+| `AGENT_EXTRA_METADATA` | JSON | API 请求元数据额外参数 |
+| `AGENT_UNATTENDED_RETRY` | boolean | 无人值守自动重试 429/529 |
+| `AGENT_DISABLE_THINKING` | boolean | 禁用 extended thinking |
+| `AGENT_DISABLE_ADAPTIVE_THINKING` | boolean | 禁用自适应思考 |
+| `AGENT_DISABLE_NONSTREAMING_FALLBACK` | boolean | 禁用非流式降级 |
+| `AGENT_ADDITIONAL_PROTECTION` | string | 额外安全保护配置 |
 
 ### 远程与部署
 
 | 环境变量 | 类型 | 用途 |
 |---------|------|------|
-| `CLAUDE_CODE_REMOTE` | boolean | 远程模式标识 |
-| `CLAUDE_CODE_REMOTE_SESSION_ID` | string | 远程会话 ID |
-| `CLAUDE_CODE_CONTAINER_ID` | string | 容器 ID |
-| `CLAUDE_CODE_REMOTE_MEMORY_DIR` | string | 远程模式记忆目录路径 |
-| `CLAUDE_CODE_ENTRYPOINT` | string | 入口标识 (cli/sdk-ts/sdk-py/local-agent/claude-desktop) |
+| `AGENT_REMOTE` | boolean | 远程模式标识 |
+| `AGENT_REMOTE_SESSION_ID` | string | 远程会话 ID |
+| `AGENT_CONTAINER_ID` | string | 容器 ID |
+| `AGENT_REMOTE_MEMORY_DIR` | string | 远程模式记忆目录路径 |
+| `AGENT_ENTRYPOINT` | string | 入口标识 (cli/sdk-ts/sdk-py/local-agent/desktop) |
 
 ### 功能开关
 
 | 环境变量 | 类型 | 用途 |
 |---------|------|------|
-| `CLAUDE_CODE_SIMPLE` | boolean | 简单模式 (`--bare`)，禁用高级功能 |
-| `CLAUDE_CODE_PROACTIVE` | boolean | 启用主动模式 |
-| `CLAUDE_CODE_COORDINATOR_MODE` | boolean | 启用 Coordinator 模式 |
-| `CLAUDE_CODE_VERIFY_PLAN` | boolean | 启用计划验证 |
-| `CLAUDE_CODE_DISABLE_AUTO_MEMORY` | boolean | 禁用自动记忆 |
-| `CLAUDE_CODE_BUBBLEWRAP` | boolean | 启用 Bubblewrap 沙箱 |
-| `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION` | boolean | 启用提示建议 |
+| `AGENT_SIMPLE` | boolean | 简单模式 (`--bare`)，禁用高级功能 |
+| `AGENT_PROACTIVE` | boolean | 启用主动模式 |
+| `AGENT_COORDINATOR_MODE` | boolean | 启用 Coordinator 模式 |
+| `AGENT_VERIFY_PLAN` | boolean | 启用计划验证 |
+| `AGENT_DISABLE_AUTO_MEMORY` | boolean | 禁用自动记忆 |
+| `AGENT_BUBBLEWRAP` | boolean | 启用 Bubblewrap 沙箱 |
+| `AGENT_ENABLE_PROMPT_SUGGESTION` | boolean | 启用提示建议 |
 
 ### 会话与输出
 
 | 环境变量 | 类型 | 用途 |
 |---------|------|------|
-| `CLAUDE_CODE_RESUME_INTERRUPTED_TURN` | boolean | 恢复被中断的 turn |
-| `CLAUDE_CODE_EXIT_AFTER_FIRST_RENDER` | boolean | 首次渲染后退出 (测试用) |
-| `CLAUDE_CODE_STREAMLINED_OUTPUT` | boolean | 精简输出格式 |
-| `CLAUDE_CODE_MESSAGING_SOCKET` | string | UDS 消息传递 Socket 路径 |
-| `CLAUDE_CODE_ABLATION_BASELINE` | boolean | 消融实验模式 |
+| `AGENT_RESUME_INTERRUPTED_TURN` | boolean | 恢复被中断的 turn |
+| `AGENT_EXIT_AFTER_FIRST_RENDER` | boolean | 首次渲染后退出 (测试用) |
+| `AGENT_STREAMLINED_OUTPUT` | boolean | 精简输出格式 |
+| `AGENT_MESSAGING_SOCKET` | string | UDS 消息传递 Socket 路径 |
+| `AGENT_ABLATION_BASELINE` | boolean | 消融实验模式 |
 
 ### 性能与插件
 
 | 环境变量 | 类型 | 用途 |
 |---------|------|------|
-| `CLAUDE_CODE_AUTO_COMPACT_WINDOW` | number | 自动压缩 token 窗口阈值 |
-| `CLAUDE_CODE_BLOCKING_LIMIT_OVERRIDE` | number | 阻塞限制覆盖 |
-| `CLAUDE_CODE_FRAME_TIMING_LOG` | string | 帧时序日志路径 |
-| `CLAUDE_CODE_SYNC_PLUGIN_INSTALL` | boolean | 同步安装插件 (阻塞启动) |
-| `CLAUDE_CODE_SYNC_PLUGIN_INSTALL_TIMEOUT_MS` | number | 同步插件安装超时 |
+| `AGENT_AUTO_COMPACT_WINDOW` | number | 自动压缩 token 窗口阈值 |
+| `AGENT_BLOCKING_LIMIT_OVERRIDE` | number | 阻塞限制覆盖 |
+| `AGENT_FRAME_TIMING_LOG` | string | 帧时序日志路径 |
+| `AGENT_SYNC_PLUGIN_INSTALL` | boolean | 同步安装插件 (阻塞启动) |
+| `AGENT_SYNC_PLUGIN_INSTALL_TIMEOUT_MS` | number | 同步插件安装超时 |
 
 共计 **41** 个环境变量。
 

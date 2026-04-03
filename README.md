@@ -58,7 +58,7 @@ LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这
 | Agent 核心能力 | 该系统的实现 | 本书章节 |
 |---|---|---|
 | **规划与编排** | 协调者模式、四阶段编排、Plan Mode | Part V, Ch 13 |
-| **记忆与状态** | 五层 CLAUDE.md、四类自动记忆、Dream 整合 | Part VI, Ch 17 |
+| **记忆与状态** | 五层 AGENT.md、四类自动记忆、Dream 整合 | Part VI, Ch 17 |
 | **工具使用** | 40+ 工具、注册/调度/编排、Deferred Schema | Part III, Ch 6-8 |
 | **行动与执行** | Agent Loop、流式执行、错误恢复 | Part II, Ch 3-5 |
 | **安全与约束** | 四层权限防线、ML 分类器、可编程 Hook | Part IV, Ch 9-11 |
@@ -203,7 +203,3 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 | OpenAI Agents SDK / Swarm (2024-2025) | Agent 编排框架与多 Agent 模式 |
 | AWS Bedrock Agents | 云原生 Agent 编排层架构 |
 | 某生产级 Agent 系统架构 (2025-2026) | 本书的核心分析对象 |
-
-## 技术栈
-
-架构基于: TypeScript + React (Ink) + Bun Runtime + Commander.js + Zod + OpenTelemetry

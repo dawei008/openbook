@@ -67,7 +67,7 @@
 | Coordinator | Coordinator | 协调者模式下的主 Agent，只拥有 Agent、SendMessage、TaskStop 三个核心工具，不直接操作文件，通过四阶段工作流编排 Worker | Ch 13 |
 | Worker | Worker | Coordinator 模式下的执行者子 Agent，拥有完整的文件操作工具集（Bash、Read、Write、Edit 等），但不能创建 Team 或给其他 Worker 发消息 | Ch 13 |
 | 四阶段编排 | Four-Phase Orchestration | Coordinator 的核心工作流：Research（调研）-> Synthesis（综合）-> Implementation（实现）-> Verification（验证） | Ch 13 |
-| Team | Team | Swarm 模式下由 Leader 和多个 Teammate 组成的协作单元，配置存储在 `~/.claude/teams/{name}/config.json` 文件中 | Ch 15 |
+| Team | Team | Swarm 模式下由 Leader 和多个 Teammate 组成的协作单元，配置存储在 `~/.agent/teams/{name}/config.json` 文件中 | Ch 15 |
 | Swarm | Swarm | 网状通信的多 Agent 协作模式，允许 Agent 之间直接通信而非必须经过父级中转，支持 tmux、iTerm2 和 in-process 三种执行后端 | Ch 15 |
 | Mailbox | Mailbox | Swarm 模式下 Agent 间的消息投递机制，支持异步消息收发和路由 | Ch 15 |
 | SendMessage | SendMessage | Swarm 工具之一，用于向 Team 中的其他 Agent 发送消息，实现 Agent 间的横向通信 | Ch 15 |
@@ -80,7 +80,7 @@
 | 术语 | 英文 | 定义 | 首次出现 |
 |------|------|------|----------|
 | System Prompt | System Prompt | Agent 的"入职说明书"，由静态人格（身份声明、安全规则、工具指南）和动态环境（环境信息、记忆、MCP 指令）两半组成的流水线产物 | Ch 16 |
-| CLAUDE.md | CLAUDE.md | 五层层叠的项目级记忆文件，按优先级从企业策略、用户全局、项目根目录、项目本地、开发者私有逐级叠加，类比 CSS 层叠规则 | Ch 17 |
+| AGENT.md | AGENT.md | 五层层叠的项目级记忆文件，按优先级从企业策略、用户全局、项目根目录、项目本地、开发者私有逐级叠加，类比 CSS 层叠规则 | Ch 17 |
 | Memory Type | Memory Type | 四类自动记忆分类：user（用户偏好）、project（项目约定）、feedback（行为反馈）、reference（参考信息） | Ch 17 |
 | Auto Memory | Auto Memory | 从对话中自动捕获新知识并写入记忆文件的机制，无需用户手动操作 | Ch 17 |
 | Dream | Dream | 后台记忆整合系统，在会话空闲时自动 fork 一个受限子 Agent，回顾近期会话、提取关键信息、更新长期记忆文件，类比人类睡眠中的 REM 记忆巩固 | Ch 21 |

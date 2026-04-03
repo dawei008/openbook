@@ -8,6 +8,27 @@ chapter: 11
 
 > 如果你的团队规定"禁止删除 main 分支"，在 allow/deny 规则里怎么表达？
 
+```
+        tool_use request
+             │
+      ┌──────▼──────┐
+      │  Permission  │
+      │  Pipeline    │
+      │      │       │
+      │ ★PreToolUse ★│
+      │ ★  Hooks    ★│     ◄── 本章聚焦
+      │      │       │
+      │  Rule Engine  │
+      │      │       │
+      │  Classifier   │
+      │      │       │
+      │ ★Permission ★│
+      │ ★Req. Hooks ★│
+      │      │       │
+      │  User Dialog  │
+      └──────────────┘
+```
+
 ## 11.1 硬编码规则的天花板
 
 前两章剖析的权限系统有一个根本局限：所有规则都是**声明式**的。
@@ -216,9 +237,9 @@ Hook 配置 schema 模块定义了顶层结构：
 
 配置支持三层来源：
 
-- **用户级**（`~/.claude/settings.json`）：全局策略，适用于所有项目。
-- **项目级**（`.claude/settings.json`）：团队策略，提交到版本控制。
-- **本地级**（`.claude/settings.local.json`）：个人偏好，不进仓库。
+- **用户级**（`~/.agent/settings.json`）：全局策略，适用于所有项目。
+- **项目级**（`.agent/settings.json`）：团队策略，提交到版本控制。
+- **本地级**（`.agent/settings.local.json`）：个人偏好，不进仓库。
 
 松耦合是 Hook 系统的核心设计原则。
 Hook 通过 stdin/stdout 的 JSON 协议与主进程通信，
@@ -231,7 +252,7 @@ Python 脚本、Node.js 程序、curl 调用、甚至一个 jq 管道——
 将所有概念串联起来。
 假设团队需要禁止任何删除 main 分支的 git 操作。
 
-创建 `.claude/hooks/protect-main.py`：
+创建 `.agent/hooks/protect-main.py`：
 
 ```python
 #!/usr/bin/env python3
@@ -251,7 +272,7 @@ else:
     json.dump({"decision": "approve"}, sys.stdout)
 ```
 
-配置在 `.claude/settings.json` 中：
+配置在 `.agent/settings.json` 中：
 
 ```json
 {
@@ -260,7 +281,7 @@ else:
       "matcher": "Bash",
       "hooks": [{
         "type": "command",
-        "command": "python3 .claude/hooks/protect-main.py",
+        "command": "python3 .agent/hooks/protect-main.py",
         "if": "Bash(git *)",
         "timeout": 5,
         "statusMessage": "Checking branch protection..."
@@ -294,7 +315,7 @@ Hook 脚本必须由用户显式配置在 `settings.json` 中，
 而不是由 Agent 动态创建。
 首次加载包含 hooks 的项目设置时，
 需要用户通过信任对话框确认。
-这防止了"恶意仓库在 `.claude/settings.json` 中预置后门 Hook"的攻击。
+这防止了"恶意仓库在 `.agent/settings.json` 中预置后门 Hook"的攻击。
 
 **超时强制。**
 每个 Hook 都有超时限制（`timeout` 字段），
