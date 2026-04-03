@@ -3,9 +3,9 @@
 > No proprietary source code is reproduced. Product names are used for reference only 
 > and belong to their respective owners.
 
-# OpenBook: 从源码解构 AI Agent
+# OpenBook: 构建 AI Agent 的 Harness 工程学
 
-> 基于对某生产级 Agent 系统架构的公开分析的 Harness 架构深度解析
+> Agent = LLM + Harness —— 这本书讲的是 Harness 怎么造
 
 ---
 
