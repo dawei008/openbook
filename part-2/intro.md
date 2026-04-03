@@ -1,8 +1,3 @@
----
-title: "Part II 导言：Agent Loop -- 循环的艺术"
-part: 2
----
-
 # Part II: Agent Loop -- 循环的艺术
 
 > 核心循环：Agent 就是一个 Message --> Think --> Act --> Observe 的循环。理解这个循环，就理解了 AI Agent 的心跳。

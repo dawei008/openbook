@@ -1,8 +1,3 @@
----
-title: "Part VI 导言：Prompt 与记忆 -- Agent 的灵魂和笔记本"
-part: 6
----
-
 # Part VI: Prompt 与记忆 -- Agent 的灵魂和笔记本
 
 > Agent 的「人格」不在代码里，在 Prompt 里。Agent 的「经验」不在模型里，在记忆文件里。

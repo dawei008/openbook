@@ -1,9 +1,3 @@
----
-title: "子 Agent 的诞生：fork、隔离与通信"
-part: 5
-chapter: 12
----
-
 # 子 Agent 的诞生：fork、隔离与通信
 
 ```

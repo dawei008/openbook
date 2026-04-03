@@ -1,9 +1,3 @@
----
-title: "从 LLM 到 Agent：Harness 的角色"
-part: 1
-chapter: 1
----
-
 # Chapter 1: 从 LLM 到 Agent -- Harness 的角色
 
 > 一个只能思考的大脑，如何变成一个能行动的 Agent？

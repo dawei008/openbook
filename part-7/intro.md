@@ -1,8 +1,3 @@
----
-title: "Part VII 导言：扩展机制 -- 开放的 Agent"
-part: 7
----
-
 # Part VII: 扩展机制 -- 开放的 Agent
 
 > 好的 Harness 是可扩展的。用户和社区能添加新能力，而不需要修改框架本身。

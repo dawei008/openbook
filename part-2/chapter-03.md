@@ -1,9 +1,3 @@
----
-title: "Agent Loop 解剖：一轮对话的完整旅程"
-part: 2
-chapter: 3
----
-
 # Chapter 3: Agent Loop 解剖：一轮对话的完整旅程
 
 > Agent 的本质就是一个循环。理解这个循环，就理解了 AI Agent 的心跳。

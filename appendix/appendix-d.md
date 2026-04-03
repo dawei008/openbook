@@ -1,9 +1,3 @@
----
-title: "从零构建 Mini Agent Harness（实战教程）"
-part: appendix
-chapter: D
----
-
 # Appendix D: 从零构建 Mini Agent Harness
 
 > 前面的章节拆解了该 Agent 系统这座大厦的每一根梁柱。现在我们自己动手盖一间小屋——不是一次性贴出 100 行代码，而是逐步构建，每一步解决一个具体问题。

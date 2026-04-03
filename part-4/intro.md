@@ -1,8 +1,3 @@
----
-title: "Part IV 导言：安全与权限 -- Agent 的缰绳"
-part: 4
----
-
 # Part IV: 安全与权限 -- Agent 的缰绳
 
 > Agent 有能力做一切，但不应该做一切。这是 Harness 最沉重的职责。

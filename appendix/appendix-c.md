@@ -1,8 +1,3 @@
----
-title: "Appendix C: Feature Flag 完整清单"
-part: appendix
----
-
 # Appendix C: Feature Flag 完整清单
 
 三类 Flag：编译时 (bundler 宏，死代码消除)、运行时 (远程下发，不需要发新版本即可开关功能)、环境变量 (启动时读取)。

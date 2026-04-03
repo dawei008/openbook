@@ -1,8 +1,3 @@
----
-title: "Part III 导言：工具系统 -- Agent 的手和脚"
-part: 3
----
-
 # Part III: 工具系统 -- Agent 的手和脚
 
 > 没有工具的 LLM 只能说话。有了工具，它才能做事。

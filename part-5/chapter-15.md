@@ -1,9 +1,3 @@
----
-title: "Team 与 Swarm：群体智能的实现"
-part: 5
-chapter: 15
----
-
 # Team 与 Swarm：群体智能的实现
 
 ```

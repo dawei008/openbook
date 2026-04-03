@@ -1,8 +1,3 @@
----
-title: "Part I 导言：什么是 Agent Harness"
-part: 1
----
-
 # Part I: 什么是 Agent Harness
 
 > 建立心智模型：LLM 不等于 Agent，Harness 是让 LLM 变成 Agent 的那层壳。

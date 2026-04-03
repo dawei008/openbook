@@ -1,9 +1,3 @@
----
-title: "System Prompt 的组装流水线"
-part: 6
-chapter: 16
----
-
 # Chapter 16: System Prompt 的组装流水线
 
 > 核心问题：一个 Agent 的「人格」和「能力边界」是怎样从散落的代码碎片中拼装出来的？哪些可以缓存省钱，哪些必须每次重算？

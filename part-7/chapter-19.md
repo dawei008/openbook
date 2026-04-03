@@ -1,9 +1,3 @@
----
-title: "Skills：用户自定义能力"
-part: 7
-chapter: 19
----
-
 # Chapter 19: Skills -- 用户自定义能力
 
 > 如果每个开发者都能教会 Agent 新技能，但不需要写一行代码呢？

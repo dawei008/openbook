@@ -1,9 +1,3 @@
----
-title: "Commands 与 Plugin 体系"
-part: 7
-chapter: 20
----
-
 # Chapter 20: Commands 与 Plugin 体系
 
 > 80+ 个命令如何从一堆 import 变成可发现、可扩展、可控的交互体系？

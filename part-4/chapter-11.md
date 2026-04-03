@@ -1,9 +1,3 @@
----
-title: "Hooks：可编程的安全策略"
-part: 4
-chapter: 11
----
-
 # Chapter 11: Hooks：可编程的安全策略
 
 > 如果你的团队规定"禁止删除 main 分支"，在 allow/deny 规则里怎么表达？
