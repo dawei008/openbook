@@ -5,35 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OpenBook Cover</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --cover-w: 1600px;
-    --cover-h: 2240px;
-    --bg: #0a0c10;
-    --cyan: #00e5ff;
-    --orange: #ff6d2e;
-    --blue: #2979ff;
-    --dim: #1a1e2a;
-    --grid: #141824;
-    --text: #e8eaf0;
-    --muted: #5a6380;
+    --w: 1600px;
+    --h: 2240px;
+    --bg: #FAFAF8;
+    --ink: #1A1A18;
+    --warm: #B8510D;
+    --teal: #1A6B5C;
+    --stone: #8A8578;
+    --line: #E0DDD6;
+    --cream: #F0EDE6;
   }
 
   body {
-    background: #000;
+    background: #E8E6E0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: 'Noto Sans SC', sans-serif;
   }
 
   .cover {
-    width: var(--cover-w);
-    height: var(--cover-h);
+    width: var(--w);
+    height: var(--h);
     background: var(--bg);
     position: relative;
     overflow: hidden;
@@ -41,591 +39,272 @@
     flex-direction: column;
   }
 
-  /* === GRID BACKGROUND === */
-  .grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: 0.6;
+  /* === TOP THIRD: Title area === */
+  .top {
+    padding: 120px 120px 80px;
+    flex-shrink: 0;
   }
 
-  .grid-bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 80% 50% at 50% 45%, transparent 0%, var(--bg) 100%);
-  }
-
-  /* === CIRCUIT TRACES === */
-  .circuit-layer {
-    position: absolute;
-    inset: 0;
-    opacity: 0.12;
-  }
-
-  .trace {
-    position: absolute;
-    background: var(--cyan);
-    border-radius: 1px;
-  }
-
-  .trace.h { height: 2px; }
-  .trace.v { width: 2px; }
-
-  .trace-node {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border: 2px solid var(--cyan);
-    border-radius: 50%;
-    background: var(--bg);
-  }
-
-  /* === CENTRAL HARNESS VISUALIZATION === */
-  .harness-vis {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) translateY(-40px);
-    width: 900px;
-    height: 900px;
-  }
-
-  /* Outer ring - Harness */
-  .ring {
-    position: absolute;
-    border-radius: 50%;
-    border: 2px solid;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .ring-1 {
-    width: 880px;
-    height: 880px;
-    border-color: rgba(0, 229, 255, 0.08);
-    animation: spin 120s linear infinite;
-  }
-
-  .ring-2 {
-    width: 760px;
-    height: 760px;
-    border-color: rgba(0, 229, 255, 0.12);
-    border-style: dashed;
-    animation: spin 80s linear infinite reverse;
-  }
-
-  .ring-3 {
-    width: 640px;
-    height: 640px;
-    border-color: rgba(255, 109, 46, 0.15);
-    animation: spin 60s linear infinite;
-  }
-
-  .ring-4 {
-    width: 520px;
-    height: 520px;
-    border-color: rgba(41, 121, 255, 0.2);
-    border-style: dashed;
-    animation: spin 45s linear infinite reverse;
-  }
-
-  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-  /* Ring labels */
-  .ring-label {
-    position: absolute;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .ring-label-1 { top: 50%; left: 50%; transform: translate(-50%, -490px); color: rgba(0, 229, 255, 0.3); }
-  .ring-label-2 { top: 50%; left: 50%; transform: translate(-50%, -420px); color: rgba(255, 109, 46, 0.35); }
-  .ring-label-3 { top: 50%; left: 50%; transform: translate(-50%, -350px); color: rgba(41, 121, 255, 0.4); }
-
-  /* Central brain/core */
-  .core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 280px;
-    height: 280px;
-  }
-
-  .core-glow {
-    position: absolute;
-    inset: -60px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%);
-    animation: pulse 4s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.05); }
-  }
-
-  .core-shape {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 3px solid var(--cyan);
-    background: radial-gradient(circle at 40% 35%,
-      rgba(0, 229, 255, 0.06) 0%,
-      rgba(0, 229, 255, 0.02) 50%,
-      transparent 100%
-    );
-    box-shadow:
-      0 0 40px rgba(0, 229, 255, 0.1),
-      inset 0 0 40px rgba(0, 229, 255, 0.05);
-  }
-
-  .core-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-
-  .core-label .label-main {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 42px;
-    font-weight: 700;
-    color: var(--cyan);
-    letter-spacing: 8px;
-  }
-
-  .core-label .label-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 8px;
-    letter-spacing: 2px;
-  }
-
-  /* Harness connector nodes */
-  .connector {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .connector-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid;
-    background: var(--bg);
-    position: relative;
-  }
-
-  .connector-dot::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.6;
-  }
-
-  .connector-text {
-    font-family: 'JetBrains Mono', monospace;
+  .series-label {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 14px;
     font-weight: 500;
-    letter-spacing: 1px;
-    white-space: nowrap;
-  }
-
-  .connector-line {
-    position: absolute;
-    background: currentColor;
-    opacity: 0.3;
-  }
-
-  /* Position connectors around the ring */
-  .c-tools     { transform: translate(-50%, -380px); color: var(--cyan); }
-  .c-perms     { transform: translate(280px, -260px); color: var(--orange); }
-  .c-memory    { transform: translate(350px, 40px); color: var(--blue); }
-  .c-multi     { transform: translate(240px, 280px); color: var(--cyan); }
-  .c-extend    { transform: translate(-50%, 380px); color: var(--orange); }
-  .c-context   { transform: translate(-340px, 280px); color: var(--blue); }
-  .c-prompt    { transform: translate(-440px, 40px); color: var(--cyan); }
-  .c-safety    { transform: translate(-370px, -260px); color: var(--orange); }
-
-  /* === EQUATION BAR === */
-  .equation {
-    position: absolute;
-    bottom: 520px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    padding: 28px 0;
-    background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.03) 20%, rgba(0, 229, 255, 0.03) 80%, transparent);
-    border-top: 1px solid rgba(0, 229, 255, 0.08);
-    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
-  }
-
-  .eq-box {
-    font-family: 'JetBrains Mono', monospace;
-    padding: 10px 28px;
-    border: 1.5px solid;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 3px;
-  }
-
-  .eq-agent { border-color: var(--cyan); color: var(--cyan); }
-  .eq-op { font-family: 'JetBrains Mono', monospace; font-size: 28px; color: var(--muted); }
-  .eq-llm { border-color: var(--muted); color: var(--muted); }
-  .eq-harness { border-color: var(--orange); color: var(--orange); background: rgba(255, 109, 46, 0.06); }
-
-  /* === TOP SECTION === */
-  .top-section {
-    position: relative;
-    z-index: 10;
-    padding: 80px 100px 0;
-  }
-
-  .badge {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     text-transform: uppercase;
-    color: var(--orange);
-    border: 1px solid rgba(255, 109, 46, 0.3);
-    padding: 8px 20px;
-    margin-bottom: 40px;
-  }
-
-  .title-block {
-    margin-bottom: 24px;
+    color: var(--warm);
+    margin-bottom: 48px;
   }
 
   .title-en {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 32px;
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 120px;
     font-weight: 300;
-    color: var(--muted);
-    letter-spacing: 12px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
+    color: var(--ink);
+    line-height: 1.0;
+    letter-spacing: -3px;
+    margin-bottom: 32px;
   }
 
   .title-zh {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 72px;
-    font-weight: 900;
-    color: var(--text);
-    line-height: 1.15;
-    letter-spacing: 4px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.5;
+    letter-spacing: 2px;
   }
 
-  .title-zh .highlight {
-    color: var(--cyan);
+  .title-zh .accent {
+    color: var(--warm);
+  }
+
+  /* === MIDDLE: Visual element === */
+  .visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 120px;
     position: relative;
   }
 
-  .title-zh .highlight::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--cyan);
-    opacity: 0.3;
+  /* The diagram: abstract harness structure */
+  .diagram {
+    width: 100%;
+    max-width: 1100px;
+    position: relative;
   }
 
-  /* === BOTTOM SECTION === */
-  .bottom-section {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    padding: 0 100px 80px;
+  .diagram svg {
+    width: 100%;
+    height: auto;
   }
 
-  .subtitle {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 18px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 40px;
+  /* === BOTTOM: Equation + metadata === */
+  .bottom {
+    padding: 0 120px 100px;
+    flex-shrink: 0;
+  }
+
+  .equation {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--stone);
+    letter-spacing: 2px;
+    margin-bottom: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .equation .eq-agent {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .equation .eq-harness {
+    color: var(--warm);
+    font-weight: 500;
+  }
+
+  .tagline {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--stone);
     line-height: 1.8;
+    margin-bottom: 56px;
   }
 
-  .subtitle .em { color: var(--orange); }
+  .tagline strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
 
-  .bottom-bar {
+  .meta-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-top: 40px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .tech-tags {
+  .topics {
     display: flex;
-    gap: 12px;
+    gap: 20px;
     flex-wrap: wrap;
   }
 
-  .tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+  .topic {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--muted);
-    padding: 6px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(255, 255, 255, 0.02);
+    color: var(--teal);
+    padding: 8px 16px;
+    border: 1px solid var(--teal);
+    border-radius: 2px;
   }
 
-  .meta-info {
+  .stats {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--stone);
     text-align: right;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
     line-height: 2;
     letter-spacing: 1px;
   }
 
-  .meta-info .num {
-    color: var(--cyan);
-    font-weight: 700;
+  .stats .num {
+    color: var(--ink);
+    font-weight: 500;
   }
 
-  /* === DECORATIVE ELEMENTS === */
-  .corner-mark {
+  /* === Spine accent === */
+  .spine {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    border: 2px solid rgba(0, 229, 255, 0.15);
-  }
-  .corner-tl { top: 40px; left: 40px; border-right: none; border-bottom: none; }
-  .corner-tr { top: 40px; right: 40px; border-left: none; border-bottom: none; }
-  .corner-bl { bottom: 40px; left: 40px; border-right: none; border-top: none; }
-  .corner-br { bottom: 40px; right: 40px; border-left: none; border-top: none; }
-
-  .side-text {
-    position: absolute;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.06);
-    writing-mode: vertical-rl;
-  }
-
-  .side-left { left: 50px; top: 50%; transform: translateY(-50%); }
-  .side-right { right: 50px; top: 50%; transform: translateY(-50%) rotate(180deg); }
-
-  /* Scan line effect */
-  .scanline {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0, 229, 255, 0.008) 3px,
-      rgba(0, 229, 255, 0.008) 4px
-    );
-    pointer-events: none;
-  }
-
-  /* Top gradient fade */
-  .fade-top {
-    position: absolute;
+    left: 0;
     top: 0;
-    left: 0;
-    right: 0;
-    height: 300px;
-    background: linear-gradient(to bottom, var(--bg), transparent);
-    z-index: 5;
-  }
-
-  .fade-bottom {
-    position: absolute;
     bottom: 0;
-    left: 0;
-    right: 0;
-    height: 400px;
-    background: linear-gradient(to top, var(--bg), transparent);
-    z-index: 5;
-  }
-
-  /* Hex pattern overlay */
-  .hex-pattern {
-    position: absolute;
-    top: 280px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1000px;
-    height: 1000px;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2300e5ff' fill-opacity='1'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    width: 12px;
+    background: var(--warm);
   }
 </style>
 </head>
 <body>
 
 <div class="cover">
-  <!-- Background layers -->
-  <div class="grid-bg"></div>
-  <div class="hex-pattern"></div>
-  <div class="scanline"></div>
-
-  <!-- Circuit traces -->
-  <div class="circuit-layer">
-    <div class="trace h" style="top: 320px; left: 0; width: 380px;"></div>
-    <div class="trace h" style="top: 320px; left: 420px; width: 200px;"></div>
-    <div class="trace v" style="top: 320px; left: 380px; height: 160px;"></div>
-    <div class="trace-node" style="top: 316px; left: 376px;"></div>
-    <div class="trace h" style="top: 480px; left: 380px; width: 300px;"></div>
-    <div class="trace-node" style="top: 476px; left: 676px;"></div>
-
-    <div class="trace h" style="top: 1800px; right: 0; width: 420px; left: auto;"></div>
-    <div class="trace v" style="top: 1700px; right: 420px; height: 100px;"></div>
-    <div class="trace h" style="top: 1700px; right: 420px; width: 260px;"></div>
-    <div class="trace-node" style="top: 1696px; right: 676px;"></div>
-
-    <div class="trace v" style="top: 600px; left: 120px; height: 300px;"></div>
-    <div class="trace h" style="top: 900px; left: 120px; width: 180px;"></div>
-    <div class="trace-node" style="top: 896px; left: 296px;"></div>
-
-    <div class="trace v" style="top: 1200px; right: 180px; height: 240px;"></div>
-    <div class="trace h" style="top: 1200px; right: 180px; width: 160px;"></div>
-    <div class="trace-node" style="top: 1196px; right: 336px;"></div>
-  </div>
-
-  <!-- Decorative corners -->
-  <div class="corner-mark corner-tl"></div>
-  <div class="corner-mark corner-tr"></div>
-  <div class="corner-mark corner-bl"></div>
-  <div class="corner-mark corner-br"></div>
-
-  <!-- Side text -->
-  <div class="side-text side-left">Harness Engineering</div>
-  <div class="side-text side-right">Agent Architecture</div>
-
-  <!-- Fades -->
-  <div class="fade-top"></div>
-  <div class="fade-bottom"></div>
+  <!-- Spine color bar -->
+  <div class="spine"></div>
 
   <!-- TOP: Title -->
-  <div class="top-section">
-    <div class="badge">Technical Deep Dive</div>
-    <div class="title-block">
-      <div class="title-en">OpenBook</div>
-      <div class="title-zh">
-        构建 AI Agent 的<br><span class="highlight">Harness</span> 工程学
-      </div>
+  <div class="top">
+    <div class="series-label">Harness Engineering</div>
+    <div class="title-en">OpenBook</div>
+    <div class="title-zh">
+      构建 AI Agent 的<br><span class="accent">Harness</span> 工程学
     </div>
   </div>
 
-  <!-- CENTER: Harness visualization -->
-  <div class="harness-vis">
-    <div class="ring ring-1"></div>
-    <div class="ring ring-2"></div>
-    <div class="ring ring-3"></div>
-    <div class="ring ring-4"></div>
+  <!-- MIDDLE: Abstract harness diagram -->
+  <div class="visual">
+    <div class="diagram">
+      <svg viewBox="0 0 1100 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Central core: LLM -->
+        <rect x="430" y="220" width="240" height="180" rx="4" stroke="#1A1A18" stroke-width="2" fill="#FAFAF8"/>
+        <text x="550" y="295" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="32" font-weight="500" fill="#1A1A18">LLM</text>
+        <text x="550" y="330" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="13" fill="#8A8578" letter-spacing="2">REASONING CORE</text>
 
-    <div class="ring-label ring-label-1">Extension Layer</div>
-    <div class="ring-label ring-label-2">Security Layer</div>
-    <div class="ring-label ring-label-3">Tool Layer</div>
+        <!-- Harness wrapper box -->
+        <rect x="80" y="40" width="940" height="540" rx="4" stroke="#B8510D" stroke-width="1.5" stroke-dasharray="8 4" fill="none"/>
+        <text x="100" y="30" font-family="'IBM Plex Mono', monospace" font-size="13" fill="#B8510D" letter-spacing="3">HARNESS</text>
 
-    <!-- Connector nodes -->
-    <div class="connector c-tools">
-      <div class="connector-dot" style="color: var(--cyan);"></div>
-      <div class="connector-text" style="color: var(--cyan);">TOOLS</div>
-    </div>
-    <div class="connector c-perms">
-      <div class="connector-dot" style="color: var(--orange);"></div>
-      <div class="connector-text" style="color: var(--orange);">PERMISSIONS</div>
-    </div>
-    <div class="connector c-memory">
-      <div class="connector-dot" style="color: var(--blue);"></div>
-      <div class="connector-text" style="color: var(--blue);">MEMORY</div>
-    </div>
-    <div class="connector c-multi">
-      <div class="connector-dot" style="color: var(--cyan);"></div>
-      <div class="connector-text" style="color: var(--cyan);">MULTI-AGENT</div>
-    </div>
-    <div class="connector c-extend">
-      <div class="connector-dot" style="color: var(--orange);"></div>
-      <div class="connector-text" style="color: var(--orange);">MCP / SKILLS</div>
-    </div>
-    <div class="connector c-context">
-      <div class="connector-dot" style="color: var(--blue);"></div>
-      <div class="connector-text" style="color: var(--blue);">CONTEXT</div>
-    </div>
-    <div class="connector c-prompt">
-      <div class="connector-dot" style="color: var(--cyan);"></div>
-      <div class="connector-text" style="color: var(--cyan);">PROMPT</div>
-    </div>
-    <div class="connector c-safety">
-      <div class="connector-dot" style="color: var(--orange);"></div>
-      <div class="connector-text" style="color: var(--orange);">HOOKS</div>
-    </div>
+        <!-- Top row: Tools, Permissions, Prompt -->
+        <rect x="140" y="80" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="230" y="118" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">TOOLS</text>
+        <text x="230" y="140" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">40+ registered</text>
 
-    <!-- Central core -->
-    <div class="core">
-      <div class="core-glow"></div>
-      <div class="core-shape"></div>
-      <div class="core-label">
-        <div class="label-main">LLM</div>
-        <div class="label-sub">reasoning core</div>
-      </div>
+        <rect x="460" y="80" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="550" y="118" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">PERMISSIONS</text>
+        <text x="550" y="140" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">4-layer defense</text>
+
+        <rect x="780" y="80" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="870" y="118" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">PROMPT</text>
+        <text x="870" y="140" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">dynamic assembly</text>
+
+        <!-- Bottom row: Memory, Multi-Agent, Extensions -->
+        <rect x="140" y="460" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="230" y="498" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">MEMORY</text>
+        <text x="230" y="520" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">5-layer + Dream</text>
+
+        <rect x="460" y="460" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="550" y="498" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">MULTI-AGENT</text>
+        <text x="550" y="520" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">fork / swarm</text>
+
+        <rect x="780" y="460" width="180" height="80" rx="3" stroke="#1A6B5C" stroke-width="1.2" fill="#F0EDE6"/>
+        <text x="870" y="498" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="500" fill="#1A6B5C" letter-spacing="1">EXTENSIONS</text>
+        <text x="870" y="520" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#8A8578">MCP / Skills</text>
+
+        <!-- Connection lines from modules to LLM -->
+        <!-- Top row down -->
+        <line x1="230" y1="160" x2="230" y2="200" stroke="#E0DDD6" stroke-width="1"/>
+        <line x1="230" y1="200" x2="430" y2="280" stroke="#E0DDD6" stroke-width="1"/>
+
+        <line x1="550" y1="160" x2="550" y2="220" stroke="#E0DDD6" stroke-width="1"/>
+
+        <line x1="870" y1="160" x2="870" y2="200" stroke="#E0DDD6" stroke-width="1"/>
+        <line x1="870" y1="200" x2="670" y2="280" stroke="#E0DDD6" stroke-width="1"/>
+
+        <!-- Bottom row up -->
+        <line x1="230" y1="460" x2="230" y2="420" stroke="#E0DDD6" stroke-width="1"/>
+        <line x1="230" y1="420" x2="430" y2="340" stroke="#E0DDD6" stroke-width="1"/>
+
+        <line x1="550" y1="460" x2="550" y2="400" stroke="#E0DDD6" stroke-width="1"/>
+
+        <line x1="870" y1="460" x2="870" y2="420" stroke="#E0DDD6" stroke-width="1"/>
+        <line x1="870" y1="420" x2="670" y2="340" stroke="#E0DDD6" stroke-width="1"/>
+
+        <!-- Agent Loop arrow (circular) -->
+        <path d="M 380 310 C 320 310, 300 250, 340 200 C 380 150, 440 140, 500 160"
+              stroke="#B8510D" stroke-width="1.2" fill="none" stroke-dasharray="4 3"/>
+        <path d="M 720 310 C 780 310, 800 370, 760 420 C 720 470, 660 480, 600 460"
+              stroke="#B8510D" stroke-width="1.2" fill="none" stroke-dasharray="4 3"/>
+
+        <!-- Loop label -->
+        <text x="280" y="270" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#B8510D" letter-spacing="1">AGENT</text>
+        <text x="280" y="285" font-family="'IBM Plex Mono', monospace" font-size="11" fill="#B8510D" letter-spacing="1">LOOP</text>
+
+        <!-- Small dots at connection points -->
+        <circle cx="550" cy="220" r="3" fill="#1A1A18"/>
+        <circle cx="550" cy="400" r="3" fill="#1A1A18"/>
+        <circle cx="430" cy="280" r="3" fill="#1A1A18"/>
+        <circle cx="670" cy="280" r="3" fill="#1A1A18"/>
+        <circle cx="430" cy="340" r="3" fill="#1A1A18"/>
+        <circle cx="670" cy="340" r="3" fill="#1A1A18"/>
+      </svg>
     </div>
   </div>
 
-  <!-- Equation bar -->
-  <div class="equation">
-    <div class="eq-box eq-agent">AGENT</div>
-    <div class="eq-op">=</div>
-    <div class="eq-box eq-llm">LLM</div>
-    <div class="eq-op">+</div>
-    <div class="eq-box eq-harness">HARNESS</div>
-  </div>
-
-  <!-- BOTTOM: Info -->
-  <div class="bottom-section">
-    <div class="subtitle">
-      LLM 提供推理能力，<span class="em">Harness</span> 提供工具、权限、记忆、编排<br>
-      这本书讲的就是 <span class="em">Harness</span> 怎么造
+  <!-- BOTTOM: Equation + metadata -->
+  <div class="bottom">
+    <div class="equation">
+      <span class="eq-agent">Agent</span> = LLM + <span class="eq-harness">Harness</span>
     </div>
-    <div class="bottom-bar">
-      <div class="tech-tags">
-        <div class="tag">Agent Loop</div>
-        <div class="tag">Tool System</div>
-        <div class="tag">Permissions</div>
-        <div class="tag">Multi-Agent</div>
-        <div class="tag">MCP</div>
-        <div class="tag">Dream</div>
-        <div class="tag">Memory</div>
+    <div class="tagline">
+      LLM 提供推理能力，<strong>Harness</strong> 提供工具、权限、记忆、编排<br>
+      这本书讲的就是 Harness 怎么造
+    </div>
+    <div class="meta-row">
+      <div class="topics">
+        <span class="topic">Agent Loop</span>
+        <span class="topic">Tool System</span>
+        <span class="topic">Permissions</span>
+        <span class="topic">Multi-Agent</span>
+        <span class="topic">MCP</span>
+        <span class="topic">Memory</span>
+        <span class="topic">Dream</span>
       </div>
-      <div class="meta-info">
+      <div class="stats">
         <span class="num">22</span> chapters + <span class="num">4</span> appendices<br>
-        <span class="num">8</span> parts &middot; Harness Architecture
+        <span class="num">8</span> parts · Harness Architecture
       </div>
     </div>
   </div>
