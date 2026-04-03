@@ -13,13 +13,13 @@ W, H = 1600, 2240
 FONTS_DIR = os.path.expanduser("~/.claude/skills/canvas-design/canvas-fonts")
 
 # === COLOR PALETTE (strictly limited) ===
-BG       = (18, 24, 38)
-CYAN     = (0, 210, 240)
-ORANGE   = (255, 130, 60)
-DIM      = (55, 68, 95)
-MUTED    = (110, 125, 160)
-TEXT     = (225, 230, 240)
-FAINT    = (35, 44, 62)
+BG       = (245, 245, 248)
+CYAN     = (0, 140, 180)
+ORANGE   = (220, 90, 30)
+DIM      = (200, 205, 215)
+MUTED    = (120, 130, 150)
+TEXT     = (25, 30, 40)
+FAINT    = (230, 232, 238)
 
 def alpha_color(base, alpha):
     """Return RGBA tuple."""
@@ -102,8 +102,8 @@ vignette = Image.new('RGBA', (W, H), (0, 0, 0, 0))
 vdraw = ImageDraw.Draw(vignette, 'RGBA')
 cx, cy = W // 2, H // 2 - 60
 for r in range(max(W, H), 0, -2):
-    alpha = max(0, min(255, int(200 * (r / max(W, H)) ** 1.8)))
-    vdraw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(10, 12, 16, alpha))
+    alpha = max(0, min(255, int(100 * (r / max(W, H)) ** 2.0)))
+    vdraw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(220, 222, 230, alpha))
 img = Image.alpha_composite(img, vignette)
 draw = ImageDraw.Draw(img, 'RGBA')
 
@@ -188,7 +188,7 @@ for angle_deg, label, color in connectors:
 
     # Node dot
     draw.ellipse([nx-6, ny-6, nx+6, ny+6], outline=alpha_color(color, 100), width=2)
-    draw.ellipse([nx-3, ny-3, nx+3, ny+3], fill=alpha_color(color, 80))
+    draw.ellipse([nx-3, ny-3, nx+3, ny+3], fill=alpha_color(color, 160))
 
     # Thin line from ring to node
     inner_r = 240
@@ -457,7 +457,7 @@ draw.text((56, H // 2 + 60), "S", fill=alpha_color(TEXT, 15), font=font_label)
 scanline = Image.new('RGBA', (W, H), (0, 0, 0, 0))
 sd = ImageDraw.Draw(scanline, 'RGBA')
 for y in range(0, H, 4):
-    sd.line([(0, y), (W, y)], fill=(0, 210, 240, 3), width=1)
+    sd.line([(0, y), (W, y)], fill=(0, 140, 180, 4), width=1)
 img = Image.alpha_composite(img, scanline)
 
 # === SAVE ===
