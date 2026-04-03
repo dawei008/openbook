@@ -64,6 +64,7 @@ LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这
 | **安全与约束** | 多层权限防线、ML 分类器、可编程 Hook | Part IV, Ch 9-11 |
 | **多智能体协作** | 状态 fork/隔离/通信、Swarm、Mailbox 模式 | Part V, Ch 12-15 |
 | **生态扩展** | MCP 协议、Skills 系统、Plugin 体系 | Part VII, Ch 18-20 |
+| **云上部署** | 四支柱框架、双 Pod 沙箱、自修复循环 | Part IX, Ch 23-26 |
 
 市面上讲 Agent 的书不少，但多数停留在 Prompt Engineering 和 API 调用的层面。本书要做的是**打开黑箱**——不是教你怎么用 Agent 框架，而是让你看清框架本身的骨架、肌理和设计取舍。这些模式不绑定特定产品，可以迁移到任何 Agent 系统的构建中。
 
@@ -90,7 +91,7 @@ OpenAI 的 Swarm 框架文档说：*"The best way to understand agents is to bui
 
 ### 本书结构
 
-全书 8 个部分，22 章，按 Agent 的概念层次从内到外展开：
+全书 9 个部分，26 章，按 Agent 的概念层次从内到外展开：
 
 ```
 Part I    什么是 Harness        ── 建立心智模型
@@ -101,6 +102,7 @@ Part V    多智能体               ── 从个体到团队
 Part VI   Prompt 与记忆          ── Agent 的灵魂和笔记本
 Part VII  扩展机制               ── 开放的 Agent
 Part VIII 前沿与哲学             ── 设计原则的提炼
+Part IX   从理论到实践           ── OpenHarness 实战部署
 ```
 
 每章末尾有**思考题**，引导读者将源码中的设计决策推广到自己的场景。
@@ -171,6 +173,15 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 | [Chapter 21](part-8/chapter-21.md) | Dream 系统：会「睡觉」的 Agent | 后台记忆整合怎么实现？ |
 | [Chapter 22](part-8/chapter-22.md) | 设计哲学：构建可信 AI Agent 的原则 | 10 条通用 Agent 设计原则 |
 
+### Part IX: 从理论到实践 -- OpenHarness
+
+| 章节 | 标题 | 核心问题 |
+|------|------|---------|
+| [Chapter 23](part-9/chapter-23.md) | 四根支柱：从 Harness 模式到部署架构 | 前 22 章的模式如何映射到 CONSTRAIN / INFORM / VERIFY / CORRECT？ |
+| [Chapter 24](part-9/chapter-24.md) | 沙箱与安全：在云上约束 Agent | 双 Pod 沙箱如何用 K8s NetworkPolicy 实现最小权限？ |
+| [Chapter 25](part-9/chapter-25.md) | 自修复循环：让 Agent 从失败中学习 | CI 失败后如何自动检测、修复、重试、升级？ |
+| [Chapter 26](part-9/chapter-26.md) | 从零部署：你的第一个 Agent Harness | 双 Agent 模式 + 任务队列 + 成本模型的完整部署 |
+
 ### 附录
 
 | 附录 | 标题 | 内容 |
@@ -184,9 +195,10 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 
 ## 统计
 
-- **22 章 + 4 附录** = 26 个文件
-- **7,583 行** 精炼 Markdown（问题→思路→实现 风格）
+- **26 章 + 4 附录** = 30 个文件
 - 基于对大规模 TypeScript 代码库的深度架构分析
+- Part I-VIII 聚焦 Harness 内部设计模式
+- Part IX 展示如何用开源组件将模式落地到 AWS 云平台
 - 每章对应具体**架构模块和设计决策**
 - 每章附 **思考题**
 
