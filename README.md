@@ -53,21 +53,19 @@ LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这
 
 2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents……但绝大多数框架做的是**编排层的抽象**，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。
 
-本书分析的 Agent 产品不同。它不是一个框架——它是一个**完整的、生产级的 Agent 产品**，日活数百万开发者，每周产生超过 3400 万次子 Agent 调用。更重要的是，它的源码覆盖了 Agent Harness 的**每一个关键维度**：
+本书不同。我们深入分析了一个**完整的、生产级的 Agent Harness 实现**，从中提炼出构建 Harness 的通用模式。这些模式覆盖了 Agent 工程的每一个关键维度：
 
-| Agent 核心能力 | 该系统的实现 | 本书章节 |
+| Agent 核心能力 | Harness 的设计模式 | 本书章节 |
 |---|---|---|
-| **规划与编排** | 协调者模式、四阶段编排、Plan Mode | Part V, Ch 13 |
-| **记忆与状态** | 五层 AGENT.md、四类自动记忆、Dream 整合 | Part VI, Ch 17 |
-| **工具使用** | 40+ 工具、注册/调度/编排、Deferred Schema | Part III, Ch 6-8 |
+| **规划与编排** | 协调者模式、多阶段编排、Plan Mode | Part V, Ch 13 |
+| **记忆与状态** | 多层配置文件、类型化自动记忆、后台整合 | Part VI, Ch 17 |
+| **工具使用** | 工具注册表、调度器、延迟 Schema 加载 | Part III, Ch 6-8 |
 | **行动与执行** | Agent Loop、流式执行、错误恢复 | Part II, Ch 3-5 |
-| **安全与约束** | 四层权限防线、ML 分类器、可编程 Hook | Part IV, Ch 9-11 |
-| **多智能体协作** | fork/隔离/通信、Team/Swarm、Mailbox 模式 | Part V, Ch 12-15 |
+| **安全与约束** | 多层权限防线、ML 分类器、可编程 Hook | Part IV, Ch 9-11 |
+| **多智能体协作** | 状态 fork/隔离/通信、Swarm、Mailbox 模式 | Part V, Ch 12-15 |
 | **生态扩展** | MCP 协议、Skills 系统、Plugin 体系 | Part VII, Ch 18-20 |
 
-市面上讲 Agent 的书不少，但多数停留在 Prompt Engineering 和 API 调用的层面。本书要做的是**打开黑箱**——不是教你怎么用 Agent 框架，而是让你看清框架本身的骨架、肌理和设计取舍。
-
-作为大规模生产级代码库，它踩过的坑、做过的权衡、选择的架构，是任何教科书和论文无法替代的实战经验。
+市面上讲 Agent 的书不少，但多数停留在 Prompt Engineering 和 API 调用的层面。本书要做的是**打开黑箱**——不是教你怎么用 Agent 框架，而是让你看清框架本身的骨架、肌理和设计取舍。这些模式不绑定特定产品，可以迁移到任何 Agent 系统的构建中。
 
 ### 本书的方法论
 
