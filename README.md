@@ -49,11 +49,11 @@ Andrej Karpathy 曾将 LLM 类比为「新的操作系统内核」。如果 LLM 
 
 LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这本书讲的就是 Harness 怎么造。**
 
-### 为什么选这个案例
+### 本书的切入点
 
 2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents……但绝大多数框架做的是**编排层的抽象**，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。
 
-本书不同。我们深入分析了一个**完整的、生产级的 Agent Harness 实现**，从中提炼出构建 Harness 的通用模式。这些模式覆盖了 Agent 工程的每一个关键维度：
+本书不同。我们从生产级 Agent 系统的工程实践中，提炼出构建 Harness 的**通用设计模式**。这些模式覆盖了 Agent 工程的每一个关键维度：
 
 | Agent 核心能力 | Harness 的设计模式 | 本书章节 |
 |---|---|---|
