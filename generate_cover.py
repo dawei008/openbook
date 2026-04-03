@@ -90,12 +90,7 @@ if font_cjk_large is None:
 img = Image.new('RGBA', (W, H), BG + (255,))
 draw = ImageDraw.Draw(img, 'RGBA')
 
-# === BACKGROUND: Fine grid ===
-grid_spacing = 40
-for x in range(0, W, grid_spacing):
-    draw.line([(x, 0), (x, H)], fill=alpha_color(CYAN, 14), width=1)
-for y in range(0, H, grid_spacing):
-    draw.line([(0, y), (W, y)], fill=alpha_color(CYAN, 14), width=1)
+# === BACKGROUND: Clean (no grid) ===
 
 # === BACKGROUND: Radial vignette (darken edges) ===
 vignette = Image.new('RGBA', (W, H), (0, 0, 0, 0))
@@ -121,23 +116,23 @@ traces = [
 ]
 
 for (x1, y1), (x2, y2) in traces:
-    draw.line([(x1, y1), (x2, y2)], fill=alpha_color(CYAN, 20), width=1)
+    draw.line([(x1, y1), (x2, y2)], fill=alpha_color(CYAN, 50), width=1)
 
 # Trace nodes (small circles at junctions)
 trace_nodes = [(350, 340), (350, 480), (580, 340), (1400, 600), (1400, 820), (200, 1700), (280, 1860)]
 for nx, ny in trace_nodes:
-    draw.ellipse([nx-4, ny-4, nx+4, ny+4], outline=alpha_color(CYAN, 30), width=1)
-    draw.ellipse([nx-2, ny-2, nx+2, ny+2], fill=alpha_color(CYAN, 20))
+    draw.ellipse([nx-4, ny-4, nx+4, ny+4], outline=alpha_color(CYAN, 70), width=1)
+    draw.ellipse([nx-2, ny-2, nx+2, ny+2], fill=alpha_color(CYAN, 50))
 
 # === CENTRAL HARNESS VISUALIZATION ===
 center_x, center_y = W // 2, H // 2 - 40
 
 # Concentric rings (orbital layers)
 rings = [
-    (420, CYAN, 12, False, "EXTENSION"),
-    (360, ORANGE, 16, True, "SECURITY"),
-    (300, CYAN, 20, False, "TOOL"),
-    (240, ORANGE, 14, True, ""),
+    (420, CYAN, 30, False, "EXTENSION"),
+    (360, ORANGE, 40, True, "SECURITY"),
+    (300, CYAN, 50, False, "TOOL"),
+    (240, ORANGE, 35, True, ""),
 ]
 
 for radius, color, alpha, dashed, label in rings:
@@ -165,7 +160,7 @@ for radius, color, alpha, dashed, label in rings:
         tw = bbox[2] - bbox[0]
         draw.text(
             (center_x - tw // 2, center_y - radius - 18),
-            label, fill=alpha_color(color, 40), font=font_tiny
+            label, fill=alpha_color(color, 120), font=font_tiny
         )
 
 # === CONNECTOR NODES (8 positions around the rings) ===
@@ -187,8 +182,8 @@ for angle_deg, label, color in connectors:
     ny = center_y + node_radius * math.sin(angle)
 
     # Node dot
-    draw.ellipse([nx-6, ny-6, nx+6, ny+6], outline=alpha_color(color, 100), width=2)
-    draw.ellipse([nx-3, ny-3, nx+3, ny+3], fill=alpha_color(color, 160))
+    draw.ellipse([nx-6, ny-6, nx+6, ny+6], outline=alpha_color(color, 180), width=2)
+    draw.ellipse([nx-3, ny-3, nx+3, ny+3], fill=alpha_color(color, 220))
 
     # Thin line from ring to node
     inner_r = 240
@@ -219,7 +214,7 @@ for angle_deg, label, color in connectors:
         lx = nx - tw - 14
         ly = ny - th // 2
 
-    draw.text((lx, ly), label, fill=alpha_color(color, 90), font=font_label)
+    draw.text((lx, ly), label, fill=alpha_color(color, 220), font=font_label)
 
 # === CENTRAL CORE (LLM) ===
 core_r = 120
@@ -235,11 +230,11 @@ for gr in range(160, core_r, -5):
 # Core circle - thin, precise
 draw.ellipse(
     [center_x - core_r, center_y - core_r, center_x + core_r, center_y + core_r],
-    outline=alpha_color(CYAN, 100), width=2
+    outline=alpha_color(CYAN, 180), width=2
 )
 
 # Inner concentric rings (precision, not mass)
-for ir, a in [(110, 18), (90, 14), (65, 10), (40, 8)]:
+for ir, a in [(110, 40), (90, 30), (65, 22), (40, 16)]:
     draw.ellipse(
         [center_x - ir, center_y - ir, center_x + ir, center_y + ir],
         outline=alpha_color(CYAN, a), width=1
@@ -407,10 +402,9 @@ for tag in tags:
     pad_tx, pad_ty = 12, 7
     draw.rectangle(
         [tag_x, tag_y, tag_x + tw + pad_tx * 2, tag_y + th + pad_ty * 2],
-        outline=alpha_color(MUTED, 80), width=1,
-        fill=alpha_color(CYAN, 8)
+        outline=alpha_color(CYAN, 120), width=1
     )
-    draw.text((tag_x + pad_tx, tag_y + pad_ty), tag, fill=(*TEXT, 230), font=font_tag)
+    draw.text((tag_x + pad_tx, tag_y + pad_ty), tag, fill=(*CYAN, 255), font=font_tag)
 
     tag_x += tw + pad_tx * 2 + 12
     if tag_x > W - 200:
@@ -445,20 +439,9 @@ for x, y, x2, y2, x3, y3 in corners:
 # We'll skip vertical text as PIL doesn't handle rotation of text well in RGBA
 # Instead add small horizontal markers on the sides
 
-draw.text((56, H // 2 - 60), "H", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2 - 40), "A", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2 - 20), "R", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2), "N", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2 + 20), "E", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2 + 40), "S", fill=alpha_color(TEXT, 15), font=font_label)
-draw.text((56, H // 2 + 60), "S", fill=alpha_color(TEXT, 15), font=font_label)
+# === (side text removed for clean layout) ===
 
-# === SCANLINE EFFECT (very subtle) ===
-scanline = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-sd = ImageDraw.Draw(scanline, 'RGBA')
-for y in range(0, H, 4):
-    sd.line([(0, y), (W, y)], fill=(0, 140, 180, 4), width=1)
-img = Image.alpha_composite(img, scanline)
+# === (scanlines removed for clean light theme) ===
 
 # === SAVE ===
 final = img.convert('RGB')
