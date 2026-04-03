@@ -192,12 +192,4 @@ Part VIII 前沿与哲学             ── 设计原则的提炼
 
 ## 参考来源
 
-| 来源 | 内容 |
-|------|------|
-| Anthropic, *Building Effective Agents* (2024) | Agent 设计模式与编排框架指南 |
-| Dario Amodei, *Machines of Loving Grace* (2024) | Agent 参与软件工程的未来图景 |
-| Andrew Ng, *Agentic Workflows* (2024) | 迭代式 Agent 工作流的价值 |
-| Andrej Karpathy, *LLM as Operating System* (2023) | LLM 作为新操作系统内核的类比 |
-| OpenAI Agents SDK / Swarm (2024-2025) | Agent 编排框架与多 Agent 模式 |
-| AWS Bedrock Agents | 云原生 Agent 编排层架构 |
-| 某生产级 Agent 系统架构 (2025-2026) | 本书的核心分析对象 |
+详见 [参考文献](bibliography.md)
