@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenBook Cover</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cover-w: 1600px;
+    --cover-h: 2240px;
+    --bg: #0a0c10;
+    --cyan: #00e5ff;
+    --orange: #ff6d2e;
+    --blue: #2979ff;
+    --dim: #1a1e2a;
+    --grid: #141824;
+    --text: #e8eaf0;
+    --muted: #5a6380;
+  }
+
+  body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .cover {
+    width: var(--cover-w);
+    height: var(--cover-h);
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* === GRID BACKGROUND === */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.6;
+  }
+
+  .grid-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 45%, transparent 0%, var(--bg) 100%);
+  }
+
+  /* === CIRCUIT TRACES === */
+  .circuit-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+  }
+
+  .trace {
+    position: absolute;
+    background: var(--cyan);
+    border-radius: 1px;
+  }
+
+  .trace.h { height: 2px; }
+  .trace.v { width: 2px; }
+
+  .trace-node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--cyan);
+    border-radius: 50%;
+    background: var(--bg);
+  }
+
+  /* === CENTRAL HARNESS VISUALIZATION === */
+  .harness-vis {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-40px);
+    width: 900px;
+    height: 900px;
+  }
+
+  /* Outer ring - Harness */
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .ring-1 {
+    width: 880px;
+    height: 880px;
+    border-color: rgba(0, 229, 255, 0.08);
+    animation: spin 120s linear infinite;
+  }
+
+  .ring-2 {
+    width: 760px;
+    height: 760px;
+    border-color: rgba(0, 229, 255, 0.12);
+    border-style: dashed;
+    animation: spin 80s linear infinite reverse;
+  }
+
+  .ring-3 {
+    width: 640px;
+    height: 640px;
+    border-color: rgba(255, 109, 46, 0.15);
+    animation: spin 60s linear infinite;
+  }
+
+  .ring-4 {
+    width: 520px;
+    height: 520px;
+    border-color: rgba(41, 121, 255, 0.2);
+    border-style: dashed;
+    animation: spin 45s linear infinite reverse;
+  }
+
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+  /* Ring labels */
+  .ring-label {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ring-label-1 { top: 50%; left: 50%; transform: translate(-50%, -490px); color: rgba(0, 229, 255, 0.3); }
+  .ring-label-2 { top: 50%; left: 50%; transform: translate(-50%, -420px); color: rgba(255, 109, 46, 0.35); }
+  .ring-label-3 { top: 50%; left: 50%; transform: translate(-50%, -350px); color: rgba(41, 121, 255, 0.4); }
+
+  /* Central brain/core */
+  .core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 280px;
+  }
+
+  .core-glow {
+    position: absolute;
+    inset: -60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  .core-shape {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--cyan);
+    background: radial-gradient(circle at 40% 35%,
+      rgba(0, 229, 255, 0.06) 0%,
+      rgba(0, 229, 255, 0.02) 50%,
+      transparent 100%
+    );
+    box-shadow:
+      0 0 40px rgba(0, 229, 255, 0.1),
+      inset 0 0 40px rgba(0, 229, 255, 0.05);
+  }
+
+  .core-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .core-label .label-main {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 8px;
+  }
+
+  .core-label .label-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 2px;
+  }
+
+  /* Harness connector nodes */
+  .connector {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .connector-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .connector-dot::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  .connector-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .connector-line {
+    position: absolute;
+    background: currentColor;
+    opacity: 0.3;
+  }
+
+  /* Position connectors around the ring */
+  .c-tools     { transform: translate(-50%, -380px); color: var(--cyan); }
+  .c-perms     { transform: translate(280px, -260px); color: var(--orange); }
+  .c-memory    { transform: translate(350px, 40px); color: var(--blue); }
+  .c-multi     { transform: translate(240px, 280px); color: var(--cyan); }
+  .c-extend    { transform: translate(-50%, 380px); color: var(--orange); }
+  .c-context   { transform: translate(-340px, 280px); color: var(--blue); }
+  .c-prompt    { transform: translate(-440px, 40px); color: var(--cyan); }
+  .c-safety    { transform: translate(-370px, -260px); color: var(--orange); }
+
+  /* === EQUATION BAR === */
+  .equation {
+    position: absolute;
+    bottom: 520px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.03) 20%, rgba(0, 229, 255, 0.03) 80%, transparent);
+    border-top: 1px solid rgba(0, 229, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+  }
+
+  .eq-box {
+    font-family: 'JetBrains Mono', monospace;
+    padding: 10px 28px;
+    border: 1.5px solid;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 3px;
+  }
+
+  .eq-agent { border-color: var(--cyan); color: var(--cyan); }
+  .eq-op { font-family: 'JetBrains Mono', monospace; font-size: 28px; color: var(--muted); }
+  .eq-llm { border-color: var(--muted); color: var(--muted); }
+  .eq-harness { border-color: var(--orange); color: var(--orange); background: rgba(255, 109, 46, 0.06); }
+
+  /* === TOP SECTION === */
+  .top-section {
+    position: relative;
+    z-index: 10;
+    padding: 80px 100px 0;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid rgba(255, 109, 46, 0.3);
+    padding: 8px 20px;
+    margin-bottom: 40px;
+  }
+
+  .title-block {
+    margin-bottom: 24px;
+  }
+
+  .title-en {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .title-zh {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.15;
+    letter-spacing: 4px;
+  }
+
+  .title-zh .highlight {
+    color: var(--cyan);
+    position: relative;
+  }
+
+  .title-zh .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--cyan);
+    opacity: 0.3;
+  }
+
+  /* === BOTTOM SECTION === */
+  .bottom-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0 100px 80px;
+  }
+
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .subtitle .em { color: var(--orange); }
+
+  .bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tech-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .meta-info {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 2;
+    letter-spacing: 1px;
+  }
+
+  .meta-info .num {
+    color: var(--cyan);
+    font-weight: 700;
+  }
+
+  /* === DECORATIVE ELEMENTS === */
+  .corner-mark {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(0, 229, 255, 0.15);
+  }
+  .corner-tl { top: 40px; left: 40px; border-right: none; border-bottom: none; }
+  .corner-tr { top: 40px; right: 40px; border-left: none; border-bottom: none; }
+  .corner-bl { bottom: 40px; left: 40px; border-right: none; border-top: none; }
+  .corner-br { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+
+  .side-text {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.06);
+    writing-mode: vertical-rl;
+  }
+
+  .side-left { left: 50px; top: 50%; transform: translateY(-50%); }
+  .side-right { right: 50px; top: 50%; transform: translateY(-50%) rotate(180deg); }
+
+  /* Scan line effect */
+  .scanline {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 229, 255, 0.008) 3px,
+      rgba(0, 229, 255, 0.008) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* Top gradient fade */
+  .fade-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background: linear-gradient(to bottom, var(--bg), transparent);
+    z-index: 5;
+  }
+
+  .fade-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background: linear-gradient(to top, var(--bg), transparent);
+    z-index: 5;
+  }
+
+  /* Hex pattern overlay */
+  .hex-pattern {
+    position: absolute;
+    top: 280px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1000px;
+    height: 1000px;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2300e5ff' fill-opacity='1'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <!-- Background layers -->
+  <div class="grid-bg"></div>
+  <div class="hex-pattern"></div>
+  <div class="scanline"></div>
+
+  <!-- Circuit traces -->
+  <div class="circuit-layer">
+    <div class="trace h" style="top: 320px; left: 0; width: 380px;"></div>
+    <div class="trace h" style="top: 320px; left: 420px; width: 200px;"></div>
+    <div class="trace v" style="top: 320px; left: 380px; height: 160px;"></div>
+    <div class="trace-node" style="top: 316px; left: 376px;"></div>
+    <div class="trace h" style="top: 480px; left: 380px; width: 300px;"></div>
+    <div class="trace-node" style="top: 476px; left: 676px;"></div>
+
+    <div class="trace h" style="top: 1800px; right: 0; width: 420px; left: auto;"></div>
+    <div class="trace v" style="top: 1700px; right: 420px; height: 100px;"></div>
+    <div class="trace h" style="top: 1700px; right: 420px; width: 260px;"></div>
+    <div class="trace-node" style="top: 1696px; right: 676px;"></div>
+
+    <div class="trace v" style="top: 600px; left: 120px; height: 300px;"></div>
+    <div class="trace h" style="top: 900px; left: 120px; width: 180px;"></div>
+    <div class="trace-node" style="top: 896px; left: 296px;"></div>
+
+    <div class="trace v" style="top: 1200px; right: 180px; height: 240px;"></div>
+    <div class="trace h" style="top: 1200px; right: 180px; width: 160px;"></div>
+    <div class="trace-node" style="top: 1196px; right: 336px;"></div>
+  </div>
+
+  <!-- Decorative corners -->
+  <div class="corner-mark corner-tl"></div>
+  <div class="corner-mark corner-tr"></div>
+  <div class="corner-mark corner-bl"></div>
+  <div class="corner-mark corner-br"></div>
+
+  <!-- Side text -->
+  <div class="side-text side-left">Harness Engineering</div>
+  <div class="side-text side-right">Agent Architecture</div>
+
+  <!-- Fades -->
+  <div class="fade-top"></div>
+  <div class="fade-bottom"></div>
+
+  <!-- TOP: Title -->
+  <div class="top-section">
+    <div class="badge">Technical Deep Dive</div>
+    <div class="title-block">
+      <div class="title-en">OpenBook</div>
+      <div class="title-zh">
+        构建 AI Agent 的<br><span class="highlight">Harness</span> 工程学
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: Harness visualization -->
+  <div class="harness-vis">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="ring ring-4"></div>
+
+    <div class="ring-label ring-label-1">Extension Layer</div>
+    <div class="ring-label ring-label-2">Security Layer</div>
+    <div class="ring-label ring-label-3">Tool Layer</div>
+
+    <!-- Connector nodes -->
+    <div class="connector c-tools">
+      <div class="connector-dot" style="color: var(--cyan);"></div>
+      <div class="connector-text" style="color: var(--cyan);">TOOLS</div>
+    </div>
+    <div class="connector c-perms">
+      <div class="connector-dot" style="color: var(--orange);"></div>
+      <div class="connector-text" style="color: var(--orange);">PERMISSIONS</div>
+    </div>
+    <div class="connector c-memory">
+      <div class="connector-dot" style="color: var(--blue);"></div>
+      <div class="connector-text" style="color: var(--blue);">MEMORY</div>
+    </div>
+    <div class="connector c-multi">
+      <div class="connector-dot" style="color: var(--cyan);"></div>
+      <div class="connector-text" style="color: var(--cyan);">MULTI-AGENT</div>
+    </div>
+    <div class="connector c-extend">
+      <div class="connector-dot" style="color: var(--orange);"></div>
+      <div class="connector-text" style="color: var(--orange);">MCP / SKILLS</div>
+    </div>
+    <div class="connector c-context">
+      <div class="connector-dot" style="color: var(--blue);"></div>
+      <div class="connector-text" style="color: var(--blue);">CONTEXT</div>
+    </div>
+    <div class="connector c-prompt">
+      <div class="connector-dot" style="color: var(--cyan);"></div>
+      <div class="connector-text" style="color: var(--cyan);">PROMPT</div>
+    </div>
+    <div class="connector c-safety">
+      <div class="connector-dot" style="color: var(--orange);"></div>
+      <div class="connector-text" style="color: var(--orange);">HOOKS</div>
+    </div>
+
+    <!-- Central core -->
+    <div class="core">
+      <div class="core-glow"></div>
+      <div class="core-shape"></div>
+      <div class="core-label">
+        <div class="label-main">LLM</div>
+        <div class="label-sub">reasoning core</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equation bar -->
+  <div class="equation">
+    <div class="eq-box eq-agent">AGENT</div>
+    <div class="eq-op">=</div>
+    <div class="eq-box eq-llm">LLM</div>
+    <div class="eq-op">+</div>
+    <div class="eq-box eq-harness">HARNESS</div>
+  </div>
+
+  <!-- BOTTOM: Info -->
+  <div class="bottom-section">
+    <div class="subtitle">
+      LLM 提供推理能力，<span class="em">Harness</span> 提供工具、权限、记忆、编排<br>
+      这本书讲的就是 <span class="em">Harness</span> 怎么造
+    </div>
+    <div class="bottom-bar">
+      <div class="tech-tags">
+        <div class="tag">Agent Loop</div>
+        <div class="tag">Tool System</div>
+        <div class="tag">Permissions</div>
+        <div class="tag">Multi-Agent</div>
+        <div class="tag">MCP</div>
+        <div class="tag">Dream</div>
+        <div class="tag">Memory</div>
+      </div>
+      <div class="meta-info">
+        <span class="num">22</span> chapters + <span class="num">4</span> appendices<br>
+        <span class="num">8</span> parts &middot; Harness Architecture
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
