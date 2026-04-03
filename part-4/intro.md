@@ -31,3 +31,11 @@ Part IV 用三章拆解这个问题的完整解决方案：从四层纵深防御
 
 - **前置知识**：Part I 的心智模型（权限在 Harness 中的角色），Part III Chapter 6 的工具接口设计（`checkPermissions` 方法）。Part IV 可以在读完 Part I 后直接阅读，不依赖 Part II。
 - **后续延伸**：权限模型直接影响 Part V 的多 Agent 协作——子 Agent 如何继承父 Agent 的权限？Team 的权限白名单如何让 Leader 一次审批全队共享？Chapter 11 的 Hook 机制与 Part VII 的扩展体系（MCP、Skills、Commands）形成互补：Hook 控制「不能做什么」，扩展机制控制「能做什么」。
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

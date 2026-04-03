@@ -198,3 +198,11 @@ Part VIII 前沿与哲学               2 章    设计原则的提炼
 
 *二零二六年春*
 *于无数个与 AI Agent 对话的深夜之后*
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](README.md)
+
+</div>

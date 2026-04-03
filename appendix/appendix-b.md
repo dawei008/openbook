@@ -202,3 +202,11 @@ Agent 定义描述了一个可被调用的子 Agent 的完整配置。
 | `getSystemPrompt` | 函数 | 获取系统提示词；内置 Agent 支持动态生成 |
 
 **覆盖优先级** (高 -> 低): policySettings > flagSettings > projectSettings > userSettings > plugin > built-in
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

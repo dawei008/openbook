@@ -390,3 +390,11 @@ function getCacheControl({ scope, querySource }):
 2. 输出截断恢复的第二级向 LLM 注入"no apology, no recap"消息。如果 LLM 不听这个指令怎么办？系统有没有备用方案？
 
 3. Prompt 缓存的 TTL 为什么要在会话开始时"锁存"？如果允许动态变化，最坏情况下会发生什么？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

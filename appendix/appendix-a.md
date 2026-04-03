@@ -331,3 +331,11 @@ AgentTool -> 判断执行模式
 ```
 
 **Coordinator 模式**：主 Agent 充当协调器，将用户需求拆分为子任务，分派给 Worker Agent。各 Worker 拥有独立的查询循环和权限上下文，通过 SendMessage / Inbox 通信。
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

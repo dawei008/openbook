@@ -289,3 +289,11 @@ QueryEngine 产出 result { subtype: 'success' }
 2. 流式工具并行执行（StreamingToolExecutor）在什么场景下反而可能更慢？提示：考虑工具执行需要权限确认的情况。
 
 3. 查询引擎的消息数组在压缩边界之后会被截断。为什么要这么做？这对 GC 有什么影响？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

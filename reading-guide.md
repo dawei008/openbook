@@ -127,3 +127,11 @@ Mini Harness   对照理解   对照理解   对照理解
 - Part VII 的 MCP（Ch 18）可独立阅读，Skills（Ch 19）和 Commands（Ch 20）相互关联
 - Part VIII 是全书的总结和升华，建议放在最后阅读
 - Appendix D 可在任何时候动手实践
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](README.md)
+
+</div>

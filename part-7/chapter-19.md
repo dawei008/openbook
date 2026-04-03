@@ -273,3 +273,11 @@ registerMCPSkillBridge({
 3. frontmatter token 估算函数只估算常驻部分的 token。如果一个项目定义了 100 个 Skill，每个 frontmatter 平均 50 token，总常驻成本是 5000 token。这个成本是否可接受？有没有进一步优化的空间？
 
 4. Skill 的「目录格式」要求（不支持单文件）是一个设计权衡。它增加了创建 Skill 的摩擦但提供了资源携带能力。你认为这个权衡合理吗？如果要同时支持两种格式，会引入哪些复杂性？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

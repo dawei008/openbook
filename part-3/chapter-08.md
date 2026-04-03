@@ -309,3 +309,11 @@ if isToolResultContentEmpty(content):
 2. 内容替换状态的设计为 prompt cache 做了大量牺牲 -- 一旦决定不替换某个结果，即使后续 turn 预算紧张也不能反悔。如果 prompt cache 不存在（比如换一个不支持 prefix caching 的 API），这个设计会怎么简化？
 
 3. StreamingToolExecutor 的 `break` 语义保证了非并发工具的顺序执行。但如果模型输出的 tool_use 顺序本身就是错误的（比如先 Edit 再 Read，但逻辑上应该先 Read 再 Edit），系统能否检测并纠正？为什么选择不纠正？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

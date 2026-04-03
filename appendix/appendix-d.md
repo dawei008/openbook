@@ -306,3 +306,11 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 > 2. 添加一个简易的上下文管理：在每轮循环开始前估算消息总 token 数（可以用字符数 / 4 粗略近似），超过阈值时将历史消息替换为 LLM 生成的摘要。思考：摘要请求本身也消耗 token，如何避免「压缩成本超过压缩收益」的陷阱？
 >
 > 3. 尝试给 mini Agent 添加一个最简单的记忆系统：在 `~/.mini-agent/memory.json` 中保存 key-value 对，新增一个 `save_memory` 工具和一个 `recall_memory` 工具。运行几次后思考：没有 Dream 式的整合机制，记忆文件会如何退化？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

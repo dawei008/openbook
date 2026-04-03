@@ -249,3 +249,11 @@ Team 的生命周期管理需要处理两个棘手的场景：正常退出时的
 3. Leader 不设置 Agent ID，通过排除法确定身份。如果未来需要支持"多 leader"，这个设计需要怎么修改？
 4. 十二种协议消息共用同一个 Mailbox 通道。如果消息类型继续增长（比如加入"代码审查请求"、"测试覆盖率报告"等），单一通道是否会成为瓶颈？消费端的分流逻辑会不会变成一个巨大的 switch-case？
 5. In-process 后端的 AbortController 不与 leader 关联。如果 leader 进程崩溃，in-process teammate 会怎么样？它们能检测到 leader 的消亡吗？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

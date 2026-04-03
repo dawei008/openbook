@@ -383,3 +383,11 @@ Stage 1 的保守策略和 Stage 2 的纠偏策略
 "如果在 acceptEdits 模式下被允许，那在 auto 模式下也应该被允许"。
 这个推理的隐含假设是什么？
 在什么场景下这个假设会失效？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

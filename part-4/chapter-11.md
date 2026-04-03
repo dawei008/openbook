@@ -423,3 +423,11 @@ stdin/stdout JSON 协议意味着任何编程语言都能编写 Hook。
 如果你要扩展 `if` 的表达能力，
 你会选择正则表达式、JSONPath 还是其他方案？
 每种方案的安全性和性能权衡是什么？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

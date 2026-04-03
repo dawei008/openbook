@@ -27,3 +27,11 @@ Part I 的任务是建立这个核心心智模型：**Agent = LLM + Harness**，
 
 - **前置知识**：无。这是全书的起点。
 - **后续延伸**：Part I 建立的心智模型和架构全景，是 Part II（Agent Loop）、Part III（工具系统）和 Part IV（安全与权限）的共同基础。Chapter 2 中描述的「一条消息的旅程」将在 Part II 中被逐步展开为完整的工程实现。
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

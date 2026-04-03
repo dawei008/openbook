@@ -382,3 +382,11 @@ SIMPLE = true  =>  禁用自定义 Agent、高级工具、Coordinator
 
 - **外部构建**: 助手模式/语音模式/桥接模式/协调器模式/团队记忆等 = false
 - **内部构建**: 所有 Flag 可用，内部用户标识启用
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

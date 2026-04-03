@@ -391,3 +391,11 @@ assistantModule = FEATURE('KAIROS')
 2. 查询循环使用 AsyncGenerator 实现 Agent 循环。相比普通的 while 循环 + callback，AsyncGenerator 带来了什么优势？它的缺点是什么？
 
 3. 启动状态模块有四个 prompt cache 锁存字段，为了避免 cache bust 而在功能关闭后仍然发送 header。你能想到其他领域中类似的"为了缓存一致性而牺牲语义精确性"的设计吗？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

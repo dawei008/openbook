@@ -312,3 +312,11 @@ function toolMatchesName(tool, name):
 4. 工具组装函数按名称排序工具以保持 prompt cache 稳定性。如果两个 MCP 服务器提供了同名工具（比如都叫 `search`），当前的去重策略会保留哪一个？这种行为是否合理？
 
 5. ToolUseContext 有 40+ 个字段，其中很多是可选的。如果你要为一个全新的执行环境（比如浏览器扩展）实现工具系统，你会保留哪些字段？哪些是真正"普适"的，哪些是 该系统特有的？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>

@@ -246,3 +246,11 @@ System prompt 还有一条关于 PR 订阅工具的有趣规则："Call these di
 3. Scratchpad 没有并发控制机制——多个 Worker 可以同时写入同一个文件。这在什么场景下会出问题？Mailbox 系统用了文件锁，为什么 Scratchpad 不用？两者的使用场景有什么本质区别？
 4. System prompt 中包含了完整的 "Example Session"，展示了从 Research 到 Verification 的多轮交互。你认为这种"完整示例"和"规则列表"哪种对 LLM 行为的引导效果更好？为什么？
 5. 四阶段工作流的每个阶段都由 system prompt 约束，没有硬编码的状态机。如果要把四阶段做成代码层面的强制流程（Coordinator 必须先 Research 再 Synthesis 再 Implementation），会获得什么好处，又会失去什么灵活性？
+
+---
+
+<div id="backlink-home">
+
+[← 返回目录](../README.md)
+
+</div>
