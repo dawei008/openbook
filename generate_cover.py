@@ -353,21 +353,21 @@ for i, (text, color, highlight) in enumerate(eq_parts):
     ty = eq_y + 16
 
     if text in ["=", "+"]:
-        draw.text((tx, ty), text, fill=alpha_color(color, 120), font=font_equation)
+        draw.text((tx, ty), text, fill=alpha_color(color, 220), font=font_equation)
     else:
         # Box around text
         box_color = color
-        box_alpha = 60 if not highlight else 80
+        box_alpha = 140 if not highlight else 180
         draw.rectangle(
             [tx - pad, ty - pad//2, tx + tw + pad, ty + th + pad],
-            outline=alpha_color(box_color, box_alpha), width=1
+            outline=alpha_color(box_color, box_alpha), width=2
         )
         if highlight:
             draw.rectangle(
                 [tx - pad + 1, ty - pad//2 + 1, tx + tw + pad - 1, ty + th + pad - 1],
-                fill=alpha_color(ORANGE, 8)
+                fill=alpha_color(ORANGE, 20)
             )
-        draw.text((tx, ty), text, fill=alpha_color(color, 200), font=font_equation)
+        draw.text((tx, ty), text, fill=(*color, 255), font=font_equation)
 
     eq_start_x += tw + gap
 
@@ -380,19 +380,19 @@ sub_line2 = "Harness 提供工具、权限、记忆、编排"
 sub_line3 = "这本书讲的就是 Harness 怎么造"
 
 if font_cjk_medium:
-    draw.text((100, sub_y), sub_line1, fill=alpha_color(MUTED, 180), font=font_cjk_medium)
+    draw.text((100, sub_y), sub_line1, fill=(*TEXT, 255), font=font_cjk_medium)
 
     # "Harness" in orange
-    draw.text((100, sub_y + 40), "Harness", fill=alpha_color(ORANGE, 200), font=font_meta)
+    draw.text((100, sub_y + 44), "Harness", fill=(*ORANGE, 255), font=font_meta)
     bbox = draw.textbbox((0, 0), "Harness", font=font_meta)
     hw2 = bbox[2] - bbox[0]
-    draw.text((100 + hw2, sub_y + 40), " 提供工具、权限、记忆、编排", fill=alpha_color(MUTED, 180), font=font_cjk_small)
+    draw.text((100 + hw2, sub_y + 44), " 提供工具、权限、记忆、编排", fill=(*TEXT, 220), font=font_cjk_small)
 
-    draw.text((100, sub_y + 80), sub_line3, fill=alpha_color(MUTED, 140), font=font_cjk_small)
+    draw.text((100, sub_y + 86), sub_line3, fill=(*MUTED, 255), font=font_cjk_small)
 
 # Divider
 div_y = H - 280
-draw.line([(100, div_y), (W - 100, div_y)], fill=alpha_color(TEXT, 12), width=1)
+draw.line([(100, div_y), (W - 100, div_y)], fill=alpha_color(MUTED, 60), width=1)
 
 # Tags
 tags = ["AGENT LOOP", "TOOL SYSTEM", "PERMISSIONS", "MULTI-AGENT", "MCP", "DREAM", "MEMORY"]
@@ -407,10 +407,10 @@ for tag in tags:
     pad_tx, pad_ty = 12, 7
     draw.rectangle(
         [tag_x, tag_y, tag_x + tw + pad_tx * 2, tag_y + th + pad_ty * 2],
-        outline=alpha_color(TEXT, 15), width=1,
-        fill=alpha_color(TEXT, 3)
+        outline=alpha_color(MUTED, 80), width=1,
+        fill=alpha_color(CYAN, 8)
     )
-    draw.text((tag_x + pad_tx, tag_y + pad_ty), tag, fill=alpha_color(MUTED, 140), font=font_tag)
+    draw.text((tag_x + pad_tx, tag_y + pad_ty), tag, fill=(*TEXT, 230), font=font_tag)
 
     tag_x += tw + pad_tx * 2 + 12
     if tag_x > W - 200:
@@ -426,7 +426,7 @@ meta_lines = [
 for i, line in enumerate(meta_lines):
     bbox = draw.textbbox((0, 0), line, font=font_meta)
     tw = bbox[2] - bbox[0]
-    draw.text((W - 100 - tw, meta_y + i * 28), line, fill=alpha_color(MUTED, 120), font=font_meta)
+    draw.text((W - 100 - tw, meta_y + i * 28), line, fill=(*MUTED, 255), font=font_meta)
 
 # === CORNER MARKS ===
 corner_size = 36
