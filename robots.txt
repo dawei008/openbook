@@ -1,0 +1,41 @@
+# OpenBook - AI Agent Harness Engineering
+# Allow all search engines and AI crawlers
+
+User-agent: *
+Allow: /
+
+# Explicitly allow AI search engine crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Sogou
+Allow: /
+
+User-agent: YisouSpider
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+Sitemap: https://dawei008.github.io/openbook/sitemap.xml
