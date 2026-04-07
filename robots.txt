@@ -4,7 +4,6 @@
 User-agent: *
 Allow: /
 
-# Explicitly allow AI search engine crawlers
 User-agent: GPTBot
 Allow: /
 
