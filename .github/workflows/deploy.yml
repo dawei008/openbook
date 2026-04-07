@@ -18,16 +18,27 @@ jobs:
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v2
         with:
-          mdbook-version: 'latest'
+          mdbook-version: '0.4.43'
 
       - name: Build book
-        run: mdbook build
+        run: |
+          mdbook --version
+          mdbook build 2>&1 | tee build.log
+          # mdBook exits 0 even with warnings, check if book dir exists
+          if [ -f book/index.html ]; then
+            echo "Build successful!"
+          else
+            echo "Build failed - no index.html"
+            cat build.log
+            exit 1
+          fi
 
       - name: Copy static files
         run: |
           cp robots.txt book/ 2>/dev/null || true
           cp static/sitemap.xml book/ 2>/dev/null || true
           cp cover.png book/ 2>/dev/null || true
+          echo "" > book/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
