@@ -7,9 +7,15 @@
   <img src="../cover.png" alt="OpenBook Cover" width="480" />
 </p>
 
+<p align="center">
+  <strong>🌐 Language:</strong>&nbsp;&nbsp;
+  <a href="../README.md"><strong>中文</strong></a> &nbsp;|&nbsp;
+  <strong>English</strong> (current)
+</p>
+
 # OpenBook: AI Agent Harness Engineering
 
-**English** | [Read online](https://dawei008.github.io/openbook/) | [Bibliography](bibliography.md)
+[Bibliography](bibliography.md)
 
 > **A comprehensive open-source book (26 chapters, 9 parts, 4 appendices) on building production-grade AI Agent Harnesses.** Based on deep architecture analysis of large-scale Agent systems, this book reveals the design patterns behind tools, permissions, memory, multi-agent orchestration, MCP protocol, and cloud deployment. Referenced by 50+ industry sources including Anthropic, OpenAI, AWS, and LangChain.
 >
