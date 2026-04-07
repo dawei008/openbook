@@ -1,0 +1,564 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 4: LLM API &amp; Streaming - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-2/chapter-04.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-4-与-llm-对话api-调用流式响应与错误恢复"><a class="header" href="#chapter-4-与-llm-对话api-调用流式响应与错误恢复">Chapter 4: 与 LLM 对话：API 调用、流式响应与错误恢复</a></h1>
+<blockquote>
+<p>调一次 API 看似只需三行代码。但在生产环境下，这三行代码后面藏着一百种失败方式。</p>
+</blockquote>
+<pre><code>┌─────────────── Harness ───────────────┐
+│                                       │
+│   Agent Loop                          │
+│       │                               │
+│       ▼                               │
+│   ★ API 通信层 ★ ─────▶ LLM 服务      │
+│   ┌───────────────────────┐          │
+│   │ 流式传输 · 重试策略     │          │
+│   │ 错误恢复 · 模型降级     │          │
+│   │ Token 预算 · Prompt 缓存│          │
+│   └───────────────────────┘          │
+│                                       │
+└───────────────────────────────────────┘
+本章聚焦：Agent 与 LLM 之间的可靠通信
+</code></pre>
+<h2 id="41-流式传输为什么不等结果出来再显示"><a class="header" href="#41-流式传输为什么不等结果出来再显示">4.1 流式传输：为什么不等结果出来再显示</a></h2>
+<h3 id="问题"><a class="header" href="#问题">问题</a></h3>
+<p>LLM 生成一段回复可能需要 5-30 秒。如果等它完全生成好再一次性返回，用户会盯着一个空白屏幕发呆。有没有更好的方式？</p>
+<h3 id="思路"><a class="header" href="#思路">思路</a></h3>
+<p>答案是流式传输（streaming）。LLM 边生成边发送，用户能看到文字逐字出现。这不只是体验问题——在 Agent 场景下，流式传输还有一个关键用途：<strong>让工具执行和 LLM 输出并行</strong>。</p>
+<p>LLM 的 API 返回一系列事件：<code>message_start</code> -&gt; <code>content_block_start</code> -&gt; <code>content_block_delta</code>(多次) -&gt; <code>content_block_stop</code> -&gt; <code>message_delta</code> -&gt; <code>message_stop</code>。每个 <code>content_block_delta</code> 携带一小段增量内容（一个文本片段、一段 JSON 碎片、一段思考过程）。</p>
+<p>该系统在 API 服务模块中提供了两个入口函数：一个流式版本（AsyncGenerator，逐步产出事件），一个非流式版本（返回 Promise，用于不需要实时反馈的场景如压缩对话）。两者共享同一个底层实现，区别只是消费方式不同。</p>
+<h3 id="实现"><a class="header" href="#实现">实现</a></h3>
+<p>在查询引擎的消息分发器中，流式事件被逐一处理。最重要的是 Token 用量追踪：</p>
+<pre><code class="language-pseudocode">// 流式事件中的 Token 用量追踪（概念示意）
+case 'stream_event':
+  if event.type == 'message_start':
+    currentMessageUsage = EMPTY_USAGE
+    currentMessageUsage = updateUsage(currentMessageUsage, event.message.usage)
+  if event.type == 'message_delta':
+    currentMessageUsage = updateUsage(currentMessageUsage, event.usage)
+  if event.type == 'message_stop':
+    totalUsage = accumulateUsage(totalUsage, currentMessageUsage)
+</code></pre>
+<p><code>message_start</code> 重置计数器，<code>message_delta</code> 累加增量，<code>message_stop</code> 写入总账。这种三阶段追踪确保了即使流式传输中途出错，已经消耗的 Token 也不会被遗漏。</p>
+<p>流式传输还带来了一个巧妙的优化机会：前面第 3 章提到的 StreamingToolExecutor。当 LLM 流式输出中出现一个完整的 <code>tool_use</code> block，不必等整个响应结束就可以开始执行工具。在流式循环中间就取回已完成的工具结果：</p>
+<pre><code class="language-pseudocode">// 流式执行中取回已完成结果（概念示意）
+if streamingToolExecutor and not aborted:
+  for result in streamingToolExecutor.getCompletedResults():
+    if result.message:
+      yield result.message
+      toolResults.append(...)
+</code></pre>
+<p>LLM 还在输出第三个工具调用，第一个工具的结果已经拿到了。这种重叠执行在"同时读三个文件"的场景下效果显著。</p>
+<h2 id="42-重试从简单退避到分级策略"><a class="header" href="#42-重试从简单退避到分级策略">4.2 重试：从简单退避到分级策略</a></h2>
+<h3 id="问题-1"><a class="header" href="#问题-1">问题</a></h3>
+<p>网络抖动、API 限速、服务端过载——这些是调 API 的家常便饭。一个简单的"失败就重试"够用吗？</p>
+<h3 id="思路-1"><a class="header" href="#思路-1">思路</a></h3>
+<p>不够。盲目重试有两个致命问题。第一，如果所有客户端在同一时刻重试，会制造"惊群效应"（thundering herd），把本来快恢复的服务再次压垮。第二，不是所有错误都值得重试——401 认证失败重试一百次也没用，而 529 过载可能等 30 秒就好。</p>
+<p>该系统的重试引擎采用了经典的<strong>指数退避 + 随机抖动</strong>，但在此基础上叠加了三层差异化策略：按错误类型、按请求来源、按运行模式。</p>
+<p>最有趣的设计是：重试引擎本身也是一个 AsyncGenerator。重试等待期间，它不是沉默地 sleep，而是 <code>yield</code> 出系统消息，让用户看到"正在重试..."的提示。这解决了一个 UX 问题：用户不知道程序是挂了还是在等。</p>
+<h3 id="实现-1"><a class="header" href="#实现-1">实现</a></h3>
+<p>指数退避的实现：</p>
+<pre><code class="language-pseudocode">// 指数退避 + 随机抖动（概念示意）
+function getRetryDelay(attempt, retryAfterHeader?, maxDelayMs = 32000):
+  // 优先使用服务端指定的 retry-after 值
+  if retryAfterHeader:
+    seconds = parseInt(retryAfterHeader)
+    if isValidNumber(seconds): return seconds * 1000
+
+  // 指数退避：500ms 起步，每次翻倍，上限 32 秒
+  baseDelay = min(BASE_DELAY_MS * pow(2, attempt - 1), maxDelayMs)
+  // 25% 随机抖动，避免客户端同步重试
+  jitter = random() * 0.25 * baseDelay
+  return baseDelay + jitter
+</code></pre>
+<p>三个层次：优先服务端 <code>retry-after</code> 头（它知道什么时候能恢复），否则从 500ms 起步、每次翻倍、上限 32 秒，最后加 25% 随机抖动避免客户端同步。</p>
+<h2 id="43-529-过载不是所有请求都值得重试"><a class="header" href="#43-529-过载不是所有请求都值得重试">4.3 529 过载：不是所有请求都值得重试</a></h2>
+<h3 id="问题-2"><a class="header" href="#问题-2">问题</a></h3>
+<p>当 LLM API 返回 529（服务端过载），所有请求都应该重试吗？</p>
+<h3 id="思路-2"><a class="header" href="#思路-2">思路</a></h3>
+<p>不应该。这是一个违反直觉但至关重要的设计决策：在服务端过载时，减少请求量比保证每个请求成功更重要。</p>
+<p>系统设计者把请求分成两类：<strong>前台请求</strong>（用户正在等结果的）和<strong>后台请求</strong>（摘要生成、标题生成、建议等）。后台请求在遇到 529 时直接放弃，因为用户感知不到它们失败，而重试只会加剧过载。</p>
+<h3 id="实现-2"><a class="header" href="#实现-2">实现</a></h3>
+<p>前台请求的来源被明确枚举：</p>
+<pre><code class="language-pseudocode">// 允许重试 529 的前台请求来源（概念示意）
+FOREGROUND_529_RETRY_SOURCES = Set([
+  'repl_main_thread', 'sdk', 'agent:custom',
+  'compact', 'hook_agent', 'auto_mode',
+  // ...
+])
+</code></pre>
+<p>没在这个集合里的来源——提示建议、标题生成、会话记忆等——直接失败。注释里写得很清楚："每次重试是 3-10 倍的网关放大，用户根本看不到这些失败"。</p>
+<p>对于前台请求，连续 3 次 529 后会触发<strong>模型降级</strong>：</p>
+<pre><code class="language-pseudocode">// 模型降级机制（概念示意）
+if is529Error(error):
+  consecutive529Errors++
+  if consecutive529Errors &gt;= MAX_529_RETRIES:
+    if options.fallbackModel:
+      throw FallbackTriggeredError(options.model, options.fallbackModel)
+</code></pre>
+<p>降级错误被外层 try/catch 捕获，切换到备用模型重试。比如 Opus 过载了，降级到 Sonnet——不如原来聪明，但至少能用。</p>
+<h2 id="44-持久重试无人值守的韧性"><a class="header" href="#44-持久重试无人值守的韧性">4.4 持久重试：无人值守的韧性</a></h2>
+<h3 id="问题-3"><a class="header" href="#问题-3">问题</a></h3>
+<p>在 CI/CD 或自动化场景下，该 Agent 系统可能无人值守运行几小时。遇到 API 限速怎么办？等多久？</p>
+<h3 id="思路-3"><a class="header" href="#思路-3">思路</a></h3>
+<p>普通场景下，重试 10 次失败就放弃了。但对于无人值守场景（通过环境变量开启），该系统提供了一种"等到天荒地老"的模式。</p>
+<p>这里有一个工程细节值得注意：长时间等待期间，宿主环境（比如容器编排系统）可能因为空闲而杀死进程。解决方案是每 30 秒发一次"心跳"。</p>
+<h3 id="实现-3"><a class="header" href="#实现-3">实现</a></h3>
+<p>持久重试的参数设定：</p>
+<pre><code class="language-pseudocode">// 持久重试参数（概念示意）
+PERSISTENT_MAX_BACKOFF = 5 minutes      // 退避上限 5 分钟
+PERSISTENT_RESET_CAP = 6 hours          // 最长等 6 小时
+HEARTBEAT_INTERVAL = 30 seconds         // 心跳 30 秒
+</code></pre>
+<p>长时间 sleep 被切成 30 秒的块。每个块结束时 yield 一条系统消息，宿主看到标准输出有活动，就不会判定进程"僵死"。</p>
+<pre><code class="language-pseudocode">// 心跳式等待（概念示意）
+remaining = delayMs
+while remaining &gt; 0:
+  if signal.aborted: throw UserAbortError()
+  yield createSystemErrorMessage(error, remaining, attempt, maxRetries)
+  chunk = min(remaining, HEARTBEAT_INTERVAL)
+  await sleep(chunk, signal)
+  remaining -= chunk
+</code></pre>
+<p>429 限速还有一个特殊处理：如果服务端返回了限速重置头（告诉你什么时候限速结束），直接等到那个时间点，而不是傻乎乎地指数退避。窗口式限速（比如"5 小时限额"）的重置时间通常是精确的。</p>
+<h2 id="45-输出被截断分级恢复"><a class="header" href="#45-输出被截断分级恢复">4.5 输出被截断：分级恢复</a></h2>
+<h3 id="问题-4"><a class="header" href="#问题-4">问题</a></h3>
+<p>LLM 的输出有长度限制（<code>max_output_tokens</code>）。当输出被截断时（<code>stop_reason === 'max_output_tokens'</code>），Agent 正在写的代码可能写到一半。怎么办？</p>
+<h3 id="思路-4"><a class="header" href="#思路-4">思路</a></h3>
+<p>系统设计者实现了一套三级恢复机制，核心思想是<strong>先试最便宜的方案</strong>。</p>
+<p>第一级：也许根本不需要那么多输出空间。系统默认把输出限额压到 8K，因为数据分析显示 p99 的输出只有约 5000 token。如果触碰了这个低限额，先升级到 64K 重试——一次干净的重试换取 8 倍的容量节约。</p>
+<p>第二级：如果 64K 还不够，注入一条特殊消息让 LLM 从断点继续写。最多重试 3 次。</p>
+<p>第三级：3 次都失败了，把错误暴露给用户。</p>
+<h3 id="实现-4"><a class="header" href="#实现-4">实现</a></h3>
+<p>第一级升级：</p>
+<pre><code class="language-pseudocode">// 输出限额升级（概念示意）
+if capEnabled and noOverrideSet:
+  nextState = {
+    ...state,
+    maxOutputOverride: ESCALATED_MAX_TOKENS,  // 64,000
+    transition: { reason: 'max_output_escalate' },
+  }
+  state = nextState
+  continue  // 用更高限额重试同一个请求
+</code></pre>
+<p>第二级恢复消息的措辞值得细看：</p>
+<pre><code class="language-pseudocode">// 截断恢复消息（概念示意）
+recoveryMessage = createUserMessage({
+  content:
+    "Output token limit hit. Resume directly -- no apology, no recap " +
+    "of what you were doing. Pick up mid-thought if that is where the " +
+    "cut happened. Break remaining work into smaller pieces.",
+  isMeta: true,
+})
+</code></pre>
+<p>"No apology, no recap"——这不是礼貌问题，是 Token 预算问题。LLM 有一个坏习惯：被打断后喜欢道歉、总结之前做了什么。这些"客气话"会占用宝贵的输出空间，可能导致再次被截断，形成死循环。</p>
+<p>还有一个设计细节：截断错误在流式循环中被"扣留"（withheld），不立即 yield 给外部。如果过早暴露错误，SDK 调用者可能提前终止会话，让恢复机制没机会运行。只有当三次恢复都失败后，错误才被释放。</p>
+<h2 id="46-token-预算三道保险"><a class="header" href="#46-token-预算三道保险">4.6 Token 预算：三道保险</a></h2>
+<h3 id="问题-5"><a class="header" href="#问题-5">问题</a></h3>
+<p>Token 是 LLM 世界的货币。怎么防止失控的消耗？</p>
+<h3 id="思路-5"><a class="header" href="#思路-5">思路</a></h3>
+<p>该系统在三个维度管控 Token 预算，每个维度解决不同的问题：</p>
+<ol>
+<li><strong>输出限额</strong>（per-request）：防止单次回复过长。默认 8K，升级到 64K，上限因模型而异。</li>
+<li><strong>上下文窗口</strong>（per-conversation）：防止对话历史撑爆窗口。200K 或 1M，通过压缩机制管理（下一章详述）。</li>
+<li><strong>USD 预算</strong>（per-session）：防止账单失控。SDK 调用者可以设硬性上限。</li>
+</ol>
+<h3 id="实现-5"><a class="header" href="#实现-5">实现</a></h3>
+<p>输出限额的容量保留优化体现了数据驱动的思维：</p>
+<pre><code class="language-pseudocode">// 基于数据分析的输出限额（概念示意）
+// 数据分析显示 p99 输出约 4,911 token，32k/64k 默认值会过度预留 8-16 倍
+CAPPED_DEFAULT_MAX_TOKENS = 8_000
+ESCALATED_MAX_TOKENS = 64_000
+</code></pre>
+<p>不到 1% 的请求会触碰 8K 限额，它们被升级到 64K——代价是一次额外的 API 调用，收益是 99% 的请求省了 8-16 倍的容量预留。</p>
+<p>USD 预算控制在查询引擎层面，每处理完一条消息就检查累计花费：</p>
+<pre><code class="language-pseudocode">// USD 预算断路器（概念示意）
+if maxBudgetUsd != undefined and getTotalCost() &gt;= maxBudgetUsd:
+  yield { type: 'result', subtype: 'error_max_budget_usd', ... }
+  return
+</code></pre>
+<p>这是一个硬性断路器。不管 Agent 正在做什么，预算到了立刻停。</p>
+<h2 id="47-模型选择运行时的动态决策"><a class="header" href="#47-模型选择运行时的动态决策">4.7 模型选择：运行时的动态决策</a></h2>
+<h3 id="问题-6"><a class="header" href="#问题-6">问题</a></h3>
+<p>不同用户、不同场景应该用什么模型？谁来决定？</p>
+<h3 id="思路-6"><a class="header" href="#思路-6">思路</a></h3>
+<p>模型选择不是启动时一锤子买卖。它有一条优先级链（用户显式指定 &gt; 环境变量 &gt; 订阅级别默认值），并且在运行时可以动态调整。</p>
+<p>最有趣的是 <code>opusplan</code> 模式：规划阶段用 Opus（最强大脑），执行阶段用 Sonnet（高效助手）。这是一个成本优化——大部分 Token 消耗在执行阶段（读文件、写代码），用较便宜的模型就够了，把昂贵的模型留给需要深度思考的规划环节。</p>
+<h3 id="实现-6"><a class="header" href="#实现-6">实现</a></h3>
+<p>运行时模型切换的逻辑：</p>
+<pre><code class="language-pseudocode">// 运行时模型选择（概念示意）
+function getRuntimeMainLoopModel(params):
+  // opusplan 模式：规划阶段用 Opus，但超长上下文除外
+  if userSetting == 'opusplan'
+      and permissionMode == 'plan' and not exceeds200kTokens:
+    return getDefaultOpusModel()
+
+  // haiku 在规划阶段升级到 sonnet（规划能力不足）
+  if userSetting == 'haiku' and permissionMode == 'plan':
+    return getDefaultSonnetModel()
+
+  return mainLoopModel
+</code></pre>
+<p>注意 <code>exceeds200kTokens</code> 这个条件：当上下文超过 200K token 时，即使在规划阶段也不用 Opus。这是因为 Opus 在超长上下文下的性价比不如 Sonnet，花两倍的钱但不一定得到更好的规划。</p>
+<p>另外，Haiku 在规划阶段也会被升级到 Sonnet。逻辑很清楚：Haiku 的规划能力不足以驾驭复杂任务的分解和编排。</p>
+<h2 id="48-错误分类每种故障都有对应的出路"><a class="header" href="#48-错误分类每种故障都有对应的出路">4.8 错误分类：每种故障都有对应的出路</a></h2>
+<h3 id="问题-7"><a class="header" href="#问题-7">问题</a></h3>
+<p>API 调用可能遇到几十种不同的错误。怎么给用户有用的提示，而不是千篇一律的"出错了"？</p>
+<h3 id="思路-7"><a class="header" href="#思路-7">思路</a></h3>
+<p>错误处理模块中有一个庞大的错误分类器。它的设计原则是：<strong>每种分类对应一种可操作的指引</strong>。不是告诉用户"429 错误"，而是告诉他"限速了，去 用量设置页面 开启额外用量"。</p>
+<h3 id="实现-7"><a class="header" href="#实现-7">实现</a></h3>
+<p>分类树的主干结构：</p>
+<pre><code>超时 --&gt; "Request timed out"（自动重试）
+图片过大 --&gt; "Image was too large"（提示缩小）
+429 限速 --&gt; 细分：
+  有 quota headers --&gt; 解析剩余额度，显示重置时间
+  需要 Extra Usage --&gt; "run /extra-usage to enable"
+  其他 --&gt; 显示服务端原始消息
+Prompt Too Long --&gt; 触发 reactive compact
+PDF 错误 --&gt; 细分页数/密码/格式
+401/403 认证 --&gt; 细分：
+  OAuth 撤销 --&gt; "Please run /login"
+  组织被禁用 --&gt; 区分环境变量 vs OAuth 路径
+余额不足 --&gt; "Credit balance is too low"
+</code></pre>
+<p>每个分支产出一个助手消息，带有错误类型标识字段。这个字段被上层的恢复机制消费——比如 <code>prompt_too_long</code> 类型会触发 reactive compact，<code>max_output_tokens</code> 会触发截断恢复。错误分类不只是给人看的提示，更是给机器看的恢复信号。</p>
+<h2 id="49-prompt-缓存省钱的隐形机制"><a class="header" href="#49-prompt-缓存省钱的隐形机制">4.9 Prompt 缓存：省钱的隐形机制</a></h2>
+<h3 id="问题-8"><a class="header" href="#问题-8">问题</a></h3>
+<p>Agent 每轮循环都要把完整的消息历史发给 API。同样的系统提示词发了 50 遍，Token 算了 50 次钱。有没有办法只付一次？</p>
+<h3 id="思路-8"><a class="header" href="#思路-8">思路</a></h3>
+<p>API 提供商的 Prompt Caching 机制允许标记消息中的"缓存断点"。被标记内容的 Token 在第一次请求时正常计费，后续请求如果前缀匹配，只收 1/10 的价格。</p>
+<p>该系统在两个地方设置缓存断点：系统提示词和最近几轮对话的消息末尾。这样，只要系统提示词和对话前缀不变，每轮循环只为新增的内容付全价。</p>
+<p>缓存的 TTL 默认 5 分钟（<code>ephemeral</code>），但对符合条件的用户可以扩展到 1 小时。TTL 的选择被"锁存"在会话启动时——防止远程配置在请求中途更新，导致同一会话内混用不同 TTL，反而破坏缓存。</p>
+<h3 id="实现-8"><a class="header" href="#实现-8">实现</a></h3>
+<p>缓存控制的生成逻辑：</p>
+<pre><code class="language-pseudocode">// 缓存控制生成（概念示意）
+function getCacheControl({ scope, querySource }):
+  return {
+    type: 'ephemeral',
+    ttl: should1hCacheTTL(querySource) ? '1h' : undefined,
+    scope: scope == 'global' ? 'global' : undefined,
+  }
+</code></pre>
+<p>1 小时 TTL 的判断内部做了两层判断：用户是否有资格（内部用户或订阅且未超量），查询来源是否匹配白名单模式。两者都满足才开启 1h TTL。</p>
+<p>这里有一个微妙的稳定性考量：资格和白名单在首次查询时被锁存到启动状态，整个会话不再变化。原因是："防止在远程配置磁盘缓存在请求中途更新时出现混合 TTL"——如果 TTL 在会话中途从 5min 变成 1h，新请求的 cache_control 和旧请求不同，服务端会认为是新的前缀，之前缓存的内容全部失效。</p>
+<h2 id="410-小结"><a class="header" href="#410-小结">4.10 小结</a></h2>
+<p>与 LLM 对话的可靠性是一门工程纪律，需要在多个维度同时防御：</p>
+<ul>
+<li><strong>流式传输</strong>降低感知延迟，同时支持工具并行执行</li>
+<li><strong>指数退避 + 分级策略</strong>确保重试不会加剧过载</li>
+<li><strong>输出截断三级恢复</strong>把大部分截断错误消化在内部</li>
+<li><strong>模型降级</strong>在高负载时保持服务可用</li>
+<li><strong>错误分类</strong>让每种故障都有可操作的恢复路径</li>
+<li><strong>Prompt 缓存</strong>在不改变行为的情况下大幅降低成本</li>
+</ul>
+<p>这些机制的共同目标是一句话：<strong>宁可慢一点，也不能挂</strong>。下一章，我们将面对另一个硬约束：对话越来越长，上下文窗口装不下时，系统如何优雅地"遗忘"。</p>
+<hr />
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>为什么后台请求在 529 时直接放弃而不是用更温和的方式（比如延迟重试）？提示：思考 N 个客户端同时重试时的总请求量。</p>
+</li>
+<li>
+<p>输出截断恢复的第二级向 LLM 注入"no apology, no recap"消息。如果 LLM 不听这个指令怎么办？系统有没有备用方案？</p>
+</li>
+<li>
+<p>Prompt 缓存的 TTL 为什么要在会话开始时"锁存"？如果允许动态变化，最坏情况下会发生什么？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-2/chapter-03.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-2/chapter-05.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-2/chapter-03.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-2/chapter-05.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

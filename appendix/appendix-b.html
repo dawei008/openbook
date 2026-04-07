@@ -1,0 +1,448 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Appendix B: Type Definitions - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./appendix/appendix-b.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="appendix-b-关键类型定义速查"><a class="header" href="#appendix-b-关键类型定义速查">Appendix B: 关键类型定义速查</a></h1>
+<p>10 个核心类型的精简速查。每个类型只列出最重要的 5-8 个字段，并说明「为什么需要这个字段」。完整定义请查阅对应模块。</p>
+<hr />
+<h2 id="b1-tool"><a class="header" href="#b1-tool">B.1 Tool</a></h2>
+<p><strong>位置</strong>: 工具核心接口模块</p>
+<p>整个工具系统的核心接口。Bash、Read、Edit、MCP 工具、AgentTool 等都实现此接口。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td><code>string</code> (readonly)</td><td>工具的唯一标识，API 调用和权限规则都按此名匹配</td></tr>
+<tr><td><code>inputSchema</code></td><td><code>Zod schema</code> (readonly)</td><td>定义输入格式，用于 API 传输时的 JSON Schema 转换和运行时校验</td></tr>
+<tr><td><code>call()</code></td><td><code>(args, context, canUseTool, parentMessage, onProgress?) =&gt; Promise&lt;ToolResult&gt;</code></td><td>执行工具的核心方法；接收解析后的输入和完整上下文</td></tr>
+<tr><td><code>checkPermissions()</code></td><td><code>(input, context) =&gt; Promise&lt;PermissionResult&gt;</code></td><td>工具专属权限逻辑；返回 allow/deny/ask/passthrough 四种行为</td></tr>
+<tr><td><code>isConcurrencySafe()</code></td><td><code>(input) =&gt; boolean</code></td><td>决定能否与其他工具并行执行；默认 false (fail-closed 原则)</td></tr>
+<tr><td><code>isReadOnly()</code></td><td><code>(input) =&gt; boolean</code></td><td>权限系统用此区分只读/写入操作；plan 模式只允许只读工具</td></tr>
+<tr><td><code>maxResultSizeChars</code></td><td><code>number</code></td><td>超出此阈值的结果会持久化到磁盘而非内联在消息中</td></tr>
+<tr><td><code>description()</code></td><td><code>(input, options) =&gt; Promise&lt;string&gt;</code></td><td>生成发送给模型的工具描述；可根据权限上下文动态调整</td></tr>
+</tbody></table>
+</div>
+<p><strong>设计要点</strong>: 泛型 <code>Tool&lt;Input, Output, P&gt;</code> 提供端到端类型安全。工具构建辅助函数为未显式定义的方法填充 fail-closed 默认值（如 <code>isConcurrencySafe</code> 默认返回 <code>false</code>）。</p>
+<hr />
+<h2 id="b2-toolusecontext"><a class="header" href="#b2-toolusecontext">B.2 ToolUseContext</a></h2>
+<p><strong>位置</strong>: 工具核心接口模块</p>
+<p>每次工具调用的上下文对象，封装工具执行所需的一切环境信息。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>options</code></td><td>嵌套对象</td><td>查询级别配置 (模型、工具列表、MCP 连接等)，一次查询内不变</td></tr>
+<tr><td><code>getAppState()</code> / <code>setAppState()</code></td><td>函数</td><td>读写全局应用状态；子 Agent 的 setAppState 可能被 no-op 替换</td></tr>
+<tr><td><code>setAppStateForTasks?</code></td><td>函数</td><td>解决子 Agent 的 setAppState 被替换后无法注册后台任务的问题；总是指向根 Store</td></tr>
+<tr><td><code>readFileState</code></td><td><code>FileStateCache</code> (LRU)</td><td>文件内容缓存，避免重复读取同一文件</td></tr>
+<tr><td><code>messages</code></td><td><code>Message[]</code></td><td>当前消息历史，工具可以读取上下文</td></tr>
+<tr><td><code>abortController</code></td><td><code>AbortController</code></td><td>中止控制器，用户中断时取消正在进行的工具调用</td></tr>
+<tr><td><code>agentId?</code> / <code>agentType?</code></td><td>标识类型</td><td>仅子 Agent 设置；Hook 用此区分主线程和子 Agent 调用</td></tr>
+<tr><td><code>contentReplacementState?</code></td><td>对象</td><td>工具结果 token 预算管理；fork 子 Agent 会克隆父级状态以共享 cache 决策</td></tr>
+</tbody></table>
+</div>
+<p><strong>设计要点</strong>: 这个类型很大（40+ 字段），因为它是工具执行的唯一上下文通道。可选字段 (<code>?</code>) 表示仅在特定场景下存在（如 <code>agentId</code> 仅子 Agent 设置，UI 相关回调仅交互模式提供）。</p>
+<hr />
+<h2 id="b3-toolresult"><a class="header" href="#b3-toolresult">B.3 ToolResult</a></h2>
+<p><strong>位置</strong>: 工具核心接口模块</p>
+<p>工具 <code>call()</code> 方法的返回类型，封装执行结果及副作用。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>data</code></td><td><code>T</code> (泛型)</td><td>工具的实际输出数据，类型由 Tool 泛型参数决定</td></tr>
+<tr><td><code>newMessages?</code></td><td><code>Message[]</code></td><td>工具可在执行中向对话注入额外消息 (如附件消息)</td></tr>
+<tr><td><code>contextModifier?</code></td><td><code>(ctx) =&gt; ToolUseContext</code></td><td>让工具修改后续调用的上下文 (如 Bash 切换工作目录)；仅非并发安全工具生效</td></tr>
+<tr><td><code>mcpMeta?</code></td><td><code>{ _meta?, structuredContent? }</code></td><td>MCP 协议元数据，透传给 SDK 消费者</td></tr>
+</tbody></table>
+</div>
+<p><strong>设计要点</strong>: <code>contextModifier</code> 是一个精巧的设计 -- 它让 Bash 工具的 <code>cd</code> 命令可以影响后续工具调用的工作目录，但限制为非并发工具，避免竞态条件。</p>
+<hr />
+<h2 id="b4-message"><a class="header" href="#b4-message">B.4 Message</a></h2>
+<p><strong>位置</strong>: 消息类型定义模块</p>
+<p>消息系统使用判别联合（Discriminated Union），以 <code>type</code> 字段区分 5 种消息类型。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>type</code></td><td><code>'user' | 'assistant' | 'system' | 'progress' | 'attachment'</code></td><td>判别联合的标签字段</td></tr>
+<tr><td><code>uuid</code> / <code>timestamp</code></td><td><code>UUID</code> / <code>string</code></td><td>唯一标识 + 时序追踪，支持会话恢复和消息引用</td></tr>
+<tr><td><code>UserMessage.toolUseResult?</code></td><td><code>{ toolUseID, toolName, output }</code></td><td>将工具结果与用户消息关联，实现 API 格式与内部格式互转</td></tr>
+<tr><td><code>UserMessage.isCompactSummary?</code></td><td><code>boolean</code></td><td>标记压缩摘要消息，compact 流程用此保留边界</td></tr>
+<tr><td><code>AssistantMessage.costUSD?</code></td><td><code>number</code></td><td>单次调用费用追踪</td></tr>
+<tr><td><code>AssistantMessage.usage?</code></td><td>token 统计</td><td>输入/输出/缓存 token 计数，用于上下文窗口管理</td></tr>
+<tr><td><code>SystemMessage.format</code></td><td><code>string</code></td><td>系统消息子类型标识 (14 种)，纯 UI 消息，API 发送前被过滤</td></tr>
+</tbody></table>
+</div>
+<p><strong>设计要点</strong>: SystemMessage 有 14 种子类型 (informational / API error / compact boundary / agent killed / ...)，但它们都是纯 UI 消息 -- 消息规范化函数会在发送给 API 前全部剥离。</p>
+<hr />
+<h2 id="b5-appstate"><a class="header" href="#b5-appstate">B.5 AppState</a></h2>
+<p><strong>位置</strong>: 应用状态定义模块</p>
+<p>全局应用状态。外层用 DeepImmutable 包裹确保不可变性，通过 useSyncExternalStore 实现切片订阅。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>settings</code></td><td>设置类型</td><td>用户/项目/策略设置的合并结果</td></tr>
+<tr><td><code>toolPermissionContext</code></td><td>权限上下文类型</td><td>权限上下文：当前模式、允许/拒绝规则、附加工作目录</td></tr>
+<tr><td><code>tasks</code></td><td><code>{ [taskId]: TaskState }</code></td><td>所有活跃后台任务的统一管理</td></tr>
+<tr><td><code>mcp</code></td><td>嵌套对象</td><td>集中管理 MCP 连接、工具、命令和资源</td></tr>
+<tr><td><code>plugins</code></td><td>嵌套对象</td><td>插件系统状态 (已启用/已禁用/错误/安装状态)</td></tr>
+<tr><td><code>agentDefinitions</code></td><td>Agent 定义结果类型</td><td>去重后的 Agent 定义列表 + 加载失败记录</td></tr>
+<tr><td><code>speculation</code></td><td>推测状态类型</td><td>推测执行状态 (idle / active)，支持投机性预计算</td></tr>
+<tr><td><code>mainLoopModel</code></td><td>模型设置类型</td><td>主循环使用的模型</td></tr>
+</tbody></table>
+</div>
+<p><strong>设计要点</strong>: DeepImmutable 包裹只覆盖纯数据字段。包含函数类型的字段 (如 tasks、mcp) 排除在外。这是 TypeScript 不可变性的实用折中。</p>
+<hr />
+<h2 id="b6-hookevent"><a class="header" href="#b6-hookevent">B.6 HookEvent</a></h2>
+<p><strong>位置</strong>: Hook 类型定义模块</p>
+<p>Hook 系统的事件类型，允许在工具调用的各个生命周期阶段插入自定义逻辑。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>HookEvent</code></td><td>16 种事件联合</td><td>覆盖从 SessionStart 到 PostToolUse 的完整生命周期</td></tr>
+<tr><td><code>callback</code></td><td><code>(input, toolUseID, abort, ...) =&gt; Promise&lt;HookJSONOutput&gt;</code></td><td>Hook 的实际执行逻辑</td></tr>
+<tr><td><code>timeout?</code></td><td><code>number</code></td><td>防止 Hook 无限阻塞</td></tr>
+<tr><td><code>matcher?</code></td><td><code>string</code></td><td>匹配条件，如 <code>"Bash(git *)"</code> 只对特定工具+参数触发</td></tr>
+<tr><td><code>permissionBehavior?</code></td><td><code>'allow' | 'deny' | 'ask' | 'passthrough'</code></td><td>Hook 可以直接做出权限决策，优先级最高</td></tr>
+<tr><td><code>updatedInput?</code></td><td><code>Record&lt;string, unknown&gt;</code></td><td>Hook 可以修改工具的输入参数</td></tr>
+<tr><td><code>additionalContext?</code></td><td><code>string</code></td><td>注入到模型上下文的额外信息</td></tr>
+</tbody></table>
+</div>
+<p><strong>16 种 Hook 事件</strong>: PreToolUse / PostToolUse / PostToolUseFailure / UserPromptSubmit / SessionStart / Setup / SubagentStart / PermissionDenied / PermissionRequest / Notification / Elicitation / ElicitationResult / CwdChanged / FileChanged / WorktreeCreate</p>
+<hr />
+<h2 id="b7-mcpserverconfig"><a class="header" href="#b7-mcpserverconfig">B.7 MCPServerConfig</a></h2>
+<p><strong>位置</strong>: MCP 类型定义模块</p>
+<p>MCP 服务器连接配置，支持 6 种传输协议。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>type</code></td><td><code>'stdio' | 'sse' | 'http' | 'ws' | 'sdk' | ...</code></td><td>判别联合标签，决定使用哪种传输协议</td></tr>
+<tr><td><code>command</code> / <code>args</code></td><td><code>string</code> / <code>string[]</code></td><td>stdio 模式的启动命令和参数</td></tr>
+<tr><td><code>url</code></td><td><code>string</code></td><td>sse/http/ws 模式的端点 URL</td></tr>
+<tr><td><code>oauth?</code></td><td>嵌套对象</td><td>OAuth 认证配置 (clientId, callbackPort 等)</td></tr>
+<tr><td><code>scope</code></td><td>配置作用域类型</td><td>配置来源 (local/user/project/enterprise/...)</td></tr>
+</tbody></table>
+</div>
+<p><strong>连接状态</strong>: connected / failed / needsAuth / pending / disabled。已连接状态包含 capabilities (服务器能力声明) 和 cleanup (断开清理回调)。</p>
+<hr />
+<h2 id="b8-task"><a class="header" href="#b8-task">B.8 Task</a></h2>
+<p><strong>位置</strong>: 任务系统模块</p>
+<p>后台任务系统，统一管理所有类型的异步工作。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>TaskType</code></td><td>7 种联合</td><td>local_bash / local_agent / remote_agent / in_process_teammate / local_workflow / monitor_mcp / dream</td></tr>
+<tr><td><code>TaskStatus</code></td><td>5 种联合</td><td>pending / running / completed / failed / killed</td></tr>
+<tr><td><code>id</code></td><td><code>string</code></td><td>带类型前缀的唯一 ID</td></tr>
+<tr><td><code>outputFile</code></td><td><code>string</code></td><td>输出文件路径，用于进程间通信</td></tr>
+<tr><td><code>kill()</code></td><td><code>(taskId, setAppState) =&gt; Promise&lt;void&gt;</code></td><td>终止任务的统一接口</td></tr>
+</tbody></table>
+</div>
+<p><strong>ID 生成规则</strong>: 类型前缀 + 8 位随机字符。36^8 约 2.8 万亿种组合，足以抵抗暴力猜测。</p>
+<hr />
+<h2 id="b9-permissionresult"><a class="header" href="#b9-permissionresult">B.9 PermissionResult</a></h2>
+<p><strong>位置</strong>: 权限类型定义模块</p>
+<p>权限系统的核心决策类型。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>behavior</code></td><td><code>'allow' | 'deny' | 'ask' | 'passthrough'</code></td><td>四种决策行为；passthrough 表示交给通用权限逻辑处理</td></tr>
+<tr><td><code>updatedInput?</code></td><td><code>Input</code></td><td>allow/ask 决策可以修改工具输入 (如路径规范化)</td></tr>
+<tr><td><code>message</code></td><td><code>string</code></td><td>deny/ask 时的原因说明 / 权限请求消息</td></tr>
+<tr><td><code>decisionReason</code></td><td>判别联合</td><td>记录决策原因：命中规则 / 权限模式 / Hook / 分类器等 11 种</td></tr>
+<tr><td><code>suggestions?</code></td><td><code>PermissionUpdate[]</code></td><td>建议的权限规则更新，UI 可一键应用</td></tr>
+<tr><td><code>pendingClassifierCheck?</code></td><td>对象</td><td>异步分类器正在检查中，UI 先显示再等结果</td></tr>
+</tbody></table>
+</div>
+<p><strong>PermissionMode</strong> (7 种): default (逐个询问) / plan (只读) / acceptEdits (允许编辑) / bypassPermissions (全放行) / dontAsk (静默拒绝) / auto (LLM 分类器判定) / bubble (向父级传递)</p>
+<hr />
+<h2 id="b10-agentdefinition"><a class="header" href="#b10-agentdefinition">B.10 AgentDefinition</a></h2>
+<p><strong>位置</strong>: Agent 定义加载模块</p>
+<p>Agent 定义描述了一个可被调用的子 Agent 的完整配置。</p>
+<div class="table-wrapper"><table><thead><tr><th>核心字段</th><th>类型</th><th>为什么需要</th></tr></thead><tbody>
+<tr><td><code>agentType</code></td><td><code>string</code></td><td>唯一标识名，同名 Agent 按优先级覆盖</td></tr>
+<tr><td><code>whenToUse</code></td><td><code>string</code></td><td>使用场景描述，供模型判断何时调用此 Agent</td></tr>
+<tr><td><code>tools?</code> / <code>disallowedTools?</code></td><td><code>string[]</code></td><td>工具白名单/黑名单，限制 Agent 能力范围</td></tr>
+<tr><td><code>model?</code></td><td><code>string</code></td><td>使用的模型 (或 'inherit' 继承父级)</td></tr>
+<tr><td><code>permissionMode?</code></td><td><code>PermissionMode</code></td><td>Agent 专属权限模式</td></tr>
+<tr><td><code>isolation?</code></td><td><code>'worktree' | 'remote'</code></td><td>隔离模式：独立 git 工作树或远程执行</td></tr>
+<tr><td><code>source</code></td><td><code>'built-in' | SettingSource | 'plugin'</code></td><td>来源，决定覆盖优先级</td></tr>
+<tr><td><code>getSystemPrompt</code></td><td>函数</td><td>获取系统提示词；内置 Agent 支持动态生成</td></tr>
+</tbody></table>
+</div>
+<p><strong>覆盖优先级</strong> (高 -&gt; 低): policySettings &gt; flagSettings &gt; projectSettings &gt; userSettings &gt; plugin &gt; built-in</p>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../appendix/appendix-a.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../appendix/appendix-c.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../appendix/appendix-a.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../appendix/appendix-c.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

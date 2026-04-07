@@ -1,0 +1,566 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 17: Memory Systems - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-6/chapter-17.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-17-记忆系统全景从文件发现到梦境整合"><a class="header" href="#chapter-17-记忆系统全景从文件发现到梦境整合">Chapter 17: 记忆系统全景：从文件发现到梦境整合</a></h1>
+<blockquote>
+<p>核心问题：一个 Agent 如何在会话结束后还能「记住」？</p>
+</blockquote>
+<pre><code>     ┌────────────────────────────────┐
+     │        Agent Session           │
+     │                                │
+     │ Discover ──► Inject ──► Use    │
+     │  5-layer       │      recall   │
+     │  AGENT.md   sys prompt         │
+     │                                │
+     │ ★ Memory Lifecycle ★          │  ◄── 本章聚焦
+     │                                │
+     │ Extract ◄── Conversation       │
+     │    │                           │
+     │ Retrieve ── LLM Selector       │
+     │    │                           │
+     │ Consolidate ── Dream (Ch.21)   │
+     └────────────────────────────────┘
+</code></pre>
+<h2 id="171-agent-为什么需要记忆"><a class="header" href="#171-agent-为什么需要记忆">17.1 Agent 为什么需要记忆</a></h2>
+<p>LLM 的上下文窗口是 Agent 的「工作记忆」——高速但易失。每次新会话，模型面对的是一片空白。但用户的期望不是这样：</p>
+<ul>
+<li>「我上次跟你说过不要用 mock 测试了」</li>
+<li>「这个项目的 PR 要合成一个提交」</li>
+<li>「Bug 追踪在 Linear 的 INGEST 项目里」</li>
+</ul>
+<p>这些都是跨会话信息。Agent 如果每次都从零开始，用户体验就像和一个失忆的同事合作。</p>
+<p><strong>核心挑战</strong>：如何在无状态的 LLM 之上，构建有状态的记忆？</p>
+<p>该系统的答案出乎意料地朴素：<strong>记忆就是文件</strong>。不需要向量数据库，不需要 embedding 服务——只需要磁盘上的 Markdown 文件和一套精密的管理机制。</p>
+<p>但「文件即记忆」只是表面。真正的复杂性藏在五个问题里：</p>
+<ol>
+<li><strong>发现</strong>：怎么找到散落在文件系统各处的记忆文件？</li>
+<li><strong>注入</strong>：怎么把记忆塞进有限的上下文窗口？</li>
+<li><strong>提取</strong>：对话中产生的新知识怎么自动捕获？</li>
+<li><strong>检索</strong>：100 条记忆不能全加载，怎么选最相关的？</li>
+<li><strong>整合</strong>：记忆越来越多越来越碎，怎么定期清理？</li>
+</ol>
+<p>这五个问题构成了记忆的完整生命周期：</p>
+<pre><code>发现 -&gt; 注入 -&gt; 提取 -&gt; 检索 -&gt; 整合
+ ^                              |
+ +------------------------------+
+</code></pre>
+<p>以下逐一拆解。</p>
+<hr />
+<h2 id="172-发现五层-agentmd-的设计思路"><a class="header" href="#172-发现五层-agentmd-的设计思路">17.2 发现：五层 AGENT.md 的设计思路</a></h2>
+<h3 id="问题"><a class="header" href="#问题">问题</a></h3>
+<p>不同层级的人对 Agent 有不同的期望：</p>
+<ul>
+<li><strong>企业管理员</strong>想设全局策略（「所有 Agent 不许访问生产数据库」）</li>
+<li><strong>用户</strong>想设个人偏好（「我喜欢简洁回复」）</li>
+<li><strong>项目</strong>有自己的约定（「这个项目用 Pydantic v2」）</li>
+<li><strong>开发者个人</strong>有私有配置（「我的测试数据库地址」）</li>
+</ul>
+<p>一种方案是搞一个中心化的配置系统。但系统设计者选了更简单的路：<strong>让每一层各自有一个 AGENT.md 文件，按优先级叠加</strong>。</p>
+<h3 id="思路"><a class="header" href="#思路">思路</a></h3>
+<p>设计灵感来自 CSS 的层叠规则和 Git 的配置覆盖（<code>/etc/gitconfig</code> -&gt; <code>~/.gitconfig</code> -&gt; <code>.git/config</code>）：</p>
+<ol>
+<li>越具体的配置优先级越高</li>
+<li>后加载覆盖先加载</li>
+<li>每一层有独立的信任边界</li>
+</ol>
+<p>五层从低到高：</p>
+<div class="table-wrapper"><table><thead><tr><th>层</th><th>位置</th><th>谁写的</th><th>信任程度</th></tr></thead><tbody>
+<tr><td>Managed</td><td><code>/etc/agent/AGENT.md</code></td><td>IT 管理员</td><td>系统级</td></tr>
+<tr><td>User</td><td><code>~/.agent/AGENT.md</code></td><td>用户本人</td><td>完全信任</td></tr>
+<tr><td>Project</td><td>项目目录中的 <code>AGENT.md</code></td><td>团队</td><td>git 追踪</td></tr>
+<tr><td>Local</td><td><code>AGENT.local.md</code></td><td>个人</td><td>不提交</td></tr>
+<tr><td>AutoMem</td><td><code>~/.agent/projects/&lt;repo&gt;/memory/MEMORY.md</code></td><td>Agent 自己</td><td>自动管理</td></tr>
+</tbody></table>
+</div>
+<p>这个设计的一个关键洞察是：<strong>信任边界不同</strong>。User 层允许 <code>@include</code> 引用任意文件（因为是用户自己写的），但 Project 层的 <code>@include</code> 被限制在项目目录内（因为可能来自不受信任的仓库）。</p>
+<h3 id="实现"><a class="header" href="#实现">实现</a></h3>
+<p>记忆文件发现主入口函数做了一件巧妙的事：向上遍历目录树时，先收集所有路径（从 CWD 到根），然后反转再处理：</p>
+<pre><code class="language-pseudocode">current = working_directory
+while current is not filesystem root:
+  directory_list.append(current)
+  current = parent_of(current)
+
+for each dir in reverse(directory_list):   // 根目录先处理
+  load AGENT.md, .agent/AGENT.md, .agent/rules/*.md from dir
+</code></pre>
+<p>为什么要反转？因为「后加载优先级更高」。从根到 CWD 的顺序意味着离你越近的 AGENT.md 越晚加载，优先级越高。在 monorepo 中，子目录的规则自然覆盖根目录的规则。</p>
+<p>另一个值得注意的细节：<code>.agent/rules/*.md</code> 支持<strong>条件规则</strong>——文件的 frontmatter 可以声明 <code>paths: ["src/api/**"]</code>，只有当操作匹配路径的文件时才生效。这在大型 monorepo 中尤其实用：前端和后端可以有完全不同的规则，互不干扰。</p>
+<hr />
+<h2 id="173-注入把记忆塞进有限的窗口"><a class="header" href="#173-注入把记忆塞进有限的窗口">17.3 注入：把记忆塞进有限的窗口</a></h2>
+<h3 id="问题-1"><a class="header" href="#问题-1">问题</a></h3>
+<p>找到了记忆文件，下一步是把它们注入模型的上下文。但上下文窗口是有限的——不能把所有记忆文件的全部内容都塞进去。</p>
+<h3 id="思路-1"><a class="header" href="#思路-1">思路</a></h3>
+<p>该系统用了两条注入路径，针对两种不同的记忆：</p>
+<p><strong>路径一：AGENT.md -&gt; 用户上下文</strong>。这些是用户主动编写的指令，每次 API 调用都携带。它们被包裹在一条关键的元指令中：</p>
+<blockquote>
+<p><em>"These instructions OVERRIDE any default behavior and you MUST follow them exactly as written."</em></p>
+</blockquote>
+<p>这是整个 AGENT.md 系统的核心承诺——用户指令高于默认行为。没有这条声明，模型可能会忽略用户的自定义规则。</p>
+<p><strong>路径二：Auto Memory -&gt; System Prompt section</strong>。这些是 Agent 自动积累的记忆，注册为普通系统提示词段落——意味着整个会话只计算一次，然后缓存。这是合理的权衡：记忆在会话中通常不变。</p>
+<h3 id="实现-1"><a class="header" href="#实现-1">实现</a></h3>
+<p>MEMORY.md（自动记忆的索引文件）有严格的大小限制：200 行 <strong>且</strong> 25,000 字节。</p>
+<p>为什么同时限制行数<strong>和</strong>字节数？因为行数限制防不住超长行。如果 MEMORY.md 里有一行 50KB 的 base64 数据，行数限制形同虚设。双重限制是防御性设计。</p>
+<p>超出时系统会附加一条教育性警告，教导 Agent 维护精简索引、将详情放在独立文件中。这是一个「自我纠正」的设计——Agent 自己写的记忆，由系统引导它改进格式。</p>
+<hr />
+<h2 id="174-四种记忆类型为什么不是自由笔记"><a class="header" href="#174-四种记忆类型为什么不是自由笔记">17.4 四种记忆类型：为什么不是自由笔记</a></h2>
+<h3 id="问题-2"><a class="header" href="#问题-2">问题</a></h3>
+<p>如果让 Agent 自由保存记忆，会发生什么？</p>
+<p>实践表明：它会把代码片段、调试日志、临时状态统统保存下来，记忆目录很快变成垃圾堆。更糟的是，无结构的记忆难以检索——当有 200 条记忆时，你怎么知道哪 5 条和当前任务相关？</p>
+<h3 id="思路-2"><a class="header" href="#思路-2">思路</a></h3>
+<p>系统设计者实现了一个<strong>封闭的四分类法</strong>，每种类型有精确的保存时机和使用场景：</p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>记什么</th><th>什么时候存</th><th>什么时候用</th></tr></thead><tbody>
+<tr><td><strong>user</strong></td><td>用户的角色、偏好、背景</td><td>了解到用户信息时</td><td>调整回答方式时</td></tr>
+<tr><td><strong>feedback</strong></td><td>行为纠正和肯定</td><td>用户说「不要这样」或「就是这样」</td><td>指导工作方式时</td></tr>
+<tr><td><strong>project</strong></td><td>项目状态、截止日期、分工</td><td>了解到项目动态时</td><td>理解任务背景时</td></tr>
+<tr><td><strong>reference</strong></td><td>外部系统的指针</td><td>了解到外部资源时</td><td>需要查找信息时</td></tr>
+</tbody></table>
+</div>
+<p>这个分类法的几个设计决策值得深思：</p>
+<p><strong>为什么 feedback 同时记录纠正和肯定？</strong> 记忆类型定义模块的注释说得很清楚：<em>"if you only save corrections, you will avoid past mistakes but drift away from approaches the user has already validated"</em>。只记错不记对会让 Agent 变得过度保守——它会回避所有没被纠正过的做法，而不是坚持被肯定过的做法。</p>
+<p><strong>为什么 feedback 要求结构化正文？</strong> 每条 feedback 必须包含：规则本身 + <code>Why:</code>（原因）+ <code>How to apply:</code>（适用场景）。原因至关重要——知道「为什么」才能在边界情况下做判断，而不是盲目遵循规则。</p>
+<p><strong>为什么 project 要求日期转换？</strong> 保存时要求「将相对日期转为绝对日期（'周四' -&gt; '2026-03-05'）」。因为记忆是跨会话的——一周后再看到「周四」，已经不知道是哪个周四了。</p>
+<p><strong>为什么明确规定「不该保存什么」？</strong> 不保存内容列表排除了代码模式、git 历史、调试方案等。核心原则是：<strong>可以从当前状态推导的信息不应该变成记忆</strong>。代码架构可以从代码推导，git 历史可以从 git log 推导，保存它们只会创造过时的冗余副本。</p>
+<hr />
+<h2 id="175-提取不是每次都要用户说记住"><a class="header" href="#175-提取不是每次都要用户说记住">17.5 提取：不是每次都要用户说「记住」</a></h2>
+<h3 id="问题-3"><a class="header" href="#问题-3">问题</a></h3>
+<p>依赖用户主动说「记住这个」不够。很多值得记住的信息在自然对话中产生，用户不会刻意标记。比如用户说「我是数据科学家，在调查日志系统」——这就是一条 user 类型记忆，但用户不会专门说「请记住我是数据科学家」。</p>
+<h3 id="思路-3"><a class="header" href="#思路-3">思路</a></h3>
+<p>该系统的方案是<strong>后台自动提取</strong>：每轮对话结束后，如果主 Agent 没有主动写记忆，系统就 fork 一个受限的子 Agent，让它回顾对话内容，提取值得保存的信息。</p>
+<p>这里有一个精巧的<strong>互斥设计</strong>：</p>
+<pre><code>主 Agent 写了记忆 -&gt; 提取器跳过这段对话
+主 Agent 没写记忆 -&gt; 提取器自动工作
+</code></pre>
+<p>为什么互斥？因为主 Agent 写记忆时，它有完整的对话上下文，写的一定比后台提取器更准确。提取器只是兜底——确保对话中的重要信息不会因为主 Agent 忘记保存而丢失。</p>
+<h3 id="实现-2"><a class="header" href="#实现-2">实现</a></h3>
+<p>提取器的权限被严格限制——最小权限原则的体现：</p>
+<ul>
+<li><strong>可以读一切</strong>：Read/Grep/Glob 不限制，需要理解对话上下文</li>
+<li><strong>Bash 只读</strong>：只允许 ls, find, grep, cat 等查看命令</li>
+<li><strong>只能写记忆目录</strong>：Edit/Write 只允许写入 <code>~/.agent/projects/&lt;repo&gt;/memory/</code></li>
+</ul>
+<p>提取器的工作是「读对话、写笔记」，它不需要也不应该有修改代码的能力。</p>
+<p>判断主 Agent 是否已写记忆的方法是：扫描 assistant 消息中的 Write/Edit 工具调用，检查目标路径是否在记忆目录内。有写入就跳过整段对话范围。</p>
+<hr />
+<h2 id="176-检索200-条记忆里找最相关的-5-条"><a class="header" href="#176-检索200-条记忆里找最相关的-5-条">17.6 检索：200 条记忆里找最相关的 5 条</a></h2>
+<h3 id="问题-4"><a class="header" href="#问题-4">问题</a></h3>
+<p>当记忆积累到几十上百条时，全量加载会浪费大量 token。一个关于 Python 调试技巧的记忆，在写 Rust 代码时毫无价值。需要按需加载。</p>
+<h3 id="思路-4"><a class="header" href="#思路-4">思路</a></h3>
+<p>该系统的方案是<strong>用 LLM 做检索器</strong>——用一个轻量的 Sonnet 模型从记忆清单中选出最相关的条目。</p>
+<p>为什么不用向量数据库和 embedding？两个原因：</p>
+<ol>
+<li><strong>简单性</strong>：不需要额外基础设施，不需要维护索引</li>
+<li><strong>语义理解更强</strong>：LLM 能理解「用户在写支付功能 -&gt; 需要安全相关的 feedback」这种推理链，而 embedding 余弦相似度做不到</li>
+</ol>
+<p>代价是每次检索需要一个 API 调用。但这个调用很轻量（最多 256 token 输出），而且用独立的侧查询不污染主对话上下文。</p>
+<h3 id="实现-3"><a class="header" href="#实现-3">实现</a></h3>
+<p>检索分两步：</p>
+<p><strong>第一步：轻量扫描</strong>。记忆扫描函数只读取每个文件的 frontmatter（前 30 行），提取 <code>description</code> 和 <code>type</code>。这是<strong>单遍设计</strong>——内部同时获取文件内容和修改时间，避免额外系统调用。最多 200 条，按修改时间倒序。</p>
+<p><strong>第二步：Sonnet 选择</strong>。将记忆清单和当前查询发给 Sonnet，返回最多 5 个最相关的文件名。</p>
+<p>一个精巧的反噪声设计：如果当前正在使用某些工具，Sonnet 被指示<strong>跳过这些工具的 API 文档</strong>（已经在上下文中了），但<strong>仍然选择这些工具的警告和已知问题</strong>。区分「参考文档」和「安全提醒」——前者重复无价值，后者始终有用。</p>
+<hr />
+<h2 id="177-新鲜度记忆可能过时"><a class="header" href="#177-新鲜度记忆可能过时">17.7 新鲜度：记忆可能过时</a></h2>
+<h3 id="问题-5"><a class="header" href="#问题-5">问题</a></h3>
+<p>记忆是某个时间点的快照，不是实时状态。一条记忆说「函数 processOrder 在 billing.ts 第 42 行」，但三周后这个函数可能已被重命名。更危险的是，记忆中的具体行号反而让过时的声明看起来更「权威」。</p>
+<h3 id="思路-5"><a class="header" href="#思路-5">思路</a></h3>
+<p>该系统没有试图让记忆保持最新（这不现实），而是选择了**「标注年龄 + 强制验证」**的策略。核心思想用一句话概括：</p>
+<blockquote>
+<p><strong>"The memory says X exists" is not the same as "X exists now."</strong></p>
+</blockquote>
+<p>超过 1 天的记忆会被附加年龄标签，格式是「This memory is 47 days old」而非 ISO 时间戳——因为模型不擅长日期运算，「47 天前」直接触发过时推理比精确时间戳更可靠。</p>
+<p>记忆信任规则规定了验证步骤：</p>
+<ul>
+<li>记忆说某文件存在 -&gt; 先检查文件是否还在</li>
+<li>记忆说某函数存在 -&gt; 先 grep 确认</li>
+<li>只在要给用户建议时验证，讨论历史时不需要</li>
+</ul>
+<hr />
+<h2 id="178-dreamagent-也需要睡觉"><a class="header" href="#178-dreamagent-也需要睡觉">17.8 Dream：Agent 也需要「睡觉」</a></h2>
+<h3 id="问题-6"><a class="header" href="#问题-6">问题</a></h3>
+<p>随着时间推移，记忆会越来越多、越来越碎：</p>
+<ul>
+<li>重复信息（多次记录同一个偏好）</li>
+<li>过时条目（项目已换技术栈）</li>
+<li>碎片化笔记（同一主题散落 10 个文件）</li>
+</ul>
+<p>MEMORY.md 索引会涨到 200 行上限，新记忆无法被索引。</p>
+<h3 id="思路-6"><a class="header" href="#思路-6">思路</a></h3>
+<p>该系统用了一个优美的隐喻：<strong>让 Agent 做梦</strong>。就像人类睡眠时大脑整合记忆——巩固重要的、丢弃冗余的——Dream 系统在 Agent 空闲时做同样的事。</p>
+<p>触发条件是<strong>三道门，按成本递增排列</strong>：</p>
+<div class="table-wrapper"><table><thead><tr><th>门</th><th>检查什么</th><th>成本</th><th>默认阈值</th></tr></thead><tbody>
+<tr><td>时间门</td><td>距上次整合多久</td><td>1 次 stat</td><td>24 小时</td></tr>
+<tr><td>会话门</td><td>期间多少次会话</td><td>目录扫描</td><td>5 个</td></tr>
+<tr><td>锁门</td><td>其他进程在整合吗</td><td>原子写入</td><td>-</td></tr>
+</tbody></table>
+</div>
+<p>为什么按成本排序？因为 Dream 检查在<strong>每轮对话结束时</strong>都运行。时间门放最前面，一次 stat 就能拦截 99% 的情况——距上次整合才 1 小时，后面的检查全部跳过。</p>
+<h3 id="实现-4"><a class="header" href="#实现-4">实现</a></h3>
+<p>锁文件的设计特别精巧：<strong>锁文件的 mtime 就是 lastConsolidatedAt</strong>。</p>
+<pre><code>.consolidate-lock 文件:
+  内容 = 当前进程的 PID（用于检测死锁）
+  mtime = 上次整合完成时间（用于时间门判断）
+</code></pre>
+<p>一个文件同时承担两个角色。读时间戳只需一次 <code>stat</code>（读 mtime），获锁只需一次 <code>write</code>（写 PID）。不需要额外的元数据文件。</p>
+<p>获锁后 fork 子 Agent 执行四阶段整合：</p>
+<ol>
+<li><strong>Orient（定向）</strong>：浏览记忆目录，了解现状</li>
+<li><strong>Gather（收集）</strong>：扫描日志、搜索会话记录中的未捕获信号</li>
+<li><strong>Consolidate（整合）</strong>：合并重复、更新过时、将相对日期转为绝对</li>
+<li><strong>Prune（修剪）</strong>：更新索引、删除无效指针、保持在 200 行 / 25KB</li>
+</ol>
+<p>Dream Agent 的 Bash 被限制为只读命令，Write 只能写记忆目录——<strong>它可以看一切，但只能改笔记</strong>。</p>
+<p><strong>失败回滚</strong>：如果出错，锁文件 mtime 恢复到获锁前的值。这确保失败不会阻止下次整合——系统会重试，而不是永远认为「刚整合过」。</p>
+<hr />
+<h2 id="179-团队记忆共享知识库的安全挑战"><a class="header" href="#179-团队记忆共享知识库的安全挑战">17.9 团队记忆：共享知识库的安全挑战</a></h2>
+<h3 id="问题-7"><a class="header" href="#问题-7">问题</a></h3>
+<p>Agent Swarm（多 Agent 协同）需要共享知识。但共享写入引入安全风险：如果服务端返回的 key 是 <code>../../.ssh/authorized_keys</code>，就变成路径遍历攻击。</p>
+<h3 id="思路-7"><a class="header" href="#思路-7">思路</a></h3>
+<p>在个人记忆目录下增加 <code>team/</code> 子目录，所有团队成员共享读写。但路径安全需要<strong>两层防御</strong>。</p>
+<h3 id="实现-5"><a class="header" href="#实现-5">实现</a></h3>
+<p><strong>第一层：字符串级</strong>。拒绝 null 字节（syscall 截断）、URL 编码遍历（<code>%2e%2e%2f</code>）、Unicode 归一化后的遍历、反斜杠和绝对路径。</p>
+<p><strong>第二层：文件系统级</strong>。即使字符串检查通过，还做 <code>realpath()</code> 解析符号链接。<code>team/sprint.md</code> 如果是指向 <code>~/.ssh/authorized_keys</code> 的符号链接，这一层捕获。</p>
+<p>为什么需要两层？字符串检查可被符号链接绕过，文件系统检查需要路径存在才能做 realpath。两层互补，覆盖不同攻击向量。</p>
+<hr />
+<h2 id="1710-存储路径一个被拒绝的功能"><a class="header" href="#1710-存储路径一个被拒绝的功能">17.10 存储路径：一个被拒绝的功能</a></h2>
+<p>默认路径 <code>~/.agent/projects/&lt;sanitized-git-root&gt;/memory/</code>。同一仓库的不同 worktree 通过规范 Git 根目录查找函数共享记忆——因为记忆是关于「项目」的，不是关于「目录」的。</p>
+<p>一个值得讲述的安全故事：<code>projectSettings</code>（提交到仓库的 <code>.agent/settings.json</code>）<strong>被故意禁止覆写记忆路径</strong>。</p>
+<p>为什么？想象一个场景：某个开源项目在 <code>.agent/settings.json</code> 中设置 <code>autoMemoryDirectory: "~/.ssh"</code>。用户 clone 这个项目后，Agent 的记忆就会写入 SSH 目录。这是一个供应链攻击——攻击者通过项目配置劫持用户的文件系统。</p>
+<p>因此，只有<strong>用户自己控制的配置</strong>（用户级设置和环境变量）可以覆写记忆路径。代码注释明确记录了这个决策，确保未来的开发者不会无意中放开这个限制。</p>
+<hr />
+<h2 id="1711-完整生命周期"><a class="header" href="#1711-完整生命周期">17.11 完整生命周期</a></h2>
+<p>把五个子系统串起来：</p>
+<pre><code>会话启动
+  |
+  +-- [发现] 遍历五层 AGENT.md，加载所有记忆文件
+  +-- [注入] 构建记忆 prompt，注入 System Prompt（会话内缓存）
+  |
+对话进行中
+  |
+  +-- 用户说「记住 X」-&gt; 主 Agent 直接写入记忆文件
+  +-- 需要旧知识 -&gt; [检索] Sonnet 从 200 条中选 5 条最相关
+  |   +-- 超过 1 天的附加过时警告
+  |
+对话结束
+  |
+  +-- 主 Agent 没写记忆 -&gt; [提取] fork 子 Agent 自动提取
+  |
+后台（每轮对话结束时检查）
+  |
+  +-- Dream 三道门：时间(24h)? 会话(5次)? 锁可用?
+  |   +-- 全部通过 -&gt; [整合] Orient -&gt; Gather -&gt; Consolidate -&gt; Prune
+  |
+下次会话
+  |
+  +-- 整合后的记忆被加载：更精炼、更少冗余
+</code></pre>
+<hr />
+<h2 id="1712-设计哲学"><a class="header" href="#1712-设计哲学">17.12 设计哲学</a></h2>
+<p>从记忆系统中提炼出 8 条原则，适用于任何 Agent 的记忆设计：</p>
+<p><strong>1. 文件即记忆</strong>。用最简单的存储——文本文件。用户可编辑，git 可追踪，不需要额外基础设施。向量数据库是备选方案，不是必需品。</p>
+<p><strong>2. 分层覆盖</strong>。不同层级配置优先级不同，越具体越优先。和 CSS 层叠、Git 配置覆盖是同一思想。</p>
+<p><strong>3. 类型约束</strong>。封闭分类法让记忆可索引、可检索、可审计。Agent 不是随意涂鸦，而是按规则归档。</p>
+<p><strong>4. 记对也记错</strong>。只记纠正会让 Agent 过度保守。同时记录肯定，维持已验证方法的延续性。</p>
+<p><strong>5. 信任但验证</strong>。记忆是快照不是实时状态。使用前验证引用的文件和函数是否仍存在。</p>
+<p><strong>6. 索引与内容分离</strong>。MEMORY.md 是精简索引，详情在独立文件中。和数据库索引同一思想——索引常驻内存，数据按需加载。</p>
+<p><strong>7. 安全纵深</strong>。路径验证 + 符号链接解析 + projectSettings 排除 = 三层防御。每一层都不完美，组合起来覆盖已知攻击向量。</p>
+<p><strong>8. 睡眠整合</strong>。定期后台整理碎片记忆，就像人类睡眠时的记忆巩固。Agent 也需要「休息」，醒来后拥有更清晰的认知。</p>
+<hr />
+<blockquote>
+<p><strong>给读者的思考题</strong>：该系统的记忆完全基于文件和 LLM 检索，没有向量数据库。当记忆从 200 条增长到 20,000 条时，这个架构会遇到什么瓶颈？你会怎么改进？</p>
+</blockquote>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-6/chapter-16.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-7/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-6/chapter-16.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-7/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

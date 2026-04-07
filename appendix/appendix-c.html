@@ -1,0 +1,630 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Appendix C: Feature Flags - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./appendix/appendix-c.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="appendix-c-feature-flag-完整清单"><a class="header" href="#appendix-c-feature-flag-完整清单">Appendix C: Feature Flag 完整清单</a></h1>
+<p>三类 Flag：编译时 (bundler 宏，死代码消除)、运行时 (远程下发，不需要发新版本即可开关功能)、环境变量 (启动时读取)。</p>
+<hr />
+<h2 id="c1-编译时-feature-flag"><a class="header" href="#c1-编译时-feature-flag">C.1 编译时 Feature Flag</a></h2>
+<p>通过编译时宏在构建时决定代码是否存在。外部发布版大多数内部专用 flag 为 false，相关代码被完全消除。</p>
+<h3 id="权限与安全"><a class="header" href="#权限与安全">权限与安全</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>BASH_CLASSIFIER</td><td>Bash 命令安全分类器，用 LLM 判定命令是否安全</td></tr>
+<tr><td>TRANSCRIPT_CLASSIFIER</td><td>Auto 模式安全分类器，基于完整对话上下文判定</td></tr>
+<tr><td>ANTI_DISTILLATION</td><td>反蒸馏保护，注入虚假工具防止模型蒸馏</td></tr>
+<tr><td>NATIVE_CLIENT_ATTESTATION</td><td>原生客户端认证 (设备信任)</td></tr>
+<tr><td>POWERSHELL_AUTO_MODE</td><td>PowerShell 自动模式支持</td></tr>
+<tr><td>TREE_SITTER_BASH</td><td>Tree-sitter Bash 解析器 (替代旧解析器)</td></tr>
+<tr><td>TREE_SITTER_BASH_SHADOW</td><td>Tree-sitter 影子模式 (新旧解析器对比验证)</td></tr>
+</tbody></table>
+</div>
+<h3 id="agent-系统"><a class="header" href="#agent-系统">Agent 系统</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>BUILTIN_EXPLORE_PLAN_AGENTS</td><td>内置 Explore/Plan Agent</td></tr>
+<tr><td>VERIFICATION_AGENT</td><td>验证 Agent (计划执行后自动验证)</td></tr>
+<tr><td>COORDINATOR_MODE</td><td>Coordinator 模式，主 Agent 充当任务协调器</td></tr>
+<tr><td>FORK_SUBAGENT</td><td>Fork 模式子 Agent，快速克隆当前上下文</td></tr>
+<tr><td>AGENT_MEMORY_SNAPSHOT</td><td>Agent 记忆快照，从项目快照初始化记忆</td></tr>
+<tr><td>AGENT_TRIGGERS</td><td>定时触发器 (cron)，允许定时执行 Agent</td></tr>
+<tr><td>AGENT_TRIGGERS_REMOTE</td><td>远程定时触发器，支持远程事件驱动</td></tr>
+</tbody></table>
+</div>
+<h3 id="助手模式"><a class="header" href="#助手模式">助手模式</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>ASSISTANT_MODE</td><td>助手模式核心 (集成的完整助手体验)</td></tr>
+<tr><td>ASSISTANT_BRIEF</td><td>助手模式简要视图</td></tr>
+<tr><td>ASSISTANT_CHANNELS</td><td>多渠道支持 (Telegram/iMessage 等)</td></tr>
+<tr><td>ASSISTANT_DREAM</td><td>Dream 功能 (后台自主思考)</td></tr>
+<tr><td>ASSISTANT_GITHUB_WEBHOOKS</td><td>GitHub Webhook 集成 (PR 订阅)</td></tr>
+<tr><td>ASSISTANT_PUSH_NOTIFICATION</td><td>推送通知</td></tr>
+<tr><td>PROACTIVE</td><td>主动模式 (定时器驱动的后台任务执行)</td></tr>
+<tr><td>AWAY_SUMMARY</td><td>离开摘要，用户不活跃时自动生成对话摘要</td></tr>
+</tbody></table>
+</div>
+<h3 id="上下文压缩"><a class="header" href="#上下文压缩">上下文压缩</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>CACHED_MICROCOMPACT</td><td>缓存友好的微压缩，保持 prompt cache 前提下裁剪</td></tr>
+<tr><td>CONTEXT_COLLAPSE</td><td>渐进式上下文折叠，旧消息替换为占位符</td></tr>
+<tr><td>HISTORY_SNIP</td><td>模型可主动裁剪旧消息</td></tr>
+<tr><td>REACTIVE_COMPACT</td><td>响应式压缩，实时监控上下文增长率</td></tr>
+<tr><td>COMPACTION_REMINDERS</td><td>压缩时保留提醒信息</td></tr>
+</tbody></table>
+</div>
+<h3 id="远程与桥接"><a class="header" href="#远程与桥接">远程与桥接</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>BRIDGE_MODE</td><td>远程桥接模式 (远程控制)</td></tr>
+<tr><td>REMOTE_AUTO_CONNECT</td><td>远程自动连接</td></tr>
+<tr><td>REMOTE_MIRROR</td><td>远程镜像模式，出站事件转发</td></tr>
+<tr><td>REMOTE_SETUP</td><td>远程设置命令</td></tr>
+<tr><td>DIRECT_CONNECT</td><td>直接连接模式</td></tr>
+<tr><td>SSH_REMOTE</td><td>SSH 远程连接支持</td></tr>
+</tbody></table>
+</div>
+<h3 id="工具与-mcp"><a class="header" href="#工具与-mcp">工具与 MCP</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>COMPUTER_USE_MCP</td><td>Computer Use MCP (macOS 桌面控制)</td></tr>
+<tr><td>MONITOR_TOOL</td><td>Monitor 工具，后台监控 MCP 服务器</td></tr>
+<tr><td>MCP_RICH_OUTPUT</td><td>MCP 富文本输出渲染</td></tr>
+<tr><td>MCP_SKILLS</td><td>MCP Skill 发现 (从 MCP 资源加载 Skill)</td></tr>
+<tr><td>WEB_BROWSER_TOOL</td><td>Web 浏览器工具 (嵌入式浏览器)</td></tr>
+<tr><td>REVIEW_ARTIFACT</td><td>代码审查制品工具</td></tr>
+<tr><td>TERMINAL_PANEL</td><td>终端面板 (嵌入式终端捕获)</td></tr>
+</tbody></table>
+</div>
+<h3 id="记忆与-skill"><a class="header" href="#记忆与-skill">记忆与 Skill</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>EXTRACT_MEMORIES</td><td>自动记忆提取，turn 结束时提取有价值信息</td></tr>
+<tr><td>TEAM_MEMORY</td><td>团队记忆 (跨 Agent 共享记忆文件)</td></tr>
+<tr><td>MEMORY_SHAPE_TELEMETRY</td><td>记忆形状遥测，分析记忆文件结构</td></tr>
+<tr><td>EXPERIMENTAL_SKILL_SEARCH</td><td>实验性远程 Skill 索引与搜索</td></tr>
+<tr><td>SKILL_IMPROVEMENT</td><td>Skill 自动改进建议</td></tr>
+<tr><td>BUILDING_APPS_SKILL</td><td>构建应用相关内置 Skill</td></tr>
+<tr><td>RUN_SKILL_GENERATOR</td><td>Skill 生成器运行支持</td></tr>
+<tr><td>TEMPLATES</td><td>模板系统</td></tr>
+</tbody></table>
+</div>
+<h3 id="ui-与交互"><a class="header" href="#ui-与交互">UI 与交互</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>VOICE_MODE</td><td>语音模式 (语音输入/输出)</td></tr>
+<tr><td>COMPANION</td><td>伴侣功能 (UI 装饰性精灵)</td></tr>
+<tr><td>AUTO_THEME</td><td>自动主题切换，跟随系统深色/浅色模式</td></tr>
+<tr><td>MESSAGE_ACTIONS</td><td>消息操作 (键盘快捷键操作消息)</td></tr>
+<tr><td>HISTORY_PICKER</td><td>历史消息选择器 UI</td></tr>
+<tr><td>QUICK_SEARCH</td><td>快速搜索 (键盘触发)</td></tr>
+<tr><td>NATIVE_CLIPBOARD_IMAGE</td><td>原生剪贴板图片粘贴</td></tr>
+</tbody></table>
+</div>
+<h3 id="遥测与调试"><a class="header" href="#遥测与调试">遥测与调试</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>ENHANCED_TELEMETRY_BETA</td><td>增强遥测 Beta (含性能追踪)</td></tr>
+<tr><td>PERFORMANCE_TRACING</td><td>性能追踪</td></tr>
+<tr><td>SHOT_STATS</td><td>Shot 分布统计 (zero-shot/few-shot 分析)</td></tr>
+<tr><td>SLOW_OPERATION_LOGGING</td><td>慢操作日志记录</td></tr>
+<tr><td>HARD_FAIL</td><td>硬失败模式，警告升级为致命错误</td></tr>
+<tr><td>DUMP_SYSTEM_PROMPT</td><td>导出系统提示词</td></tr>
+<tr><td>BREAK_CACHE_COMMAND</td><td>缓存中断命令，调试 prompt cache</td></tr>
+<tr><td>OVERFLOW_TEST_TOOL</td><td>溢出测试工具</td></tr>
+</tbody></table>
+</div>
+<h3 id="性能与-api"><a class="header" href="#性能与-api">性能与 API</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>TOKEN_BUDGET</td><td>Token 预算管理，控制工具结果的 token 消耗</td></tr>
+<tr><td>FILE_PERSISTENCE</td><td>大工具结果写入磁盘</td></tr>
+<tr><td>PROMPT_CACHE_BREAK_DETECTION</td><td>Prompt Cache 断裂检测与诊断</td></tr>
+<tr><td>CONNECTOR_TEXT</td><td>Connector Text 内容块 (API beta)</td></tr>
+<tr><td>ULTRATHINK</td><td>超级思考模式 (默认启用 thinking)</td></tr>
+<tr><td>ULTRAPLAN</td><td>远程大规模计划执行</td></tr>
+<tr><td>UNATTENDED_RETRY</td><td>无人值守重试 (429/529 自动重试)</td></tr>
+<tr><td>STREAMLINED_OUTPUT</td><td>精简输出模式</td></tr>
+</tbody></table>
+</div>
+<h3 id="部署与系统"><a class="header" href="#部署与系统">部署与系统</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag</th><th>用途</th></tr></thead><tbody>
+<tr><td>BG_SESSIONS</td><td>后台会话</td></tr>
+<tr><td>DAEMON</td><td>守护进程模式</td></tr>
+<tr><td>BYOC_ENVIRONMENT_RUNNER</td><td>BYOC 环境运行器</td></tr>
+<tr><td>SELF_HOSTED_RUNNER</td><td>自托管运行器</td></tr>
+<tr><td>LOCAL_SERVICE_DISCOVERY</td><td>本地服务发现协议注册</td></tr>
+<tr><td>UDS_INBOX</td><td>Unix Domain Socket 收件箱 (进程间消息)</td></tr>
+<tr><td>WORKFLOW_SCRIPTS</td><td>工作流脚本系统</td></tr>
+<tr><td>HOOK_PROMPTS</td><td>Hook 可向用户提问</td></tr>
+<tr><td>COMMIT_ATTRIBUTION</td><td>提交归因，追踪 AI 辅助代码变更</td></tr>
+<tr><td>ABLATION_BASELINE</td><td>A/B 测试基线模式</td></tr>
+<tr><td>ALLOW_TEST_VERSIONS</td><td>允许安装测试版本</td></tr>
+<tr><td>DOWNLOAD_USER_SETTINGS</td><td>下载远程用户设置 (同步读取端)</td></tr>
+<tr><td>UPLOAD_USER_SETTINGS</td><td>上传用户设置 (同步写入端)</td></tr>
+<tr><td>NEW_INIT</td><td>新版初始化命令</td></tr>
+</tbody></table>
+</div>
+<p>共计约 <strong>89</strong> 个编译时 Flag。</p>
+<hr />
+<h2 id="c2-运行时-feature-flag-远程下发"><a class="header" href="#c2-运行时-feature-flag-远程下发">C.2 运行时 Feature Flag (远程下发)</a></h2>
+<p>通过远程配置平台下发，不需要发新版本即可开关功能。</p>
+<p>通过缓存读取函数（可能返回缓存旧值）或阻塞读取函数（阻塞等待最新值）获取。</p>
+<h3 id="核心功能门控"><a class="header" href="#核心功能门控">核心功能门控</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>Channel 功能</td><td>Channels 功能可用性门控</td></tr>
+<tr><td>Channel 权限</td><td>Channel 权限功能门控</td></tr>
+<tr><td>自动记忆</td><td>自动记忆功能门控</td></tr>
+<tr><td>自动记忆备选</td><td>自动记忆备选门控</td></tr>
+<tr><td>记忆附加</td><td>记忆附加功能门控</td></tr>
+<tr><td>团队记忆</td><td>团队记忆功能门控</td></tr>
+<tr><td>会话记忆</td><td>会话记忆功能门控</td></tr>
+<tr><td>验证 Agent</td><td>验证 Agent + Todo 证据门控</td></tr>
+<tr><td>内置 Agent</td><td>内置 Explore/Plan Agent 门控</td></tr>
+</tbody></table>
+</div>
+<h3 id="api-与性能"><a class="header" href="#api-与性能">API 与性能</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>文件持久化</td><td>文件持久化配置</td></tr>
+<tr><td>一次性密钥</td><td>One-Time-Key 插槽功能</td></tr>
+<tr><td>深度思考</td><td>Ultrathink 模式门控</td></tr>
+<tr><td>JSON 工具</td><td>JSON 工具模式门控</td></tr>
+<tr><td>文件增强</td><td>文件写入/编辑增强</td></tr>
+<tr><td>归因 header</td><td>提交归因 header 门控</td></tr>
+<tr><td>Token 预算</td><td>Token 预算相关配置</td></tr>
+</tbody></table>
+</div>
+<h3 id="远程与桥接-1"><a class="header" href="#远程与桥接-1">远程与桥接</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>远程桥接</td><td>远程 Bridge 功能门控</td></tr>
+<tr><td>远程镜像</td><td>远程镜像模式门控</td></tr>
+<tr><td>REPL Bridge V2</td><td>REPL Bridge V2 门控</td></tr>
+<tr><td>远程自动连接</td><td>远程自动连接门控</td></tr>
+<tr><td>远程设置</td><td>远程设置命令门控</td></tr>
+<tr><td>远程后端</td><td>远程 TUI 后端门控</td></tr>
+<tr><td>系统初始化</td><td>Bridge 系统初始化门控</td></tr>
+<tr><td>多会话</td><td>远程多会话门控</td></tr>
+</tbody></table>
+</div>
+<h3 id="助手模式与语音"><a class="header" href="#助手模式与语音">助手模式与语音</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>助手简要模式</td><td>助手简要模式门控</td></tr>
+<tr><td>语音紧急关闭</td><td>语音模式紧急关闭 (true = 禁用)</td></tr>
+<tr><td>语音识别增强</td><td>语音识别增强模型门控</td></tr>
+<tr><td>远程触发器</td><td>远程触发器门控</td></tr>
+</tbody></table>
+</div>
+<h3 id="分类器与权限"><a class="header" href="#分类器与权限">分类器与权限</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>Auto 模式配置</td><td>Auto 模式配置 (enabled/opt-in/disabled)</td></tr>
+<tr><td>解析器影子模式</td><td>Tree-sitter 影子模式门控</td></tr>
+<tr><td>破坏性命令警告</td><td>破坏性命令警告门控</td></tr>
+<tr><td>反蒸馏配置</td><td>反蒸馏虚假工具注入配置</td></tr>
+</tbody></table>
+</div>
+<h3 id="ui-与体验"><a class="header" href="#ui-与体验">UI 与体验</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>提示建议</td><td>提示建议功能门控</td></tr>
+<tr><td>终端侧边栏</td><td>终端侧边栏门控</td></tr>
+<tr><td>终端面板</td><td>终端面板运行时门控</td></tr>
+<tr><td>特殊 UI 模式</td><td>特殊 UI 模式</td></tr>
+<tr><td>剪贴板图片</td><td>原生剪贴板图片门控</td></tr>
+<tr><td>插件推荐</td><td>插件提示推荐门控</td></tr>
+<tr><td>即时模型命令</td><td>即时模型命令门控</td></tr>
+</tbody></table>
+</div>
+<h3 id="工具与-agent"><a class="header" href="#工具与-agent">工具与 Agent</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>工具严格模式</td><td>工具严格模式门控</td></tr>
+<tr><td>子 Agent 精简</td><td>子 Agent 精简配置 (kill switch)</td></tr>
+<tr><td>自动后台 Agent</td><td>自动后台 Agent 门控</td></tr>
+<tr><td>Agent 列表</td><td>Agent 列表附加门控</td></tr>
+<tr><td>工具搜索增强</td><td>工具搜索增强门控</td></tr>
+<tr><td>Agent 集群</td><td>Agent Swarm 门控</td></tr>
+<tr><td>Skill 改进</td><td>Skill 改进门控</td></tr>
+</tbody></table>
+</div>
+<h3 id="压缩与上下文"><a class="header" href="#压缩与上下文">压缩与上下文</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>响应式压缩</td><td>响应式压缩门控</td></tr>
+<tr><td>记忆提取频率</td><td>记忆提取频率配置</td></tr>
+<tr><td>附件配置</td><td>附件相关配置</td></tr>
+<tr><td>会话修剪</td><td>会话存储修剪门控</td></tr>
+<tr><td>消息处理</td><td>消息处理相关配置</td></tr>
+</tbody></table>
+</div>
+<h3 id="其他"><a class="header" href="#其他">其他</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Flag 类别</th><th>用途</th></tr></thead><tbody>
+<tr><td>Prompt Cache TTL</td><td>Prompt Cache 1h TTL 白名单</td></tr>
+<tr><td>轮询间隔</td><td>Bridge 轮询间隔配置</td></tr>
+<tr><td>Keep-Alive 配置</td><td>ECONNRESET 时禁用 Keep-Alive</td></tr>
+<tr><td>流式降级</td><td>禁用流式到非流式降级</td></tr>
+<tr><td>设置同步</td><td>设置同步门控</td></tr>
+<tr><td>Fast 模式</td><td>Fast 模式门控</td></tr>
+<tr><td>服务发现</td><td>本地服务发现运行时门控</td></tr>
+<tr><td>浏览器自动启用</td><td>Chrome 自动启用门控</td></tr>
+<tr><td>浏览器 MCP</td><td>Chrome MCP 服务器门控</td></tr>
+<tr><td>增强追踪</td><td>增强遥测追踪门控</td></tr>
+<tr><td>MCP 指令</td><td>MCP 指令 delta 门控</td></tr>
+<tr><td>后台刷新节流</td><td>后台刷新节流毫秒数</td></tr>
+<tr><td>远程模型配置</td><td>远程大规模计划使用的模型配置</td></tr>
+</tbody></table>
+</div>
+<p>共计 <strong>60+</strong> 个运行时 Flag。</p>
+<hr />
+<h2 id="c3-环境变量-flag"><a class="header" href="#c3-环境变量-flag">C.3 环境变量 Flag</a></h2>
+<p>以 <code>AGENT_</code> 前缀，启动时通过 shell 环境读取。</p>
+<h3 id="api-与后端"><a class="header" href="#api-与后端">API 与后端</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境变量</th><th>类型</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>AGENT_API_BASE_URL</code></td><td>string</td><td>自定义 API 基础 URL</td></tr>
+<tr><td><code>AGENT_USE_BEDROCK</code></td><td>boolean</td><td>使用 Amazon Bedrock</td></tr>
+<tr><td><code>AGENT_USE_VERTEX</code></td><td>boolean</td><td>使用 Google Vertex AI</td></tr>
+<tr><td><code>AGENT_USE_FOUNDRY</code></td><td>boolean</td><td>使用 Foundry</td></tr>
+<tr><td><code>AGENT_SKIP_BEDROCK_AUTH</code></td><td>boolean</td><td>跳过 Bedrock 认证</td></tr>
+<tr><td><code>AGENT_SKIP_VERTEX_AUTH</code></td><td>boolean</td><td>跳过 Vertex AI 认证</td></tr>
+<tr><td><code>AGENT_SKIP_FOUNDRY_AUTH</code></td><td>boolean</td><td>跳过 Foundry 认证</td></tr>
+<tr><td><code>AGENT_MAX_RETRIES</code></td><td>number</td><td>API 最大重试次数</td></tr>
+<tr><td><code>AGENT_MAX_OUTPUT_TOKENS</code></td><td>number</td><td>最大输出 token 数</td></tr>
+<tr><td><code>AGENT_EXTRA_BODY</code></td><td>JSON</td><td>API 请求体额外参数</td></tr>
+<tr><td><code>AGENT_EXTRA_METADATA</code></td><td>JSON</td><td>API 请求元数据额外参数</td></tr>
+<tr><td><code>AGENT_UNATTENDED_RETRY</code></td><td>boolean</td><td>无人值守自动重试 429/529</td></tr>
+<tr><td><code>AGENT_DISABLE_THINKING</code></td><td>boolean</td><td>禁用 extended thinking</td></tr>
+<tr><td><code>AGENT_DISABLE_ADAPTIVE_THINKING</code></td><td>boolean</td><td>禁用自适应思考</td></tr>
+<tr><td><code>AGENT_DISABLE_NONSTREAMING_FALLBACK</code></td><td>boolean</td><td>禁用非流式降级</td></tr>
+<tr><td><code>AGENT_ADDITIONAL_PROTECTION</code></td><td>string</td><td>额外安全保护配置</td></tr>
+</tbody></table>
+</div>
+<h3 id="远程与部署"><a class="header" href="#远程与部署">远程与部署</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境变量</th><th>类型</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>AGENT_REMOTE</code></td><td>boolean</td><td>远程模式标识</td></tr>
+<tr><td><code>AGENT_REMOTE_SESSION_ID</code></td><td>string</td><td>远程会话 ID</td></tr>
+<tr><td><code>AGENT_CONTAINER_ID</code></td><td>string</td><td>容器 ID</td></tr>
+<tr><td><code>AGENT_REMOTE_MEMORY_DIR</code></td><td>string</td><td>远程模式记忆目录路径</td></tr>
+<tr><td><code>AGENT_ENTRYPOINT</code></td><td>string</td><td>入口标识 (cli/sdk-ts/sdk-py/local-agent/desktop)</td></tr>
+</tbody></table>
+</div>
+<h3 id="功能开关"><a class="header" href="#功能开关">功能开关</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境变量</th><th>类型</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>AGENT_SIMPLE</code></td><td>boolean</td><td>简单模式 (<code>--bare</code>)，禁用高级功能</td></tr>
+<tr><td><code>AGENT_PROACTIVE</code></td><td>boolean</td><td>启用主动模式</td></tr>
+<tr><td><code>AGENT_COORDINATOR_MODE</code></td><td>boolean</td><td>启用 Coordinator 模式</td></tr>
+<tr><td><code>AGENT_VERIFY_PLAN</code></td><td>boolean</td><td>启用计划验证</td></tr>
+<tr><td><code>AGENT_DISABLE_AUTO_MEMORY</code></td><td>boolean</td><td>禁用自动记忆</td></tr>
+<tr><td><code>AGENT_BUBBLEWRAP</code></td><td>boolean</td><td>启用 Bubblewrap 沙箱</td></tr>
+<tr><td><code>AGENT_ENABLE_PROMPT_SUGGESTION</code></td><td>boolean</td><td>启用提示建议</td></tr>
+</tbody></table>
+</div>
+<h3 id="会话与输出"><a class="header" href="#会话与输出">会话与输出</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境变量</th><th>类型</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>AGENT_RESUME_INTERRUPTED_TURN</code></td><td>boolean</td><td>恢复被中断的 turn</td></tr>
+<tr><td><code>AGENT_EXIT_AFTER_FIRST_RENDER</code></td><td>boolean</td><td>首次渲染后退出 (测试用)</td></tr>
+<tr><td><code>AGENT_STREAMLINED_OUTPUT</code></td><td>boolean</td><td>精简输出格式</td></tr>
+<tr><td><code>AGENT_MESSAGING_SOCKET</code></td><td>string</td><td>UDS 消息传递 Socket 路径</td></tr>
+<tr><td><code>AGENT_ABLATION_BASELINE</code></td><td>boolean</td><td>消融实验模式</td></tr>
+</tbody></table>
+</div>
+<h3 id="性能与插件"><a class="header" href="#性能与插件">性能与插件</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>环境变量</th><th>类型</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>AGENT_AUTO_COMPACT_WINDOW</code></td><td>number</td><td>自动压缩 token 窗口阈值</td></tr>
+<tr><td><code>AGENT_BLOCKING_LIMIT_OVERRIDE</code></td><td>number</td><td>阻塞限制覆盖</td></tr>
+<tr><td><code>AGENT_FRAME_TIMING_LOG</code></td><td>string</td><td>帧时序日志路径</td></tr>
+<tr><td><code>AGENT_SYNC_PLUGIN_INSTALL</code></td><td>boolean</td><td>同步安装插件 (阻塞启动)</td></tr>
+<tr><td><code>AGENT_SYNC_PLUGIN_INSTALL_TIMEOUT_MS</code></td><td>number</td><td>同步插件安装超时</td></tr>
+</tbody></table>
+</div>
+<p>共计 <strong>41</strong> 个环境变量。</p>
+<hr />
+<h2 id="c4-flag-交互关系"><a class="header" href="#c4-flag-交互关系">C.4 Flag 交互关系</a></h2>
+<h3 id="双重门控模式"><a class="header" href="#双重门控模式">双重门控模式</a></h3>
+<p>许多功能同时受编译时 + 运行时 Flag 控制。编译时决定代码是否存在，运行时决定是否激活：</p>
+<pre><code class="language-pseudocode">// 语音模式：三重门控
+COMPILE_FLAG('VOICE_MODE')           // 代码是否包含
+  + runtime_voice_killswitch         // 紧急关闭开关
+  + hasVoiceAuth()                   // 运行时认证
+
+// 安全分类器：双重门控
+COMPILE_FLAG('TRANSCRIPT_CLASSIFIER') // 分类器代码是否包含
+  + runtime_auto_mode_config          // Auto 模式配置
+
+// 记忆提取：三重门控
+COMPILE_FLAG('EXTRACT_MEMORIES')      // 记忆提取代码是否包含
+  + runtime_memory_gate               // 运行时门控
+  + ENV_DISABLE_AUTO_MEMORY           // 环境变量禁用
+</code></pre>
+<h3 id="互斥关系"><a class="header" href="#互斥关系">互斥关系</a></h3>
+<pre><code class="language-pseudocode">USE_BEDROCK  &lt;=&gt;  USE_VERTEX    // 二选一
+SIMPLE = true  =&gt;  禁用自定义 Agent、高级工具、Coordinator
+</code></pre>
+<h3 id="内部外部构建差异"><a class="header" href="#内部外部构建差异">内部/外部构建差异</a></h3>
+<p>同一份代码库通过编译时宏编译出功能集不同的版本：</p>
+<ul>
+<li><strong>外部构建</strong>: 助手模式/语音模式/桥接模式/协调器模式/团队记忆等 = false</li>
+<li><strong>内部构建</strong>: 所有 Flag 可用，内部用户标识启用</li>
+</ul>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../appendix/appendix-b.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../appendix/appendix-d.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../appendix/appendix-b.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../appendix/appendix-d.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Part I Intro - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-1/intro.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="part-i-什么是-agent-harness"><a class="header" href="#part-i-什么是-agent-harness">Part I: 什么是 Agent Harness</a></h1>
+<blockquote>
+<p>建立心智模型：LLM 不等于 Agent，Harness 是让 LLM 变成 Agent 的那层壳。</p>
+</blockquote>
+<hr />
+<h2 id="这个-part-要解决什么问题"><a class="header" href="#这个-part-要解决什么问题">这个 Part 要解决什么问题</a></h2>
+<p>在深入任何一个子系统之前，你需要一张地图。</p>
+<p>LLM 能写诗、能推导公式、能生成排序算法——但它不能读你的文件，不能执行命令，不能记住上一轮对话，更不知道什么操作不该做。这些缺陷不是 bug，而是设计边界。要让 LLM 变成有用的 Agent，必须有一层系统来补全这些缺陷。这层系统就是 Harness。</p>
+<p>Part I 的任务是建立这个核心心智模型：<strong>Agent = LLM + Harness</strong>，然后带你鸟瞰一个生产级 Harness 的完整架构——六层模型、数据流向、模块划分。这两章不涉及任何子系统的深入分析，但它们提供的全局视角是理解后续所有章节的基础。</p>
+<h2 id="包含章节"><a class="header" href="#包含章节">包含章节</a></h2>
+<p><strong>Chapter 1: 从 LLM 到 Agent -- Harness 的角色。</strong> LLM 有四个致命缺陷（没有手、没有眼、没有记忆、没有缰绳），Harness 如何逐一补全？工具系统、上下文注入、对话管理和权限守卫分别扮演什么角色？这一章用最直觉的方式建立 Harness 的概念框架。</p>
+<p><strong>Chapter 2: 系统全景 -- 一个 Agent 的解剖图。</strong> 面对一个拥有 40 多个目录和数百个源文件的代码库，怎么不迷路？六层架构模型（入口层、引擎层、工具层、状态层、服务层、表现层）如何分工？一条消息从用户输入到最终回复经历了怎样的九阶段旅程？</p>
+<h2 id="与其他-part-的关系"><a class="header" href="#与其他-part-的关系">与其他 Part 的关系</a></h2>
+<ul>
+<li><strong>前置知识</strong>：无。这是全书的起点。</li>
+<li><strong>后续延伸</strong>：Part I 建立的心智模型和架构全景，是 Part II（Agent Loop）、Part III（工具系统）和 Part IV（安全与权限）的共同基础。Chapter 2 中描述的「一条消息的旅程」将在 Part II 中被逐步展开为完整的工程实现。</li>
+</ul>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reading-guide.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-1/chapter-01.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reading-guide.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-1/chapter-01.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

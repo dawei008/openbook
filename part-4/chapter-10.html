@@ -1,0 +1,604 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 10: Risk Classification - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-4/chapter-10.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-10-风险分级与自动审批"><a class="header" href="#chapter-10-风险分级与自动审批">Chapter 10: 风险分级与自动审批</a></h1>
+<blockquote>
+<p>读文件和删文件，风险完全不同。自动化的安全判断如何区分这两者？</p>
+</blockquote>
+<pre><code>         tool_use request
+              │
+       ┌──────▼──────┐
+       │  Permission  │
+       │    Check     │
+       │      │       │
+       │  ┌───▼────┐  │
+       │  │Allowlist│  │   Fast paths
+       │  └───┬────┘  │
+       │  ┌───▼────┐  │
+       │  │Denylist │  │
+       │  └───┬────┘  │
+       │      │       │
+       │ ★ Risk       │
+       │ ★ Classifier ★   ◄── 本章聚焦
+       │  Stage1→Stage2│
+       │      │       │
+       │  allow/deny   │
+       └──────────────┘
+</code></pre>
+<h2 id="101-不是所有操作都一样危险"><a class="header" href="#101-不是所有操作都一样危险">10.1 不是所有操作都一样危险</a></h2>
+<p>上一章我们看到，当权限决策落入 <code>ask</code> 分支时，auto 模式可以让 ML 分类器
+代替用户做出判断。
+但这引出了一个更根本的问题：
+<strong>用一个模型去判断另一个模型的行为是否安全，凭什么？</strong></p>
+<p>答案是分层。</p>
+<p>在分类器介入之前，有大量确定性规则已经排除了两端的极端情况：
+明显安全的操作被白名单直接放行，
+明显危险的操作被黑名单直接拦截。
+分类器只处理中间的灰色地带——
+那些规则无法覆盖、需要理解上下文才能判断的操作。</p>
+<p>这就像医院的分诊系统。
+护士先根据症状分流：
+明显的感冒直接开药，明显的急症直接进急诊，
+只有症状不明确的才需要专家会诊。
+分类器就是那个专家——昂贵但精准，只在真正需要时才出场。</p>
+<p>权限类型定义模块中定义了三级风险评估框架。
+<code>RiskLevel</code> 分为 LOW、MEDIUM、HIGH，
+每个评估附带 <code>explanation</code>（发生了什么）、
+<code>reasoning</code>（为什么有风险）、<code>risk</code>（最坏情况）。
+这让权限弹窗不再是无上下文的"Allow / Deny"，
+而是带有充分信息的安全决策。</p>
+<h2 id="102-三条快速通道在分类器之前拦截"><a class="header" href="#102-三条快速通道在分类器之前拦截">10.2 三条快速通道：在分类器之前拦截</a></h2>
+<p>分类器需要一次额外的 API 调用，成本不低。
+因此系统在分类器之前设置了三条快速通道，
+每一条都是零延迟、零成本的确定性判断。</p>
+<h3 id="安全工具白名单"><a class="header" href="#安全工具白名单">安全工具白名单</a></h3>
+<p>分类器决策模块中定义了一组"绝对安全"的工具，
+收集在安全工具白名单集合中。</p>
+<p>这些工具的共同特征是：只读或只影响元数据，
+不产生文件系统写入、网络请求或进程执行。
+列表包括文件读取（<code>FileRead</code>）、搜索（<code>Grep</code>、<code>Glob</code>）、
+语言服务器（<code>LSP</code>）、任务管理（<code>TodoWrite</code>、<code>TaskCreate</code>）、
+计划模式切换、Swarm 协调工具等。</p>
+<p>当 auto 模式遇到这些工具时，直接放行，
+连分类器的 API 调用都省了。
+analytics 事件中 <code>fastPath: 'allowlist'</code> 的标记
+让运维团队可以追踪有多少操作走了这条快速通道。</p>
+<p>白名单的设计遵循了一个严格原则：<strong>宁缺毋滥</strong>。
+注意白名单的注释：
+<code>Does NOT include write/edit tools — those are handled by the acceptEdits fast path</code>。
+写入工具不在白名单中，因为它们的安全性取决于目标路径。</p>
+<p>更值得注意的是，<code>AGENT_TOOL_NAME</code> 和 <code>REPL_TOOL_NAME</code> 也不在白名单中。
+Agent 工具可以间接执行任何操作，
+REPL 的 JavaScript 代码可能包含 VM 逃逸。
+即使它们"看起来"安全，潜在的间接风险也排除了白名单资格。
+Swarm 相关的工具（<code>TEAM_CREATE</code>、<code>SEND_MESSAGE</code>）之所以在白名单中，
+是因为它们只操作内部邮箱和团队状态——
+团队成员自身有独立的权限检查。</p>
+<h3 id="acceptedits-快速路径"><a class="header" href="#acceptedits-快速路径">acceptEdits 快速路径</a></h3>
+<p>对于写操作，系统有一个巧妙的优化：
+在调用分类器之前，先模拟 <code>acceptEdits</code> 模式下的权限检查。</p>
+<p>如果一个操作在 acceptEdits 模式下被允许
+（即只是在工作目录内编辑文件），
+那它在 auto 模式下也应该被允许
+——不需要浪费一次分类器调用来确认这个显而易见的结论。</p>
+<p>实现方式很精巧：
+临时构造一个权限上下文，将 <code>mode</code> 替换为 <code>acceptEdits</code>，
+然后调用工具的权限检查方法。
+如果返回 <code>allow</code>，直接放行并标记 <code>fastPath: 'acceptEdits'</code>。</p>
+<p>但同样，<code>AGENT_TOOL_NAME</code> 和 <code>REPL_TOOL_NAME</code> 被排除在此快速路径之外。
+代码注释解释了原因：
+REPL 代码可能在内部工具调用之间包含 VM 逃逸代码——
+分类器必须看到那些"胶水 JavaScript"，
+而不是只看到内部工具调用。</p>
+<h3 id="safetycheck-硬性拦截"><a class="header" href="#safetycheck-硬性拦截">safetyCheck 硬性拦截</a></h3>
+<p>在所有快速通道之前，还有一道硬性安全屏障。</p>
+<p>当 <code>classifierApprovable</code> 为 false 时，
+意味着这个安全检查连分类器也无权批准——
+比如 Windows 路径绕过尝试或跨机器桥接消息。
+这些操作必须由用户亲自确认，
+任何自动化手段都不能代替人类判断。</p>
+<p>当 <code>classifierApprovable</code> 为 true 时——
+比如 <code>.agent/</code> 下的文件操作——
+分类器可以看到完整上下文来判断是否是用户主动请求的行为。
+这个布尔值精确地划定了"机器可以代劳"和"必须人类确认"的边界。</p>
+<h2 id="103-敏感文件保护修改配置即获得执行权"><a class="header" href="#103-敏感文件保护修改配置即获得执行权">10.3 敏感文件保护：修改配置即获得执行权</a></h2>
+<p>文件系统安全模块中定义了两组受保护目标。</p>
+<p><code>DANGEROUS_FILES</code> 包括 <code>.gitconfig</code>、<code>.bashrc</code>、<code>.zshrc</code>、
+<code>.mcp.json</code>、<code>.ripgreprc</code> 等。
+<code>DANGEROUS_DIRECTORIES</code> 包括 <code>.git</code>、<code>.vscode</code>、<code>.idea</code>、<code>.agent</code>。</p>
+<p>为什么这些文件和目录需要特别保护？
+因为它们有一个共同特征：
+<strong>修改它们等同于获得代码执行能力</strong>。</p>
+<p><code>.gitconfig</code> 可以设置 <code>core.sshCommand</code> 在每次 git 操作时执行任意命令。
+<code>.bashrc</code> 在每次终端启动时运行。
+<code>.mcp.json</code> 可以注册恶意的 MCP 服务器。
+<code>.agent/settings.json</code> 可以修改权限规则本身
+——一个能修改自己权限规则的 Agent，等于没有权限限制。</p>
+<p>路径安全检查函数是这道防线的核心。
+它做了三重检查：</p>
+<p><strong>Windows 路径模式检测。</strong>
+NTFS 替代数据流（<code>file.txt::$DATA</code>）、
+8.3 短名称（<code>GIT~1</code> 可以绕过对 <code>.git</code> 的字符串匹配）、
+长路径前缀（<code>\\?\C:\...</code> 绕过路径规范化）、
+尾部点和空格（<code>.git.</code> 在 Windows 上等同于 <code>.git</code>）、
+DOS 设备名（<code>.git.CON</code> 是特殊设备文件）、
+三个以上连续点号（路径遍历变体）——
+每一个都是真实的路径规范化绕过攻击向量。</p>
+<p>函数注释中详细论述了
+为什么选择"检测拒绝"而非"规范化"策略。
+规范化依赖文件系统状态，新建文件时目标不存在无法规范化；
+且会引入 TOCTOU 竞态条件——
+在规范化和实际文件操作之间，文件系统状态可能已经改变。</p>
+<p>为什么在所有平台上都检测 Windows 路径模式？
+因为 NTFS 文件系统可以通过 <code>ntfs-3g</code> 挂载在 Linux 和 macOS 上。
+唯一的例外是 ADS 冒号检测——
+只在 Windows/WSL 上检查，因为 Linux/macOS 上冒号是合法的文件名字符，
+NTFS 上的 ADS 通过 xattrs 而非冒号语法访问。</p>
+<p><strong>Agent 配置文件检测。</strong>
+配置文件路径检查函数不仅检查 settings 文件，
+还检查 <code>.agent/commands/</code>、<code>.agent/agents/</code>、<code>.agent/skills/</code> 目录。
+路径比较使用大小写不敏感的规范化函数，
+防止在 macOS/Windows 上通过 <code>.aGeNt/Settings.json</code> 绕过检查。</p>
+<p><strong>危险文件/目录检测。</strong>
+危险路径检测函数遍历路径段与黑名单做大小写不敏感匹配。
+其中有一个精巧的特例：<code>.agent/worktrees/</code> 路径被豁免，
+因为这是系统存储 git worktree 的结构性目录，而非用户创建的敏感目录。</p>
+<h2 id="104-双阶段分类器宁可误杀的快速阶段深思熟虑的纠偏阶段"><a class="header" href="#104-双阶段分类器宁可误杀的快速阶段深思熟虑的纠偏阶段">10.4 双阶段分类器：宁可误杀的快速阶段，深思熟虑的纠偏阶段</a></h2>
+<p>当所有确定性规则都无法给出判断时，auto 模式启动 ML 分类器。
+这是整个权限系统中最精密的组件，
+实现在自动审批分类器模块中。</p>
+<h3 id="分类器看到什么"><a class="header" href="#分类器看到什么">分类器看到什么</a></h3>
+<p>分类器看到的不是孤立的工具调用，
+而是一个精心构建的会话摘要。
+转录构建函数将对话历史转换为紧凑的转录格式。</p>
+<p>这里有一个关键的安全决策：
+<strong>assistant 的文本内容被故意排除，只保留 tool_use 块</strong>。</p>
+<p>为什么？
+因为 assistant 文本是模型生成的，
+恶意 prompt 注入可能诱导模型产生具有误导性的文本。
+比如模型可能在 tool_use 前写下"用户刚才确认了要删除所有文件"，
+如果分类器看到这段文本，可能会被误导认为操作是用户授权的。
+只看"做了什么"（tool_use），不看"说了什么"（text），
+大大缩小了攻击面。</p>
+<p>转录格式被压缩为紧凑的单行表示。
+每个工具通过分类器输入方法控制哪些字段暴露给分类器。
+如果某个工具返回空字符串，意味着"没有安全相关性"，
+该工具调用会被完全跳过。
+这种"每个工具控制自己的分类器投影"的设计，
+让工具作者可以精确控制信息披露——
+只暴露安全决策需要的最少信息。</p>
+<h3 id="双阶段决策流"><a class="header" href="#双阶段决策流">双阶段决策流</a></h3>
+<p>分类器支持三种运行模式：
+<code>both</code>（默认）、<code>fast</code>（只跑第一阶段）、<code>thinking</code>（只跑第二阶段）。
+默认的 <code>both</code> 模式是最精妙的。</p>
+<p><strong>Stage 1（快速阶段）：</strong>
+最大 64 tokens，温度为 0，附加后缀：</p>
+<blockquote>
+<p><code>'\nErr on the side of blocking. &lt;block&gt; immediately.'</code></p>
+</blockquote>
+<p>这句话把分类器推向保守端——"宁可误杀，不可放过"。
+如果它说"允许"，那大概率确实安全（高精确率）；
+如果它说"阻止"，可能是误报（较低召回率）。
+<code>stop_sequences: ['&lt;/block&gt;']</code> 让模型在给出判断后立即停止，
+进一步压缩延迟。</p>
+<p><strong>Stage 2（思考阶段）：</strong>
+只在 Stage 1 说"阻止"时才运行。
+最大 4096 tokens，附加后缀要求深入推理：</p>
+<blockquote>
+<p><code>'\nReview the classification process and follow it carefully, making sure you deny actions that should be blocked. As a reminder, explicit (not suggestive or implicit) user confirmation is required to override blocks. Use &lt;thinking&gt; before responding with &lt;block&gt;.'</code></p>
+</blockquote>
+<p>Stage 2 的任务是"纠偏"——
+用更充分的推理来判断 Stage 1 的阻止是否是误报。
+注意它特别强调"显式的用户确认才能覆盖阻止"
+——暗示性或隐含的确认不够。</p>
+<p>两阶段设计的效果是：
+大部分安全操作在 Stage 1 就通过了（低延迟），
+只有可疑操作才需要 Stage 2 的深度分析（高准确率）。
+一个安全的 <code>git add .</code> 在几百毫秒内通过，
+一个可疑的 <code>curl | bash</code> 则会被仔细审查。</p>
+<h3 id="响应解析防御链式推理中的误匹配"><a class="header" href="#响应解析防御链式推理中的误匹配">响应解析：防御链式推理中的误匹配</a></h3>
+<p>两阶段分类器使用 XML 格式（<code>&lt;block&gt;yes/no&lt;/block&gt;</code>），
+解析函数在解析前会先移除 <code>&lt;thinking&gt;</code> 标签内的内容。</p>
+<p>为什么要这样做？
+因为模型在链式推理中可能写出
+"如果用户说了 X 则 <code>&lt;block&gt;yes&lt;/block&gt;</code>，否则..."这样的假设性结论。
+如果不移除推理内容，假设中的 <code>&lt;block&gt;yes</code> 会被错误匹配为最终判断。
+这是一个微妙但重要的防御。</p>
+<h2 id="105-fail-closed不确定时选择更安全的路径"><a class="header" href="#105-fail-closed不确定时选择更安全的路径">10.5 Fail Closed：不确定时选择更安全的路径</a></h2>
+<p>分类器的错误处理体现了"安全优先"的哲学，贯穿三个层面。</p>
+<p><strong>响应不可解析时</strong>：
+Stage 2 返回值无法解析为 yes/no，直接判定为阻止。
+<code>reason</code> 写入 <code>'Classifier stage 2 unparseable - blocking for safety'</code>。
+这就是 <strong>fail closed</strong>——系统在无法确定安全性时选择更保守的路径。</p>
+<p><strong>API 不可用时</strong>：
+行为受特性门控控制。
+默认 fail closed（deny），
+但可以通过远程配置切换为 fail open（回退到用户询问）。
+这个开关的存在是为了运维：
+当分类器大规模故障时，运维团队可以快速切换为 fail open，
+恢复用户体验，而不是让所有 auto 模式用户被卡住。
+特性门控的刷新间隔是 30 分钟，
+在安全性和响应速度之间取得平衡。</p>
+<p><strong>上下文超长时</strong>：
+当对话历史超过分类器的上下文窗口时，
+这是一个确定性条件——transcript 只会增长不会缩短。
+系统不浪费时间重试，立即降级到用户提示模式。
+对于 headless 模式，由于降级也无法弹窗，
+直接抛出 <code>AbortError</code> 终止 Agent。</p>
+<h2 id="106-拒绝追踪与降级保护断路器模式"><a class="header" href="#106-拒绝追踪与降级保护断路器模式">10.6 拒绝追踪与降级保护：断路器模式</a></h2>
+<p>如果分类器持续拒绝操作怎么办？</p>
+<p>拒绝追踪模块实现了一个类似电路断路器的保护机制。
+核心数据结构只有两个计数器：
+<code>consecutiveDenials</code> 和 <code>totalDenials</code>，以及两个阈值：</p>
+<p>连续拒绝上限 <code>maxConsecutive: 3</code>，总拒绝上限 <code>maxTotal: 20</code>。</p>
+<p>当任一阈值被触发时，
+降级判断函数返回 true，
+系统自动降级到用户提示模式。</p>
+<p>这个设计解决了两个问题。</p>
+<p>第一，<strong>分类器系统性误判</strong>。
+如果分类器因某种原因持续错误地拒绝合法操作，
+3 次连续拒绝后用户就能介入。</p>
+<p>第二，<strong>恶意循环检测</strong>。
+如果模型持续尝试被拒绝的操作
+（可能是 prompt 注入导致的死循环），
+20 次总拒绝后强制中断，让人类审查。</p>
+<p>成功记录函数有一个值得注意的细节：
+当状态没有变化时（<code>consecutiveDenials</code> 已经是 0），
+它返回相同的引用而非新对象。
+这让下游的 <code>Object.is</code> 检查可以跳过不必要的状态更新——
+在每次成功的工具调用都会触发成功记录的高频场景下，
+这个优化避免了大量无意义的 React 重渲染。</p>
+<p>降级策略对不同场景做了区分：
+CLI 模式下降级为弹窗询问；
+headless 模式下由于无法弹窗，
+达到阈值后直接抛出 <code>AbortError</code> 终止 Agent。</p>
+<p>总拒绝达到 20 次后，计数器会被重置为 0，
+让用户审查并决定后可以继续使用 auto 模式。
+这避免了"一旦达到 20 次就永远无法恢复"的死锁。</p>
+<h2 id="107-决策链路的完整追踪"><a class="header" href="#107-决策链路的完整追踪">10.7 决策链路的完整追踪</a></h2>
+<p>每一个权限决策——无论来自规则、分类器还是用户——
+都附带决策原因记录，
+一个包含 11 种类型的联合类型。</p>
+<p>从 <code>rule</code>（哪条规则、哪个来源）到
+<code>classifier</code>（哪个分类器、什么理由）到
+<code>hook</code>（哪个 Hook、什么来源）到
+<code>safetyCheck</code>（什么安全检查、是否可被分类器批准），
+完整的决策链路被结构化记录。</p>
+<p>这种可审计性不是奢侈品——它是信任的基础。
+用户需要能够理解"为什么这个操作被拒绝了"，
+才能信任并有效使用自动化决策系统。
+<code>/permissions</code> 面板展示了最近的拒绝记录，
+让决策过程对用户透明可见。</p>
+<h2 id="108-小结分级防御的经济学"><a class="header" href="#108-小结分级防御的经济学">10.8 小结：分级防御的经济学</a></h2>
+<p>回顾整个风险分级体系，
+其设计遵循了一个核心的经济学原则：
+<strong>确定性规则先行，概率性判断后置</strong>。</p>
+<p>白名单、黑名单、路径检查——
+这些都是零延迟、零成本的判断。
+只有当确定性规则无法覆盖时，才启动昂贵的 ML 推理。</p>
+<p>Stage 1 的保守策略和 Stage 2 的纠偏策略
+构成了精度与延迟的帕累托最优——
+大部分操作在低延迟下通过，
+只有真正可疑的才承受高延迟但获得高精度。</p>
+<p>而贯穿始终的 fail closed 原则确保了一件事：
+系统宁可在不确定时让用户多确认一次，
+也不会在不确定时默默放行一个危险操作。</p>
+<hr />
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>分类器故意排除 assistant 文本只保留 tool_use 块。
+但如果攻击者构造了恶意的 tool_use 输入
+（比如在 Bash 命令中嵌入误导性注释），
+分类器还能有效防御吗？
+"只看行为不看言论"的策略有什么盲点？</p>
+</li>
+<li>
+<p>连续拒绝阈值设为 3，总拒绝阈值设为 20。
+如果你要为高安全场景（如金融系统）调整这些参数，你会怎么改？
+改了之后对用户体验有什么影响？</p>
+</li>
+<li>
+<p>acceptEdits 快速通道的逻辑是
+"如果在 acceptEdits 模式下被允许，那在 auto 模式下也应该被允许"。
+这个推理的隐含假设是什么？
+在什么场景下这个假设会失效？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-4/chapter-09.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-4/chapter-11.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-4/chapter-09.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-4/chapter-11.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

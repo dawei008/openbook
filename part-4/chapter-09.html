@@ -1,0 +1,556 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 9: Permission Model - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-4/chapter-09.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-9-权限模型四层防线的设计"><a class="header" href="#chapter-9-权限模型四层防线的设计">Chapter 9: 权限模型：四层防线的设计</a></h1>
+<blockquote>
+<p>Agent 能做一切，但不应该做一切。权限系统是 Harness 最沉重的职责。</p>
+</blockquote>
+<pre><code>           User Request
+                │
+         ┌──────▼──────┐
+         │  Agent Loop  │
+         │   ┌─────┐   │
+         │   │ LLM │   │
+         │   └──┬──┘   │
+         │      │      │
+         │  tool_use   │
+         │      │      │
+         │ ★ Permission ★       ◄── 本章聚焦
+         │    Check    │
+         │      │      │
+         │   [Tool]    │
+         └─────────────┘
+</code></pre>
+<h2 id="91-一把万能钥匙带来的恐惧"><a class="header" href="#91-一把万能钥匙带来的恐惧">9.1 一把万能钥匙带来的恐惧</a></h2>
+<p>传统软件的权限模型是"按钮模型"——用户按下删除键，程序删除文件，
+因果链清晰可控。</p>
+<p>AI Agent 彻底打破了这个范式。</p>
+<p>当你告诉它"帮我整理项目结构"，它可能在一次对话中产生几十次工具调用：
+读文件、写文件、执行 shell 命令、搜索代码。
+每一次工具调用都可能越界。</p>
+<p>这种越界风险来自三个根源。</p>
+<p><strong>不可预测性。</strong>
+语言模型的输出是概率性的，同一个 prompt 在不同上下文下可能产生完全不同的
+工具调用序列。你无法在编译期穷举所有可能行为。
+这和传统软件的确定性逻辑完全不同——你不能写一个 switch-case 来覆盖所有情况。</p>
+<p><strong>能力放大效应。</strong>
+一旦 Agent 获得了 <code>Bash</code> 工具的使用权，它理论上拥有了操作系统级别的一切能力
+——安装软件、修改配置、发送网络请求、删除整个目录。
+一个 <code>rm -rf /</code> 的距离，只隔着一个 token。
+这种能力放大在其他编程范式中没有先例。</p>
+<p><strong>提示注入风险。</strong>
+恶意指令可能隐藏在看似无害的文件注释、网页内容、API 响应中。
+Agent 读取了被投毒的数据后，可能被诱导执行非预期操作。
+一个看似正常的"请帮我优化这段代码"请求，如果代码注释中嵌入了恶意指令，
+后果不堪设想。</p>
+<p>如果每次工具调用都弹窗询问，用户体验将惨不忍睹；
+如果完全放开权限，安全隐患又是灾难性的。
+这就是权限系统要解决的核心矛盾：<strong>在安全与效率之间找到动态平衡点</strong>。</p>
+<h2 id="92-四层纵深防御机场安检的隐喻"><a class="header" href="#92-四层纵深防御机场安检的隐喻">9.2 四层纵深防御：机场安检的隐喻</a></h2>
+<p>该系统的解决方案可以用机场安检来类比。
+你不会只设一道关卡——而是层层过滤：
+安检门筛掉金属物品，X 光扫描行李内容，人工抽检可疑物品，登机口做最终确认。
+每一层针对不同威胁，任何一层拦截都能阻止危险操作通过。</p>
+<p>这四层在代码中的对应是：</p>
+<ul>
+<li><strong>Layer 1: 工具自检</strong>（安检门）——每个工具知道自己的危险边界，主动检查输入</li>
+<li><strong>Layer 2: 规则引擎</strong>（X 光机）——根据配置的 deny/allow/ask 规则做确定性判断</li>
+<li><strong>Layer 3: ML 分类器</strong>（人工抽检）——用另一个模型判断灰色地带的操作</li>
+<li><strong>Layer 4: 用户审批</strong>（登机口确认）——最终兜底，人类做出最后决策</li>
+</ul>
+<p>所有工具调用的权限检查都汇聚在一个统一入口函数中。
+它创建一个 Promise，将整个四层决策流封装为异步操作。</p>
+<p>如果调用方提供了强制决策结果（用于测试或已完成权限检查的场景），直接使用；
+否则进入规则引擎的核心流程。
+这个函数的返回值只有三种：<code>allow</code>、<code>deny</code>、<code>ask</code>。
+简洁的三值语义让后续所有层的处理逻辑都清晰可控。</p>
+<h2 id="93-layer-1-工具自检每个工具知道自己的边界"><a class="header" href="#93-layer-1-工具自检每个工具知道自己的边界">9.3 Layer 1: 工具自检——每个工具知道自己的边界</a></h2>
+<p>权限检查的第一步发生在权限模块的核心检查函数中。
+它按严格的步骤顺序执行，每一步都有明确的优先级语义。</p>
+<p><strong>Step 1a: 全局 deny 规则最先检查。</strong>
+如果一个工具被配置在 deny 列表中，不做任何进一步判断，直接拒绝。
+这是"一票否决"——deny 永远优先于 allow，这是安全设计的基本原则。
+deny 规则匹配函数在所有来源的 deny 规则中查找匹配。</p>
+<p><strong>Step 1b: 全局 ask 规则。</strong>
+如果工具被标记为"总是询问"，通常会立即进入 ask 流程。
+但这里有一个精巧的例外：如果启用了沙箱且命令会在沙箱中执行，可以跳过询问。
+因为沙箱本身就是一层保护，叠加询问是多余的。
+这个判断通过沙箱管理器的自动放行检查实现。</p>
+<p><strong>Step 1c: 调用工具自身的权限检查方法。</strong>
+这是最关键的一步——每个工具比权限系统更了解自己的风险边界。
+以 BashTool 为例，它会解析命令字符串，
+逐个检查子命令是否匹配已有的 allow 规则。
+比如规则 <code>Bash(git *)</code> 允许所有以 <code>git</code> 开头的命令。
+FileEditTool 则会检查目标路径是否在工作目录内、是否命中了敏感文件列表。
+这种自检机制让权限判断具备了<strong>工具级的上下文感知能力</strong>。</p>
+<p><strong>Step 1d-1g: 四道安全闸门。</strong>
+工具返回的结果经过四重检查：</p>
+<p>Step 1d——工具明确 deny，不可覆盖。
+这捕获了工具自检发现的硬性安全问题，比如 Bash 命令中包含被 deny 的子命令。</p>
+<p>Step 1e——工具声明需要用户交互（<code>requiresUserInteraction</code>），
+即使在 bypass 模式下也必须询问。
+<code>AskUserQuestion</code> 工具就属于这类——它的存在意义就是向用户提问，自动允许没有意义。</p>
+<p>Step 1f——用户配置的内容级 ask 规则（如 <code>Bash(npm publish:*)</code>），
+bypass 模式也不能绕过。
+这个设计的意图是：用户显式配置了"这类操作必须问我"，
+即使在最宽松的模式下也应该尊重这个意愿。</p>
+<p>Step 1g——安全检查（safetyCheck），<strong>即使在 bypassPermissions 模式下也不可覆盖</strong>。
+涉及 <code>.git/</code>、<code>.agent/</code>、<code>.vscode/</code>、shell 配置文件等敏感路径时硬性拦截。
+这些路径有一个共同特征：修改它们可以导致代码执行。
+<code>.gitconfig</code> 能设置 <code>core.sshCommand</code> 执行任意命令；
+<code>.bashrc</code> 在每次终端启动时运行；
+<code>.agent/settings.json</code> 可以修改权限规则本身。
+"修改配置就等于获得执行权限"的路径，必须硬性保护。</p>
+<h2 id="94-layer-2-规则引擎八种来源一套优先级"><a class="header" href="#94-layer-2-规则引擎八种来源一套优先级">9.4 Layer 2: 规则引擎——八种来源，一套优先级</a></h2>
+<p>如果工具自检没有给出明确判断，流程进入规则引擎阶段。
+这一层做两件事：
+检查当前权限模式是否允许放行，以及检查是否有全局 allow 规则。</p>
+<p>规则的数据结构在权限类型定义模块中描述。
+一条权限规则包含三个维度：
+<code>source</code>（来自哪里）、<code>ruleBehavior</code>（allow/deny/ask）、<code>ruleValue</code>（匹配什么）。</p>
+<p><code>ruleValue</code> 由 <code>toolName</code> 和可选的 <code>ruleContent</code> 组成。
+<code>toolName</code> 匹配工具名（如 <code>Bash</code>），
+<code>ruleContent</code> 匹配工具特定的内容（如 <code>git *</code> 匹配 git 开头的命令）。
+对于 MCP 工具，还支持服务器级别的匹配：
+规则 <code>mcp__server1</code> 可以匹配该服务器下的所有工具。</p>
+<p>来源有八种，它们有明确的优先级层次：</p>
+<div class="table-wrapper"><table><thead><tr><th>来源</th><th>优先级</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>policySettings</code></td><td>最高</td><td>企业管理策略，不可被覆盖</td></tr>
+<tr><td><code>flagSettings</code></td><td>高</td><td>特性门控配置</td></tr>
+<tr><td><code>userSettings</code></td><td>中</td><td><code>~/.agent/settings.json</code></td></tr>
+<tr><td><code>projectSettings</code></td><td>中</td><td><code>.agent/settings.json</code></td></tr>
+<tr><td><code>localSettings</code></td><td>中</td><td><code>.agent/settings.local.json</code></td></tr>
+<tr><td><code>cliArg</code></td><td>低</td><td><code>--allow-tool</code> 命令行参数</td></tr>
+<tr><td><code>command</code></td><td>低</td><td><code>/allow-tool</code> 运行时命令</td></tr>
+<tr><td><code>session</code></td><td>最低</td><td>会话内临时规则</td></tr>
+</tbody></table>
+</div>
+<p>为什么设计这么多来源？
+因为安全策略的制定者不止一个。
+企业安全团队需要强制执行组织策略，
+开发者需要按项目配置权限，
+用户需要根据当前任务临时调整。
+这八种来源构成了从"全局强制"到"临时灵活"的完整光谱。</p>
+<p>核心原则是：<strong>deny 总是优先于 allow</strong>。
+无论 allow 规则来自哪里，只要存在更高优先级的 deny 规则，操作就会被拒绝。
+这个原则在 deny 检查和 allow 检查的调用顺序中得到体现
+——deny 检查永远先于 allow 检查。</p>
+<p>如果工具自检返回了 <code>passthrough</code>，
+在进入后续流程之前，它会被转换为 <code>ask</code>。
+<code>passthrough</code> 的语义是"我没有意见"，
+但"没有意见"在安全上下文中应该被解读为"需要确认"，而非"默认允许"。</p>
+<h2 id="95-五种权限模式安全与效率的刻度盘"><a class="header" href="#95-五种权限模式安全与效率的刻度盘">9.5 五种权限模式：安全与效率的刻度盘</a></h2>
+<p>最终行为还取决于当前的权限模式。
+权限模式是系统层面的"安全刻度盘"，在权限模式定义模块中声明。
+可以把它想象成汽车的驾驶模式——同一辆车，不同模式下操控感完全不同。</p>
+<p><strong><code>default</code></strong>（日常驾驶）：
+未匹配规则的操作都需用户确认。这是最安全的模式，适合日常交互。
+用户对每一个新操作都有完全的可见性和控制权。</p>
+<p><strong><code>acceptEdits</code></strong>（半自动）：
+工作目录内的文件编辑自动允许，但 shell 命令、MCP 工具等仍需确认。
+适合信任度较高但不想完全放手的场景。
+颜色标记为 <code>autoAccept</code>，提示用户该模式比 default 宽松一级。</p>
+<p><strong><code>auto</code></strong>（自动驾驶）：
+用 ML 分类器代替用户做出大部分决策。
+这是 Chapter 10 的主题——分类器如何判断安全性，以及出错时怎么办。
+颜色标记为 <code>warning</code>（黄色），视觉上提醒用户这需要信任分类器的判断能力。</p>
+<p><strong><code>dontAsk</code></strong>（静默拒绝）：
+将所有 <code>ask</code> 转为 <code>deny</code>，绝不弹窗。
+适合非交互式批处理环境——宁可拒绝也不能挂起等待。
+在权限模块末尾对 <code>ask</code> 结果做最终变换。</p>
+<p><strong><code>bypassPermissions</code></strong>（全信任）：
+几乎所有操作自动允许。
+但即使在这个最宽松的模式下，Step 1g 的安全检查仍然生效
+——<code>.git/</code>、<code>.agent/</code> 等路径依然受保护。
+颜色标记是 <code>error</code>（红色），无声地警告用户它的风险等级。</p>
+<p>这五种模式不是孤立存在的。
+<code>plan</code> 模式可以和 <code>bypassPermissions</code> 组合：
+当用户原本在 bypass 模式下进入 plan 模式时，
+plan 模式继承了 bypass 的宽松度。
+这种组合设计避免了模式切换时的体验断裂。</p>
+<h2 id="96-不可变的权限上下文"><a class="header" href="#96-不可变的权限上下文">9.6 不可变的权限上下文</a></h2>
+<p>所有权限状态汇聚在权限类型定义模块的 <code>ToolPermissionContext</code> 类型中。
+这个类型的每个字段都标记了 <code>readonly</code>
+——用 TypeScript 类型系统强制不可变性。</p>
+<p>为什么不可变性如此重要？</p>
+<p>因为权限状态是安全决策的基础。
+如果某段代码在权限检查过程中修改了状态，
+可能导致一个"检查时安全、执行时危险"的竞态条件。
+这就是经典的 TOCTOU（Time-of-Check-Time-of-Use）漏洞。
+不可变性从类型层面消除了这一整类问题。</p>
+<p>三份规则表——<code>alwaysAllowRules</code>、<code>alwaysDenyRules</code>、<code>alwaysAskRules</code>
+——各自独立存储。
+这个设计看似冗余，实则避免了运行时根据行为类型过滤规则的开销。
+在每次工具调用都需要执行权限检查的场景下，
+这种以空间换时间的取舍是合理的。</p>
+<p><code>shouldAvoidPermissionPrompts</code> 字段标记了无头模式
+——后台 Agent、CI 环境、子 Agent 等无法弹出对话框的场景。
+当这个标记为 true 时，所有 <code>ask</code> 决策都会被转为 <code>deny</code>，
+除非 PermissionRequest Hook 先行介入给出了 allow 判断。
+这意味着无头 Agent 的安全策略是："如果没有人能批准，就默认拒绝"。</p>
+<p><code>awaitAutomatedChecksBeforeDialog</code> 字段标记了 coordinator 模式
+——在弹出用户对话框之前，先同步等待 Hook 和分类器的结果。
+这和默认的异步竞赛模式形成对比，适用于自动化优先的场景。</p>
+<h2 id="97-竞赛而非串行resolveonce-的智慧"><a class="header" href="#97-竞赛而非串行resolveonce-的智慧">9.7 竞赛而非串行：resolveOnce 的智慧</a></h2>
+<p>当权限决策最终落入 <code>ask</code> 分支且需要用户确认时，
+系统并不是简单地弹出对话框等待。
+它同时启动多个竞赛方：</p>
+<ul>
+<li>用户对话框（UI 队列）</li>
+<li>PermissionRequest Hook（用户自定义策略）</li>
+<li>Bash 分类器（ML 判断）</li>
+<li>桌面端 Bridge（浏览器端确认）</li>
+<li>消息通道（Telegram、iMessage 远程确认）</li>
+</ul>
+<p>哪个先返回结果，就用哪个。</p>
+<p>这个竞赛通过权限上下文模块中的 <code>createResolveOnce</code> 实现。
+核心是一个 <code>claim()</code> 方法——它是一个原子操作，
+多个并发路径竞争，只有第一个调用 <code>claim()</code> 的会赢得决策权。
+一旦某方 claim 成功，其他方的后续 resolve 调用都会被静默丢弃。</p>
+<p>这个设计优雅地解决了一类微妙的竞态条件：
+用户正在点"允许"的同一时刻，分类器恰好返回了结果。
+没有 <code>claim()</code> 机制，两个决策都会被应用，导致不可预测的行为。</p>
+<p>竞赛语义的另一个好处是性能：
+如果分类器在 200ms 内给出高置信度判断，
+用户甚至不需要看到权限弹窗。
+体验上，快速操作像是"自动允许"了；
+只有分类器也拿不准的操作才会真正弹窗。</p>
+<p>在协调者处理路径中，
+竞赛变为串行：先跑 Hook，再跑分类器，都不行才弹窗。
+注释中的 <code>(fast, local)</code> 和 <code>(slow, inference)</code> 暗示了设计者的意图
+——本地计算优先于远程推理，远程推理优先于人工确认。</p>
+<h2 id="98-设计哲学总结"><a class="header" href="#98-设计哲学总结">9.8 设计哲学总结</a></h2>
+<p>回顾整个权限模型，四个设计原则贯穿始终：</p>
+<p><strong>Deny 优先。</strong>
+在任何层级，deny 规则都优先于 allow 规则。
+安全检查即使在最宽松的 bypass 模式下也不可覆盖。
+这确保了安全底线不可被任何配置或模式组合突破。</p>
+<p><strong>纵深防御。</strong>
+四层检查形成立体防线：工具自检捕获技术风险，
+规则引擎实现策略控制，分类器提供智能判断，用户审批作为终极兜底。
+任何单一层次的失败都不会导致整个系统的安全崩溃。</p>
+<p><strong>竞赛而非串行。</strong>
+在需要用户确认的场景，多方同时启动，通过原子 claim 机制竞争。
+效率最大化的同时保证决策唯一性。</p>
+<p><strong>不可变状态。</strong>
+权限上下文通过 <code>readonly</code> 类型和不可变数据结构确保安全，
+消除一整类由状态篡改导致的漏洞。</p>
+<hr />
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p><code>bypassPermissions</code> 模式下 safetyCheck 仍然生效，
+但 <code>auto</code> 模式下 <code>classifierApprovable</code> 为 true 的 safetyCheck
+可以交给分类器判断。
+为什么这两种模式对 safetyCheck 的处理策略不同？</p>
+</li>
+<li>
+<p>规则来源有八种之多，但 <code>policySettings</code> 和 <code>flagSettings</code>
+的规则不可被删除（删除规则的函数会抛出异常）。
+如果企业策略配置了一条错误的 deny 规则，用户只能等管理员修复吗？
+设计一个紧急覆盖机制需要考虑哪些安全边界？</p>
+</li>
+<li>
+<p><code>claim()</code> 机制保证了"第一个响应者获胜"。
+但如果分类器以 300ms 的速度返回了错误的 allow 决策，
+而用户本想点 deny，此时用户已经失去了否决权。
+你会如何改进这个竞赛机制来平衡速度和安全？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-4/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-4/chapter-10.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-4/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-4/chapter-10.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 3: Agent Loop Anatomy - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-2/chapter-03.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-3-agent-loop-解剖一轮对话的完整旅程"><a class="header" href="#chapter-3-agent-loop-解剖一轮对话的完整旅程">Chapter 3: Agent Loop 解剖：一轮对话的完整旅程</a></h1>
+<blockquote>
+<p>Agent 的本质就是一个循环。理解这个循环，就理解了 AI Agent 的心跳。</p>
+</blockquote>
+<pre><code>┌─────────────── Harness ───────────────┐
+│                                       │
+│   User ──▶ ★ Agent Loop ★ ──▶ LLM    │
+│               │      ▲                │
+│          Tool Use    Result            │
+│               ▼      │                │
+│           [ Tools ] ──┘               │
+│                                       │
+└───────────────────────────────────────┘
+本章聚焦：Agent Loop 的内部结构
+</code></pre>
+<h2 id="31-agent-不是一问一答"><a class="header" href="#31-agent-不是一问一答">3.1 Agent 不是一问一答</a></h2>
+<h3 id="问题"><a class="header" href="#问题">问题</a></h3>
+<p>当你在终端敲下"帮我重构这个函数"，该 Agent 系统不是简单地调一次 API 返回答案。它可能要读文件、理解上下文、写代码、执行测试、发现报错、再改代码......这一连串动作怎么串起来？</p>
+<h3 id="思路"><a class="header" href="#思路">思路</a></h3>
+<p>学术界有一个被广泛接受的 Agent 模型：<strong>Message -&gt; Think -&gt; Act -&gt; Observe -&gt; Loop (or Stop)</strong>。翻译成人话：接收指令、思考做什么、执行动作、观察结果、决定继续还是停下。</p>
+<p>该系统忠实地实现了这个模型，但加了一层关键的工程抽象：<strong>把整个循环拆成两层</strong>。外层查询引擎负责"会话生命周期"——状态管理、消息录制、预算控制；内层查询函数负责"单轮推理循环"——调 API、执行工具、决定是否继续。</p>
+<p>这就像一家餐厅：查询引擎是前厅经理，负责接待顾客、记账、控制翻台率；查询函数是厨房，负责实际做菜。前厅不关心菜怎么做，厨房不操心账怎么算。</p>
+<h3 id="实现"><a class="header" href="#实现">实现</a></h3>
+<p>这种分层体现在代码结构上。查询引擎类拥有会话状态：</p>
+<pre><code class="language-pseudocode">// 查询引擎的核心状态（概念示意）
+class QueryEngine:
+  private mutableMessages: List&lt;Message&gt;
+  private abortController: AbortController
+  private totalUsage: UsageAccumulator
+  // ...
+</code></pre>
+<p>一个查询引擎实例对应一个完整对话。每次提交消息开启一轮新的交互，但消息历史、Token 用量、文件缓存都跨轮持久化。</p>
+<p>而具体的推理循环，提交消息方法交给查询函数去做：</p>
+<pre><code class="language-pseudocode">// 查询引擎流式消费查询循环（概念示意）
+for await (message in query({
+  messages, systemPrompt, userContext, systemContext,
+  canUseTool: wrappedCanUseTool,
+  // ...
+})):
+  // 处理每条从查询循环产出的消息
+</code></pre>
+<p>注意这里用的是 <code>for await...of</code>。这不是一次性拿到结果，而是流式消费——查询函数每产出一条消息，查询引擎就处理一条。这个设计决策的意义我们稍后会看到。</p>
+<h2 id="32-asyncgenerator为什么选这个模式"><a class="header" href="#32-asyncgenerator为什么选这个模式">3.2 AsyncGenerator：为什么选这个模式？</a></h2>
+<h3 id="问题-1"><a class="header" href="#问题-1">问题</a></h3>
+<p>消息在系统里怎么流动？为什么不用回调、事件发射器或 Promise？</p>
+<h3 id="思路-1"><a class="header" href="#思路-1">思路</a></h3>
+<p>该系统面临一个独特的挑战：消息的种类繁多（LLM 输出、工具结果、流式事件、进度报告、系统通知......），而且<strong>消费者的节奏和生产者不同</strong>。UI 需要逐字显示，日志需要完整记录，SDK 调用者需要结构化数据。</p>
+<p>AsyncGenerator 恰好解决这个问题。生产者（查询函数）通过 <code>yield</code> 推送消息，消费者（查询引擎）按自己的节奏拉取。这形成了一条<strong>背压友好的管道</strong>：如果消费者处理不过来，生产者自然暂停。</p>
+<p>更巧妙的是，AsyncGenerator 支持<strong>嵌套组合</strong>。循环函数 yield 给查询函数，查询函数 yield 给引擎的提交方法，提交方法 yield 给外部调用者。每一层可以拦截、转换、过滤消息，而不破坏流式语义。</p>
+<h3 id="实现-1"><a class="header" href="#实现-1">实现</a></h3>
+<p>查询函数的签名揭示了这条管道的类型：</p>
+<pre><code class="language-pseudocode">// 查询函数签名（概念示意）
+async generator function query(params: QueryParams):
+  yields:
+    StreamEvent         // LLM 流式输出的增量片段
+    | RequestStartEvent // 一次 API 请求即将开始
+    | Message           // 完整的 assistant/user 消息
+    | TombstoneMessage  // 标记需要删除的孤儿消息
+    | ToolUseSummary    // 工具使用摘要
+  returns:
+    Terminal            // 终止原因
+</code></pre>
+<p>五种产出类型，一种返回类型。产出是"过程中的事件"，返回是"最终的结论"。</p>
+<p>查询引擎的消息分发器则根据类型做不同处理：<code>assistant</code> 消息推入历史并转发，<code>stream_event</code> 用于追踪 Token 用量，<code>system</code> 消息处理压缩边界和 API 错误，等等。每种消息类型都有明确的职责，互不干扰。</p>
+<h2 id="33-循环的心脏whiletrue"><a class="header" href="#33-循环的心脏whiletrue">3.3 循环的心脏：while(true)</a></h2>
+<h3 id="问题-2"><a class="header" href="#问题-2">问题</a></h3>
+<p>查询函数内部的循环到底怎么运转？一轮迭代做了什么？</p>
+<h3 id="思路-2"><a class="header" href="#思路-2">思路</a></h3>
+<p>真正的循环逻辑在循环函数里。这是一个 <code>while(true)</code> 无限循环——听起来危险，但其实很合理：Agent 不知道要调多少次工具才能完成任务，循环次数由 LLM 的决策动态决定。</p>
+<p>每轮迭代可以概括为五步：<strong>预处理上下文 -&gt; 调 API -&gt; 处理响应 -&gt; 执行工具 -&gt; 决定是否继续</strong>。但魔鬼在细节里——每一步都有大量的边界情况处理。</p>
+<p>循环通过一个状态对象管理跨迭代的状态：</p>
+<pre><code class="language-pseudocode">// 循环状态定义（概念示意）
+LoopState = {
+  messages: List&lt;Message&gt;
+  turnCount: Number
+  maxOutputRecoveryCount: Number
+  hasAttemptedReactiveCompact: Boolean
+  transition: ContinueReason or undefined  // 上一次迭代为什么继续
+  // ...
+}
+</code></pre>
+<p><code>transition</code> 字段特别值得注意。它记录了循环继续的原因：<code>next_turn</code>（正常工具调用后继续）、<code>max_output_tokens_recovery</code>（输出被截断，恢复重试）、<code>reactive_compact_retry</code>（上下文过长，压缩后重试）。这不只是调试信息——它让每轮迭代知道自己是"正常的下一步"还是"某种异常恢复"，从而调整行为。</p>
+<h3 id="实现-2"><a class="header" href="#实现-2">实现</a></h3>
+<p>循环开头有一个关键步骤：<strong>上下文预处理管线</strong>。消息在到达 API 之前要过好几道工序：</p>
+<pre><code>原始消息 -&gt; compactBoundary截断 -&gt; toolResultBudget -&gt; snipCompact
+         -&gt; microcompact -&gt; contextCollapse -&gt; autoCompact -&gt; API
+</code></pre>
+<p>这条管线的存在是因为 Agent 的上下文增长速度远超聊天场景。每次工具调用都会注入几百到几千 token 的输出。不经过压缩，几十轮交互就能撑爆 200K 的窗口。第 5 章会详细展开这个话题。</p>
+<p>循环体内，API 调用和工具执行之间有一个精妙的优化——<strong>流式工具并行执行</strong>。当 LLM 流式输出中出现一个完整的 <code>tool_use</code> block 时，不等整个响应结束就开始执行：</p>
+<pre><code class="language-pseudocode">// 流式工具并行执行（概念示意）
+if streamingToolExecutor and not aborted:
+  for each toolBlock in messageToolUseBlocks:
+    streamingToolExecutor.addTool(toolBlock, message)
+</code></pre>
+<p>想象 LLM 说"我要同时读三个文件"。传统方式是等 LLM 说完，再依次读取。流式执行则在 LLM 还在输出第二个 tool_use block 时，第一个文件已经开始读了。在多文件操作场景下，这能显著缩短延迟。</p>
+<h2 id="34-循环怎么知道该停"><a class="header" href="#34-循环怎么知道该停">3.4 循环怎么知道该停？</a></h2>
+<h3 id="问题-3"><a class="header" href="#问题-3">问题</a></h3>
+<p>Agent Loop 不能永远转下去。什么时候停？谁来决定？</p>
+<h3 id="思路-3"><a class="header" href="#思路-3">思路</a></h3>
+<p>终止条件的设计体现了一个原则：<strong>多重保险</strong>。不能只靠一个条件来停止循环，因为任何单一机制都可能失效。该系统至少有七种终止方式，分布在查询函数和查询引擎两层。</p>
+<p>最核心的判断很简单：LLM 的回复里有没有 <code>tool_use</code> block。有就继续（<code>needsFollowUp = true</code>），没有说明 LLM 认为任务完成了。但即使 LLM 说"我做完了"，还要过一关——Stop Hooks。</p>
+<h3 id="实现-3"><a class="header" href="#实现-3">实现</a></h3>
+<p><code>needsFollowUp</code> 的赋值逻辑在流式处理中：</p>
+<pre><code class="language-pseudocode">// 判断是否需要后续循环（概念示意）
+toolUseBlocks = message.content.filter(block -&gt; block.type == 'tool_use')
+if toolUseBlocks.length &gt; 0:
+  allToolUseBlocks.append(toolUseBlocks)
+  needsFollowUp = true
+</code></pre>
+<p>当 <code>needsFollowUp</code> 为 false 时，循环在结束前会经过 Stop Hooks 检查：</p>
+<pre><code class="language-pseudocode">// Stop Hooks 检查（概念示意）
+stopHookResult = yield* handleStopHooks(
+  messagesForQuery, assistantMessages, ...
+)
+if stopHookResult.preventContinuation:
+  return { reason: 'stop_hook_prevented' }
+</code></pre>
+<p>Stop Hooks 是用户自定义的验证逻辑。比如"每次写代码后必须跑测试"——如果 LLM 写了代码但没跑测试就要停下，Hook 会阻止终止，注入一条错误消息让循环继续。</p>
+<p>在查询引擎层面还有额外的硬性限制：</p>
+<ul>
+<li><strong>USD 预算</strong>：累计花费达到上限时立即终止</li>
+<li><strong>最大轮数</strong>：轮数超出设定值时终止</li>
+<li><strong>结构化输出重试上限</strong>：JSON Schema 验证失败超 5 次时终止</li>
+</ul>
+<p>这些是"断路器"——防止 Agent 因为 LLM 幻觉或 Hook 死循环而无限运转。</p>
+<h2 id="35-从用户输入到-api-调用之间"><a class="header" href="#35-从用户输入到-api-调用之间">3.5 从用户输入到 API 调用之间</a></h2>
+<h3 id="问题-4"><a class="header" href="#问题-4">问题</a></h3>
+<p>用户敲下一句话到第一次 API 调用之间，发生了什么？</p>
+<h3 id="思路-4"><a class="header" href="#思路-4">思路</a></h3>
+<p>在调用查询函数之前，查询引擎做了大量准备工作。这些看似琐碎的初始化步骤实际上决定了整个对话的"人格"和"能力范围"。</p>
+<p>最重要的一步是用户输入处理。它把原始用户输入转化为结构化数据，处理斜杠命令、附件、模型切换等。返回值中的 <code>shouldQuery</code> 标志决定了是否需要调用 LLM——如果用户输入的是 <code>/compact</code> 或 <code>/model</code>，本地就能处理，不用花钱调 API。</p>
+<p>另一个关键步骤是系统提示词的组装。该系统的 System Prompt 不是一段静态文本，而是从三个来源并行拉取、分层组合的：</p>
+<ul>
+<li><strong>defaultSystemPrompt</strong>：工具说明、行为规范等固定内容</li>
+<li><strong>userContext</strong>：AGENT.md 内容、环境信息——注入到消息最前面</li>
+<li><strong>systemContext</strong>：系统级指令——追加到系统提示词末尾</li>
+</ul>
+<p>这种分层设计是为 Prompt Caching 服务的。系统提示词保持稳定，变化的 userContext 放在消息里，这样 API 服务端可以复用缓存的前缀，节省大量 token 计费。</p>
+<h3 id="实现-4"><a class="header" href="#实现-4">实现</a></h3>
+<p>权限检查的包装也值得一提。原始的权限检查函数被包了一层：</p>
+<pre><code class="language-pseudocode">// 权限检查包装（概念示意）
+wrappedCanUseTool = async function(tool, input, ...):
+  result = await canUseTool(tool, input, ...)
+  if result.behavior != 'allow':
+    this.permissionDenials.append({
+      tool_name: tool.name,
+      tool_use_id: toolUseID,
+      tool_input: input,
+    })
+  return result
+</code></pre>
+<p>每次权限拒绝都被记录下来，最后通过 <code>result</code> 消息返回给 SDK 调用者。这不是可选的诊断——在 SDK 场景下，调用者需要知道哪些操作被拒了，以便决定是否调整权限策略。</p>
+<h2 id="36-状态的流转全景"><a class="header" href="#36-状态的流转全景">3.6 状态的流转全景</a></h2>
+<p>把整个流程串起来，一轮完整的"用户说帮我读 package.json"涉及以下状态流转：</p>
+<pre><code>用户输入
+  |
+  v
+processUserInput() --&gt; shouldQuery=true
+  |
+  v
+组装系统提示词 + 用户上下文
+  |
+  v
+query() 循环 ---- 第 1 轮迭代 ----
+  |  上下文预处理管线
+  |  调 LLM API（流式）
+  |  LLM 决定调 Read 工具 --&gt; needsFollowUp=true
+  |  权限检查 --&gt; allow
+  |  执行 Read，读到文件内容
+  |  yield user message（tool_result）
+  |  
+  |  state.transition = { reason: 'next_turn' }
+  |
+  v  ---- 第 2 轮迭代 ----
+  |  上下文预处理管线（含文件内容）
+  |  调 LLM API（流式）
+  |  LLM 生成最终回复，无 tool_use --&gt; needsFollowUp=false
+  |  Stop Hooks 检查 --&gt; 允许结束
+  |  return { reason: 'completed' }
+  |
+  v
+QueryEngine 产出 result { subtype: 'success' }
+</code></pre>
+<p>两次 API 调用，两轮循环。第一轮 LLM 决定行动，第二轮 LLM 基于观察生成回答。这就是 Think-Act-Observe 模型的具体实例。</p>
+<h2 id="37-小结"><a class="header" href="#37-小结">3.7 小结</a></h2>
+<p>该系统的 Agent Loop 有三个核心设计决策：</p>
+<ol>
+<li>
+<p><strong>两层架构</strong>。查询引擎管生命周期，查询函数管推理循环。职责分离让每一层都可以独立演进。</p>
+</li>
+<li>
+<p><strong>AsyncGenerator 管道</strong>。消息在循环函数 -&gt; 查询函数 -&gt; 查询引擎 -&gt; 调用者之间流式传递，天然支持背压和中间处理。</p>
+</li>
+<li>
+<p><strong>多重终止保险</strong>。LLM 决策、Stop Hooks、轮数限制、USD 预算——四道防线确保循环不会失控。</p>
+</li>
+</ol>
+<p>理解了这个循环，后面两章就是深入它的两个关键部件：怎么跟 LLM 对话（第 4 章），以及对话太长时怎么压缩（第 5 章）。</p>
+<hr />
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>为什么 <code>transition</code> 字段要记录循环继续的原因？如果只用一个 boolean <code>shouldContinue</code> 会有什么问题？</p>
+</li>
+<li>
+<p>流式工具并行执行（StreamingToolExecutor）在什么场景下反而可能更慢？提示：考虑工具执行需要权限确认的情况。</p>
+</li>
+<li>
+<p>查询引擎的消息数组在压缩边界之后会被截断。为什么要这么做？这对 GC 有什么影响？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-2/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-2/chapter-04.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-2/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-2/chapter-04.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

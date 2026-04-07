@@ -1,0 +1,448 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 18: MCP Protocol - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-7/chapter-18.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-18-mcp----连接外部世界的协议"><a class="header" href="#chapter-18-mcp----连接外部世界的协议">Chapter 18: MCP -- 连接外部世界的协议</a></h1>
+<blockquote>
+<p>一个只能读写文件和执行命令的 Agent，天花板在哪里？</p>
+</blockquote>
+<pre><code>     ┌──────────────────┐
+     │   Agent Loop      │
+     │   ┌─────┐         │
+     │   │ LLM │         │
+     │   └──┬──┘         │
+     │   tool_use        │
+     │      │            │
+     │ ★ MCP Client ★   │  ◄── 本章聚焦
+     │   ┌──┴──┐         │
+     │   │Proto│         │
+     └───┴──┬──┴─────────┘
+        ┌───┼───┐
+        ▼   ▼   ▼
+      stdio http  sse
+        │    │     │
+     [Local] [Remote Servers]
+     Server  GitHub Slack DB
+</code></pre>
+<h2 id="181-问题agent-的能力边界"><a class="header" href="#181-问题agent-的能力边界">18.1 问题：Agent 的能力边界</a></h2>
+<p>想象你正在用 AI Agent 做一次完整的 code review。它读了代码、发现了问题、写了修复。然后呢？</p>
+<p>你需要它创建一个 GitHub PR。它做不到。你需要它在 Slack 通知团队。它做不到。你需要它查一下数据库里的用户数据来验证修复是否正确。它还是做不到。</p>
+<p>核心矛盾在于：Agent 的内置工具（Read、Write、Bash）赋予了它操作本地文件系统的能力，但现代开发工作流依赖的是一整张由 SaaS 服务、API 和数据库编织的网络。Agent 需要一条通往这个外部世界的通道。</p>
+<p>直觉的做法是给每个服务写一个专用工具。但这不可扩展——GitHub 一个、Slack 一个、Jira 一个、每个数据库一个——很快就变成了一堆紧耦合的"连接器"。</p>
+<p>MCP（Model Context Protocol）的思路是反过来的：不是让 Agent 去适配每个服务，而是定义一套标准协议，让每个服务来适配 Agent。这就像 USB 接口之于外设：你不需要为鼠标、键盘、摄像头各设计一种接口，一个统一的标准就够了。</p>
+<p>在协议层面，MCP 是一个 Client-Server 架构。该 Agent 系统是 Client，外部工具提供者实现 Server。Server 通过协议暴露三类能力：Tools（可调用的函数）、Resources（可读取的数据源）和 Prompts（预定义的对话模板）。Client 负责发现、连接、调用，并将结果传回模型。</p>
+<p>但如果你只是理解到这一步，就会低估 MCP 在该系统中的工程复杂度。真正困难的问题是：同一套协议如何适配本地子进程和远程 HTTPS 服务?认证怎么做到企业级安全？十几个 MCP Server 同时接入时，配置怎么管理？</p>
+<h2 id="182-传输层为什么需要这么多种连接方式"><a class="header" href="#182-传输层为什么需要这么多种连接方式">18.2 传输层：为什么需要这么多种连接方式</a></h2>
+<p>MCP 类型定义模块中的传输类型枚举列出了六种传输方式（外加一个内部的代理类型）。初看令人困惑——为什么不统一用 HTTP？</p>
+<p>答案是使用场景的多样性。一个本地的 SQLite 查询工具和一个远程的 GitHub API 服务，它们在进程管理、网络连接、认证需求上完全不同。统一传输意味着把简单的事情搞复杂。</p>
+<p><strong>stdio</strong> 是本地子进程通信。配置只需要 command 和 args，type 字段甚至是 optional 的——不填就默认 stdio，这是向后兼容的考虑。实际连接时有一个值得注意的细节：stderr 被设为 <code>'pipe'</code>。如果 MCP Server 的错误输出直接打到终端，会破坏该 Agent 的 TUI 界面。stderr 还被监听并累积到 64MB 上限的缓冲区中，用于在连接失败时提供诊断信息。stdio 进程的启动还支持通过环境变量指定 shell 前缀命令——在容器环境中可以通过前缀命令（如 <code>docker exec</code>）包装 MCP Server 的启动。</p>
+<p><strong>http</strong> 是 MCP 最新的远程传输方式——Streamable HTTP。MCP 客户端模块中定义了一个关键的 HTTP Accept 常量：每个 POST 请求必须同时声明接受 JSON 和 SSE 两种格式。不遵守会被严格的 Server 返回 406。这不是随意设计——它允许 Server 对短响应返回 JSON、对流式响应返回 SSE，同一个连接适配两种模式。一个带超时的请求包装函数对每个 POST 请求附加 60 秒超时，但对 GET 请求不加超时——因为在 MCP 传输中，GET 是长期存活的 SSE 流，不应被超时截断。</p>
+<p><strong>sse</strong> 是 http 出现之前的远程传输方式，通过 HTTP 长连接接收服务器推送。配置支持 headers（静态请求头）、headersHelper（外部程序动态生成请求头）和 oauth（OAuth 认证），是远程 Server 最常见的选择。</p>
+<p><strong>ws</strong> 是 WebSocket 全双工通信，适合高频双向交互。<strong>sdk</strong> 是进程内传输——当该 Agent 被其他应用以 SDK 方式嵌入时，MCP Server 运行在同一进程内。<strong>sse-ide 和 ws-ide</strong> 为 VS Code 等 IDE 扩展设计，额外携带 ideName 和 ideRunningInWindows 等元信息。</p>
+<p>这种传输多样性的设计哲学是：协议层统一（JSON-RPC），传输层适配。就像 TCP/IP 不管你走光纤还是 Wi-Fi。</p>
+<h2 id="183-连接状态机五种状态的精确报告"><a class="header" href="#183-连接状态机五种状态的精确报告">18.3 连接状态机：五种状态的精确报告</a></h2>
+<p>每个 MCP Server 连接不是简单的"连上了"或"没连上"。类型定义模块中定义了五种状态：<code>connected</code>（持有 client 实例和 capabilities）、<code>failed</code>（携带 error 信息）、<code>needs-auth</code>（需要认证）、<code>pending</code>（等待连接中，含重连计数）、<code>disabled</code>（用户手动禁用）。</p>
+<p>为什么要这么细？因为 UI 需要精确地告诉用户发生了什么。"连接失败"和"需要认证"是两种完全不同的情况——前者可能是网络问题，后者需要用户去浏览器授权。待连接状态携带 <code>reconnectAttempt</code> 和 <code>maxReconnectAttempts</code>，让 UI 可以显示"重连中 (3/5)"这样的进度信息。</p>
+<p>已连接状态不只存储 client 实例，还保存了 Server 的 <code>capabilities</code>（支持哪些协议能力）、<code>serverInfo</code>（名称和版本）和 <code>instructions</code>（Server 自述信息）。这些元数据让该系统能够根据 Server 的声明做适配——比如只向支持 elicitation 能力的 Server 发送用户交互请求。</p>
+<p>状态转移路径是：<code>pending</code> -&gt; <code>connected</code> / <code>failed</code> / <code>needs-auth</code>，以及 <code>connected</code> -&gt; <code>pending</code>（断线重连）。<code>disabled</code> 是终态，只能由用户手动恢复。</p>
+<p>五种状态的联合类型设计值得注意。每种状态携带不同的字段：connected 有 client、capabilities；failed 有 error；pending 有 reconnectAttempt。TypeScript 的联合类型让调用方必须通过类型守卫（<code>if (conn.type === 'connected')</code>）才能访问特有字段，编译器在编译时就能捕获错误的字段访问。</p>
+<h2 id="184-建立连接从自我介绍到工具发现"><a class="header" href="#184-建立连接从自我介绍到工具发现">18.4 建立连接：从自我介绍到工具发现</a></h2>
+<p>连接过程浓缩在 MCP 客户端模块中。关键步骤值得逐一审视。</p>
+<p><strong>Client 自我介绍。</strong> Client 声明自己的身份标识，并暴露两个能力：<code>roots</code>（告知 Server 工作目录）和 <code>elicitation</code>（支持 Server 向用户索取信息）。注意 elicitation 的值是空对象 <code>{}</code> 而不是 <code>{form:{},url:{}}</code>——注释明确说明后者会让某些 Java MCP SDK 实现（Spring AI）崩溃。这是生态兼容性的代价——协议规范和实际实现之间总有差距。</p>
+<p><strong>工作目录通告。</strong> 当 Server 请求 ListRoots 时，Client 返回当前项目路径。这让 Server 知道用户在操作哪个代码库，从而提供上下文相关的服务。</p>
+<p><strong>超时竞赛。</strong> 连接采用 <code>Promise.race</code> 模式——connect 和 timeout 谁先完成就取谁的结果。默认超时可配置。超时后会主动关闭 transport，防止半死连接占用资源。对于 HTTP 传输，还会先做一次基本的连通性测试（DNS 解析、端口可达性），在正式连接前排除明显的网络问题。</p>
+<p><strong>工具发现与名称映射。</strong> 连接成功后，工具发现函数通过 <code>tools/list</code> 获取 Server 提供的所有工具，每个工具被转换为带 <code>mcp__</code> 前缀的名称。命名规则确保所有非法字符（非字母数字、下划线、连字符）都被替换为下划线，前缀避免了与内置工具的名称冲突。</p>
+<p>名称映射的意义超出了简单的命名空间。考虑两个 MCP Server 都提供了名为 <code>search</code> 的工具——没有前缀就会冲突。<code>mcp__{serverName}__{toolName}</code> 的三段式命名同时编码了来源和功能。原始工具名保存在 <code>originalToolName</code> 字段中，用于在调用时还原——Server 接收的是原始名称，不是映射后的名称。</p>
+<p>连接过程中还有一个容易被忽略的细节：headersHelper 支持。远程 Server 配置可以指定一个外部程序来动态生成请求头——这个程序被执行，其 stdout 作为 JSON 解析为 headers。使用场景是需要频繁刷新的认证 token：与其在配置中硬编码一个会过期的 token，不如指定一个脚本每次连接时动态获取。这种"外部程序生成凭证"的模式在云原生环境中很常见（类比 AWS 的 credential_process）。</p>
+<h2 id="185-认证挑战oauth-与-xaa-双轨制"><a class="header" href="#185-认证挑战oauth-与-xaa-双轨制">18.5 认证挑战：OAuth 与 XAA 双轨制</a></h2>
+<p>MCP 认证模块超过 800 行，实现了完整的 OAuth 2.0 客户端。认证之所以复杂，是因为它要解决两个截然不同的场景。</p>
+<p><strong>场景一：个人开发者（标准 OAuth）。</strong> 标准 OAuth 2.0 授权码流程：发现 Server 的 OAuth 元数据（RFC 9728 / RFC 8414），生成 PKCE challenge，启动本地 HTTP 服务器接收回调，打开浏览器授权，用授权码换 access token。Token 存储在系统安全存储中（macOS Keychain / Linux 密钥环），key 基于 Server 名称和配置的哈希生成，确保同名但不同配置的 Server 不会共享凭证。</p>
+<p><strong>场景二：企业环境（XAA）。</strong> 如果每个 Server 都弹出一次浏览器授权，运维人员会疯掉。XAA（Cross-App Access）解决这个问题：用户只需在企业 IdP（身份提供商）登录一次，然后通过 RFC 8693 Token Exchange 将 id_token 转换为各个 MCP Server 的 access_token。代码注释清楚地描述了这个流程：一次 IdP 浏览器登录被所有 XAA-enabled 的 Server 共享。</p>
+<p>XAA 的配置模型和标准 OAuth 有一个关键区别。标准 OAuth 的 clientId 和 callbackPort 配置在每个 Server 上——因为每个 Server 有自己的认证服务器。XAA 的配置在全局的 IdP 设置中——issuer、clientId、callbackPort 配置一次（在 settings 的 <code>xaaIdp</code> 字段），所有 XAA Server 共享。Server 级别只需要一个 <code>xaa: true</code> 布尔标志声明支持 XAA。</p>
+<pre><code class="language-pseudocode">// 标准 OAuth：每个 Server 独立配置
+server_a: { oauth: { clientId: "xxx", callbackPort: 8080 } }
+server_b: { oauth: { clientId: "yyy", callbackPort: 8081 } }
+
+// XAA：全局 IdP + Server 声明
+settings.xaaIdp: { issuer: "https://idp.company.com", clientId: "zzz" }
+server_a: { oauth: { xaa: true } }
+server_b: { oauth: { xaa: true } }
+</code></pre>
+<p>认证失败时的降级策略同样重要。系统会检测"已知需要认证但没有 token"的状态——这种情况下系统不会徒劳地尝试连接（必定 401），而是直接标记为 <code>needs-auth</code>，引导用户去 <code>/mcp</code> 命令完成认证。但 XAA Server 是特殊的：即使没有存储的 token，缓存的 id_token 也可能自动完成认证，所以不跳过连接尝试。</p>
+<p>一个工程亮点是 OAuth 错误标准化处理。某些 OAuth 服务器（如 Slack）对所有响应返回 HTTP 200，把错误放在 JSON body 里。标准 SDK 只在 <code>!response.ok</code> 时解析错误，导致 200 状态码的错误被当成格式错误处理。标准化函数拦截响应，检测到 body 里有 OAuth error 时主动改写为 400 状态码。Slack 还使用非标准的错误码（<code>invalid_refresh_token</code> 替代 <code>invalid_grant</code>），代码中维护了一个非标准错误码别名集合来标准化它们。这是协议实现的现实——规范是一回事，各家的实现是另一回事。</p>
+<p>刷新 token 失败的原因被分为六种，每种都发送到分析系统。OAuth 流程错误被分为八种。这种细粒度的错误分类让开发团队能够精确定位认证问题——是 Server 的 metadata 不可达，还是 token exchange 失败，还是用户取消了授权？不同的原因需要不同的修复策略。</p>
+<h2 id="186-七层配置从企业到本地的合并策略"><a class="header" href="#186-七层配置从企业到本地的合并策略">18.6 七层配置：从企业到本地的合并策略</a></h2>
+<p>MCP 配置模块管理七个配置作用域：<code>local</code>、<code>user</code>、<code>project</code>、<code>dynamic</code>、<code>enterprise</code>、<code>webapp</code>、<code>managed</code>。每一层对应一个真实需求。</p>
+<p><strong>enterprise</strong> 是 IT 部门的强制策略。<strong>managed</strong> 是托管平台的约束。<strong>user</strong> 是个人偏好（<code>~/.agent/settings.json</code>）。<strong>project</strong> 是团队共享的项目配置（<code>.mcp.json</code>）。<strong>local</strong> 是不提交到 git 的个人覆盖（<code>.agent/settings.local.json</code>）。<strong>dynamic</strong> 是运行时通过 API 动态添加的。<strong>webapp</strong> 是 Web 端 网页端同步的连接器。</p>
+<p>合并优先级通过 <code>Object.assign</code> 的参数顺序决定：plugin 最低、user 次之、project 更高、local 最高——越靠近用户的配置优先级越高。</p>
+<p>但 enterprise 是特殊的。当存在企业 MCP 配置时，<strong>所有其他来源直接被忽略</strong>。这不是"enterprise 优先级最高"（那意味着其他层还存在但被覆盖），而是"enterprise 独占控制"——企业管理员可以确保用户不会自行添加任何 MCP Server。这是安全策略，不是技术偏好。区分"最高优先级"和"独占控制"是安全模型设计的关键——前者允许用户在企业策略之上做加法，后者完全禁止。</p>
+<p>Project 级配置有自己的信任模型。项目的 <code>.mcp.json</code> 可能由团队成员提交，其中的 MCP Server 需要经过用户显式批准才能连接。配置文件支持向上遍历目录树，靠近 cwd 的文件优先级更高——与 <code>.gitignore</code> 的规则一致。</p>
+<p>配置文件的写入也不是简单的覆盖。写入函数先保存现有文件的权限位，写入临时文件后执行 <code>datasync</code>（确保数据刷到磁盘），再原子 <code>rename</code>——如果 rename 失败，清理临时文件。这种"写-刷-改名"模式防止了断电时的数据损坏。</p>
+<p>Project 配置（<code>.mcp.json</code>）有一个额外的安全层：目录树遍历。系统会从当前工作目录向上搜索直到仓库根目录，沿途收集所有 <code>.mcp.json</code> 文件。靠近 cwd 的文件优先级更高。这意味着子目录可以覆盖父目录的 MCP 配置——一个 monorepo 的前端子项目可以定义自己的 MCP Server 列表，而不影响后端子项目。这个遍历行为与 <code>.gitignore</code>、<code>.eslintrc</code> 等文件的查找规则一致，对开发者来说是熟悉的模式。</p>
+<p><code>managed</code> 层的来源是远程管理设置——通常来自 MDM（Mobile Device Management）或企业配置系统。这些设置通过特定的 API 端点获取，在进程启动时加载一次，不随 session 变化。managed 和 enterprise 的区别在于：enterprise 是"独占控制"（有就忽略其他所有），managed 是"参与合并"（和其他层一起合并）。企业 IT 可以选择使用哪种策略：前者更安全但更死板，后者更灵活但需要仔细管理合并语义。</p>
+<h2 id="187-去重同一个-server-从多个渠道来"><a class="header" href="#187-去重同一个-server-从多个渠道来">18.7 去重：同一个 Server 从多个渠道来</a></h2>
+<p>一个被低估的复杂性在于：同一个 MCP Server 可能从多个渠道同时出现。用户在 <code>.mcp.json</code> 手动配置了 Slack，同时安装的 Plugin 也引入了 Slack，Web 端 网页端又同步过来一个 Slack 连接器。如果三份配置都生效，模型会看到三组重复的 Slack 工具，浪费 context window 且造成混乱。</p>
+<p>去重函数通过内容签名实现。签名规则：stdio 类型用命令的序列化字符串作签名，远程类型用解包后的原始 URL 作签名。注意 URL 解包逻辑——在远程会话中，Web 端 连接器的 URL 会被代理重写，但原始 URL 保存在查询参数中。去重时必须解开代理 URL 才能正确比较。</p>
+<p>为什么不按名称去重？因为不同渠道可能用不同的名称指向同一个 Server（用户叫它 "my-slack"，Plugin 叫它 "slack-connector"）。为什么不只按内容去重？因为不同的 Server 可能碰巧有相同的 URL 但提供不同的工具集（代理服务器场景）。内容签名是两者的平衡点。</p>
+<p>手动配置的 Server 总是优先于 Plugin 引入的。当检测到重复时，Plugin 的 Server 被 suppressed 并记录到错误列表中供 UI 展示——不是静默丢弃，而是明确告知用户。Plugin 来源通过 <code>pluginSource</code> 字段追踪——这个字段在配置构建时就被标记上，避免了在去重时需要查询 Plugin 状态（可能还未加载）的竞态。</p>
+<h2 id="188-断线重连不是重试那么简单"><a class="header" href="#188-断线重连不是重试那么简单">18.8 断线重连：不是"重试"那么简单</a></h2>
+<p>重连策略的常量：最多 5 次重试，初始退避 1 秒，最大退避 30 秒。</p>
+<p>但真正有意思的是错误检测逻辑。代码列出了 9 种被认定为"终端性连接错误"的信号：ECONNRESET、ETIMEDOUT、EPIPE、EHOSTUNREACH、ECONNREFUSED、Body Timeout Error、terminated、SSE stream disconnected、Failed to reconnect SSE stream。</p>
+<p>系统不会一看到错误就重连——维护一个连续错误计数器，当连续出现 3 次终端性错误时，才主动关闭连接触发重连。非终端性错误会重置计数器。这种"连续 N 次才认定断线"的策略过滤了瞬时网络抖动，避免了过度敏感的重连。</p>
+<p>HTTP 传输有一种特殊的断线场景：session 过期。当检测到 HTTP 404 + JSON-RPC -32001 错误码时，意味着服务端 session 已失效，需要用全新的 session ID 重新连接。</p>
+<p>关闭连接时，所有与该连接相关的 memoize 缓存都会被清除：工具列表、资源列表、命令列表、连接状态。这保证重连后获取的是新鲜数据。注释解释了为什么不直接调用 <code>client.onclose?.()</code> 而是通过 <code>client.close()</code>——前者只清除缓存，后者还会 reject 所有挂起的请求 Promise。如果有工具调用正在等待，直接清缓存会让它们永远 hang 住。</p>
+<p>还有一个防重入保护：一个"已触发关闭"标志防止 <code>close()</code> 过程中的 abort 信号再次触发 onerror -&gt; close 链条。分布式系统中的"优雅关闭"从来都不优雅——每个关闭路径都可能触发新的错误，需要显式的防护。</p>
+<p>重连的时序还有一个值得注意的细节：重连后必须重新获取工具列表。MCP Server 可能在断线期间更新了工具定义——添加新工具或修改参数 Schema。如果重连后继续使用缓存的旧工具列表，调用参数可能与 Server 的最新定义不匹配。这就是为什么关闭连接时要清除所有 memoize 缓存——强制重连后的 fresh discovery。</p>
+<p>退避策略的设计也值得分析。初始退避 1 秒，最大退避 30 秒，每次翻倍。五次重试的退避序列是 1s -&gt; 2s -&gt; 4s -&gt; 8s -&gt; 16s（不超过 30s），总等待时间约 31 秒。如果 Server 在 30 秒内恢复（如部署重启），系统可以自动重连，不需要用户干预。如果 30 秒后仍未恢复，标记为 failed 并等待用户通过 <code>/mcp</code> 手动重连。这个时间窗口是对"自动恢复"和"用户通知"之间的平衡。</p>
+<h2 id="189-安全策略allowlistdenylist-与三维匹配"><a class="header" href="#189-安全策略allowlistdenylist-与三维匹配">18.9 安全策略：allowlist、denylist 与三维匹配</a></h2>
+<p>MCP 配置模块实现了企业级的访问控制。策略检查的核心逻辑是：denylist 绝对优先（不管 allowlist 怎么说）；allowlist 为空意味着全部拒绝（<code>allowedMcpServers: []</code> 不是"不限制"而是"不允许"）；同一个 Server 可以通过名称、命令（stdio）或 URL（远程，支持通配符）三种方式匹配。</p>
+<p>URL 通配符匹配由一个正则转换函数实现——<code>https://*.example.com/*</code> 可以匹配该域名下的所有服务。</p>
+<p>一个微妙之处：当"仅允许托管服务器"标志为 true 时，allowlist 只从托管策略中读取，用户自己的设置不参与——但 denylist 总是从所有来源合并，因为用户永远可以为自己拒绝 Server。这体现了安全设计的一个原则："允许"是受限的权力，"拒绝"是不可剥夺的权利。</p>
+<pre><code class="language-pseudocode">function checkMcpServerAllowed(name, config, settings):
+    // 第一步：denylist 绝对优先
+    if matchesDenylist(name, config, settings.deniedMcpServers):
+        return DENIED
+
+    // 第二步：空 allowlist = 全部拒绝
+    if settings.allowedMcpServers is empty array:
+        return DENIED
+
+    // 第三步：三维匹配
+    if settings.allowedMcpServers is null:
+        return ALLOWED  // 无限制
+    return matchesAllowlist(name, config, settings.allowedMcpServers)
+
+    // 匹配支持：名称精确、命令精确、URL 通配符
+</code></pre>
+<h2 id="1810-连接并发批量大小的学问"><a class="header" href="#1810-连接并发批量大小的学问">18.10 连接并发：批量大小的学问</a></h2>
+<p>MCP 客户端模块中定义了两个连接批量大小：本地 Server 并发 3 个，远程 Server 并发 20 个。为什么差异这么大？</p>
+<p>本地 Server 启动的是子进程，进程创建是重操作——fork、exec、加载运行时——同时启动太多会抢占 CPU 和内存。远程 Server 只是 HTTP 连接，受 I/O 限制而非 CPU 限制，高并发反而能减少总等待时间（网络延迟是并行的，不是串行的）。</p>
+<p>这两个数字都可以通过环境变量覆盖，让资源受限的环境可以进一步降低并发度，资源充裕的环境可以提高。</p>
+<p>这个数字背后隐含的预期是：系统设计时已经考虑到用户会同时连接大量 Server。MCP 不是一个连一两个服务的"集成"方案，而是一个支撑 Agent 生态的平台基础设施。</p>
+<p>一个容易忽视的细节：连接 batch 内部使用的是有序迭代而非 <code>Promise.all</code>——一个 batch 内的连接仍然是并行启动的，但 batch 之间是串行的。这避免了一次性 fork 几十个子进程导致的系统过载，同时在每个 batch 内最大化并行度。</p>
+<h2 id="1811-子-agent-中的-mcp叠加式连接"><a class="header" href="#1811-子-agent-中的-mcp叠加式连接">18.11 子 Agent 中的 MCP：叠加式连接</a></h2>
+<p>MCP 不只在主会话中工作——子 Agent 也可以声明自己的 MCP 依赖。Agent 执行引擎中的 MCP 初始化函数实现了"叠加式"连接管理：子 Agent 的 MCP Server 在父级已有连接之上添加，而非替换。</p>
+<p>叠加式设计有两个关键细节。<strong>引用 vs 内联：</strong> Agent frontmatter 中的 MCP 定义可以是字符串引用（如 <code>"github"</code>，复用父级已有连接）或内联定义（一个完整的 Server 配置对象，创建新连接）。字符串引用通过配置查找函数解析，然后使用 memoized 的连接函数——这意味着多个 Agent 引用同一个 Server 名称时共享同一个物理连接。内联定义则每次创建新连接。</p>
+<p><strong>清理的选择性：</strong> 子 Agent 完成时，只有新创建的连接（来自内联定义）会被清理。引用来的共享连接由父级管理——如果子 Agent 关闭了父级正在使用的连接，会导致父级的后续 MCP 调用失败。代码维护了两个列表：<code>agentClients</code>（所有连接，用于工具发现）和 <code>newlyCreatedClients</code>（仅新建连接，用于清理）。</p>
+<p>在安全策略方面，当 <code>pluginOnly</code> 策略生效时，非管理员信任来源的 Agent 不能加载自定义 MCP——但 plugin、built-in 和 policySettings 来源的 Agent 不受限制。注释解释了这个区分的原因：plugin Agent 的 MCP 配置是管理员批准的 Agent 定义的一部分，阻止它们会破坏 plugin Agent 的功能。</p>
+<h2 id="1812-连接的可观测性"><a class="header" href="#1812-连接的可观测性">18.12 连接的可观测性</a></h2>
+<p>MCP 连接的状态不是对用户隐藏的——整套连接状态通过 <code>/mcp</code> 命令暴露给用户。序列化后的状态包含：所有 client 的名称和连接类型、所有配置（按来源标记 scope）、所有已发现的工具（包含原始名称的映射）、所有 resources。</p>
+<p><code>SerializedTool</code> 结构中的 <code>isMcp</code> 标志标识一个工具是否来自 MCP——在工具列表 UI 中，MCP 工具和内置工具用不同的样式展示。<code>originalToolName</code> 字段保存映射前的原始名称，让用户能够理解 <code>mcp__github__create_pr</code> 对应 GitHub Server 的 <code>create_pr</code> 工具。</p>
+<p>从架构角度看，MCP 在该系统中扮演了"能力扩展平台"的角色。内置工具定义了 Agent 的基础能力（读写文件、执行命令），MCP 工具定义了扩展能力（外部服务集成）。七层配置确保了从个人到企业的各级控制，五种连接状态确保了精确的用户反馈，OAuth + XAA 双轨认证确保了安全的凭证管理。这不只是一个"连接外部服务"的工具，而是一个完整的能力治理框架。</p>
+<p>MCP 的设计哲学可以用一个类比总结：它是 Agent 系统的"USB 总线"。USB 定义了统一的物理接口和通信协议，让各种外设（鼠标、键盘、存储、摄像头）都能即插即用。MCP 定义了统一的消息协议（JSON-RPC）和能力描述格式（Tools/Resources/Prompts），让各种外部服务都能即连即用。USB 的成功不在于它比每个专用接口更好（PS/2 鼠标更低延迟，FireWire 传输更快），而在于统一性带来的生态效应。MCP 也是如此——它可能不比每个服务的原生 SDK 更高效，但统一的接口让 Agent 可以无差别地使用任何符合协议的服务。</p>
+<p>回顾整个 MCP 子系统，最令人印象深刻的不是某个单一的技术决策，而是<strong>各种"不完美"的协调</strong>。传输层有六种（因为没有一种能覆盖所有场景）。认证有两种（因为个人和企业需求截然不同）。配置有七层（因为不同的利益相关者需要不同的控制粒度）。错误标准化函数要对付 Slack 的非标准行为。去重逻辑要处理代理 URL 的解包。每个"不完美"都是对真实世界复杂性的务实回应。一个"完美"的设计——只有一种传输、一种认证、一层配置——只能在白板上存在。</p>
+<hr />
+<p><strong>本章思考题</strong></p>
+<ol>
+<li>
+<p>MCP 选择 JSON-RPC 作为消息格式而不是 gRPC 或自定义二进制协议，可能的考量是什么？提示：想想 MCP Server 的开发者画像。</p>
+</li>
+<li>
+<p>为什么企业配置采用"独占控制"而不是"最高优先级"？这两种策略在安全模型上有什么本质区别？如果一个企业允许用户在管控列表之上添加自己的 Server，应该怎么设计？</p>
+</li>
+<li>
+<p>认证中 OAuth 错误标准化函数处理 Slack 的非标准行为，这反映了协议实现的什么现实？如果你设计一个新协议，会如何减少这类问题？</p>
+</li>
+<li>
+<p>去重使用内容签名而非名称匹配。如果只按名称去重，会出现什么问题？如果只按内容去重呢？设计一个完美的去重策略是否可能？</p>
+</li>
+<li>
+<p>断线重连中"连续 3 次终端性错误才重连"的策略，是否存在漏网的场景——比如交替出现终端性和非终端性错误，每次都重置计数器，但 Server 实际上已经不可用？你会如何改进？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-7/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-7/chapter-19.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-7/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-7/chapter-19.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

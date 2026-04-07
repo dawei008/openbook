@@ -1,0 +1,518 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 23: Four Pillars - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-9/chapter-23.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-23-四根支柱----从-harness-模式到部署架构"><a class="header" href="#chapter-23-四根支柱----从-harness-模式到部署架构">Chapter 23: 四根支柱 -- 从 Harness 模式到部署架构</a></h1>
+<blockquote>
+<p>前 22 章拆解了一个 Agent Harness 的内部结构。本章换一个视角：如果你要在云上<strong>从零构建</strong>一个 Harness，应该围绕哪些核心支柱来组织架构？OpenHarness 的四根支柱——CONSTRAIN、INFORM、VERIFY、CORRECT——提供了一个从理论到实践的映射框架。</p>
+<p>本章不涉及具体实现细节（那是后续三章的任务），而是建立一个全局的架构心智模型：前 22 章的模式如何归类、如何映射到部署架构、如何相互协作。</p>
+</blockquote>
+<pre><code>    前 22 章的 Harness 模式
+    ────────────────────────
+    权限模型 │ 工具系统 │ Agent Loop │ 记忆
+    Hook    │ MCP     │ 多智能体   │ Dream
+    ────────────────────────
+              │
+              ▼ 映射
+    ┌─────────────────────────────────────────┐
+    │         四 根 支 柱 框 架                 │
+    │                                         │
+    │  CONSTRAIN │ INFORM  │ VERIFY │ CORRECT │
+    │  约束       │ 上下文  │ 验证    │ 纠错   │
+    │  ─────────────────────────────────────  │
+    │         Agent 执行引擎 (SDK / CLI)       │
+    └─────────────────────────────────────────┘
+              │
+              ▼ 部署
+    Amazon EKS + Bedrock + Aurora PostgreSQL
+</code></pre>
+<hr />
+<h2 id="231-前-22-章讲了什么一张模式清单"><a class="header" href="#231-前-22-章讲了什么一张模式清单">23.1 前 22 章讲了什么：一张模式清单</a></h2>
+<h3 id="问题"><a class="header" href="#问题">问题</a></h3>
+<p>读完 22 章和 4 个附录之后，读者手里有一大堆设计模式：三层权限防线、流式 Agent Loop、工具注册与调度、prompt cache 优化、fork 隔离、Mailbox 通信、Dream 后台整合、Hook 可编程策略……这些模式像散落的拼图碎片，每一块都有价值，但缺少一个框架把它们组织起来。</p>
+<p>一个实际的问题是：当你真正着手构建一个 Agent 系统时，这些模式中哪些是第一天就必须有的？哪些可以后补？它们之间的依赖关系是什么？</p>
+<h3 id="思路"><a class="header" href="#思路">思路</a></h3>
+<p>OpenHarness 提出了一个简洁的组织框架：任何 Harness 的核心职责可以归结为四件事——<strong>约束 Agent 能做什么（CONSTRAIN）</strong>、<strong>告诉 Agent 它需要知道什么（INFORM）</strong>、<strong>验证 Agent 做了什么（VERIFY）</strong>、<strong>在 Agent 做错时纠正它（CORRECT）</strong>。</p>
+<p>这不是凭空发明的分类。回顾前 22 章的模式，每一个都天然落入这四个类别之一：</p>
+<div class="table-wrapper"><table><thead><tr><th>前 22 章的模式</th><th>所在章节</th><th>映射到的支柱</th><th>映射理由</th></tr></thead><tbody>
+<tr><td>三层权限防线</td><td>Ch 9</td><td>CONSTRAIN</td><td>定义 Agent 能/不能执行的操作</td></tr>
+<tr><td>Hook 可编程策略</td><td>Ch 11</td><td>CONSTRAIN</td><td>在关键节点注入约束规则</td></tr>
+<tr><td>命名空间隔离 / fork</td><td>Ch 12</td><td>CONSTRAIN</td><td>限制子 Agent 的资源访问范围</td></tr>
+<tr><td>System Prompt 组装</td><td>Ch 16</td><td>INFORM</td><td>向 Agent 注入身份和行为指导</td></tr>
+<tr><td>记忆系统 / CLAUDE.md</td><td>Ch 17</td><td>INFORM</td><td>提供跨会话的持久上下文</td></tr>
+<tr><td>工具注册与 Schema</td><td>Ch 6</td><td>INFORM</td><td>告诉 Agent 有哪些能力可用</td></tr>
+<tr><td>MCP 协议</td><td>Ch 18</td><td>INFORM</td><td>连接外部知识和工具</td></tr>
+<tr><td>Agent Loop / 流式响应</td><td>Ch 3-4</td><td>执行引擎</td><td>核心循环不属于四支柱，是被支柱包围的中心</td></tr>
+<tr><td>工具编排与并发</td><td>Ch 8</td><td>执行引擎</td><td>执行层面的调度</td></tr>
+<tr><td>自动压缩 / 降级</td><td>Ch 5-6</td><td>VERIFY</td><td>检测上下文超限并触发修复</td></tr>
+<tr><td>成本追踪 / 可观测性</td><td>Ch 22</td><td>VERIFY</td><td>持续监控 Agent 行为的健康度</td></tr>
+<tr><td>Dream 后台整合</td><td>Ch 21</td><td>CORRECT</td><td>检测记忆退化并自动修复</td></tr>
+<tr><td>优雅降级 / 断路器</td><td>Ch 22</td><td>CORRECT</td><td>失败时自动回退而非崩溃</td></tr>
+</tbody></table>
+</div>
+<p>注意 Agent Loop 和工具编排没有映射到任何一根支柱——它们是<strong>执行引擎</strong>，是四根支柱包围和保护的中心。这个区分很重要：支柱的职责是为执行引擎创造一个安全、信息充分、可验证、可纠错的环境，而不是替代执行引擎本身。</p>
+<p>一个类比：如果执行引擎是赛车手，那么 CONSTRAIN 是赛道护栏，INFORM 是领航员的路书，VERIFY 是裁判和传感器，CORRECT 是维修站。赛车手（Agent Loop）在赛道中央全力奔跑，四根支柱从四个方向确保它不偏离、不迷路、不违规、能修复。</p>
+<hr />
+<h2 id="232-四根支柱的架构展开"><a class="header" href="#232-四根支柱的架构展开">23.2 四根支柱的架构展开</a></h2>
+<h3 id="问题-1"><a class="header" href="#问题-1">问题</a></h3>
+<p>映射表给出了「什么对应什么」，但还没回答「这四根支柱在一个实际的云部署中长什么样」。理论模式和部署架构之间还有一个翻译层：前 22 章的权限模型是进程内的函数调用，但云上的权限模型是 IAM 策略和 NetworkPolicy；前 22 章的 Dream 是 fork 子 Agent，但云上的纠错是 CI 流水线和监控告警。</p>
+<h3 id="思路-1"><a class="header" href="#思路-1">思路</a></h3>
+<p>OpenHarness 将四根支柱映射到具体的云组件。下面这张架构图展示了完整的部署拓扑：</p>
+<pre><code>Human (设计 harness, 指定意图)
+     │
+     ├── Chat Interface / Web Console / REST API
+     │
+     ▼
+╔═══════════════════ THE HARNESS ═══════════════════════╗
+║                                                       ║
+║  CONSTRAIN         │  INFORM          │               ║
+║  ┌───────────────┐ │  ┌─────────────┐ │  VERIFY       ║
+║  │ IAM / IRSA    │ │  │ AGENTS.md   │ │  ┌──────────┐ ║
+║  │ Kyverno 策略   │ │  │ pgvector KB │ │  │ CI/CD    │ ║
+║  │ NetworkPolicy │ │  │ 4 层上下文   │ │  │ Semgrep  │ ║
+║  │ 双 Pod 沙箱   │ │  │ always →    │ │  │ PR-Agent │ ║
+║  │ 命名空间隔离   │ │  │  on-demand →│ │  │ ArgoCD   │ ║
+║  └───────────────┘ │  │  live        │ │  └──────────┘ ║
+║                    │  └─────────────┘ │                ║
+║  ──────────────────┴─────────────────┴──────────────  ║
+║                                                       ║
+║  CORRECT           │  执行引擎                         ║
+║  ┌───────────────┐ │  ┌─────────────────────────────┐ ║
+║  │ Prometheus    │ │  │ Agent Pod ◄─gRPC─► Sandbox  │ ║
+║  │ Grafana       │ │  │                             │ ║
+║  │ 自修复循环    │ │  │ Initializer → Coding Agent  │ ║
+║  │ 升级策略      │ │  │                             │ ║
+║  │ (最多 3 次)   │ │  │ Task Queue (PostgreSQL)     │ ║
+║  └───────────────┘ │  └─────────────────────────────┘ ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+     │
+     ▼
+Amazon EKS ── VPC │ IAM │ S3 │ ECR │ Bedrock │ Aurora
+</code></pre>
+<p>每根支柱的职责边界清晰：</p>
+<p><strong>CONSTRAIN（约束）</strong> 回答「Agent 能做什么、不能做什么」。在云上，这转化为：IAM/IRSA 控制 AWS API 访问权限，Kyverno 策略阻止危险的 Kubernetes 资源创建，NetworkPolicy 限制 Pod 间通信，双 Pod 沙箱将 LLM 调用和命令执行物理隔离，命名空间隔离实现多租户。这对应前 22 章的权限三层防线（Ch 9）和 Hook 策略（Ch 11），但从进程内函数调用扩展到了基础设施级别的强制执行。</p>
+<p><strong>INFORM（上下文）</strong> 回答「Agent 需要知道什么」。在云上，这转化为：AGENTS.md 作为每个仓库的治理文档（类似 Ch 17 的 CLAUDE.md），pgvector 知识库存储可检索的项目知识，四层上下文模型（always / session / on-demand / live）对应 Ch 16 的 System Prompt 静态/动态分离。</p>
+<p><strong>VERIFY（验证）</strong> 回答「Agent 做了什么是否正确」。在云上，这转化为：GitHub Actions CI 运行测试和构建，Semgrep 做静态安全扫描，PR-Agent 做 AI 辅助代码审查，ArgoCD 验证部署配置。这是 Ch 22 可观测性原则的具体化——每个 Agent 产出都经过确定性的验证流水线。</p>
+<p><strong>CORRECT（纠错）</strong> 回答「Agent 做错了怎么办」。在云上，这转化为：Prometheus/Grafana 监控 Agent 级别的指标（首次通过率、修复率、升级率），自修复循环在 CI 失败时自动创建修复任务，升级策略在 3 次自修复失败后将问题交给人类。这对应 Ch 21 的 Dream（后台自动修复）和 Ch 22 的优雅降级原则。</p>
+<h3 id="实现"><a class="header" href="#实现">实现</a></h3>
+<p>四根支柱之间的数据流构成一个闭环：</p>
+<pre><code>INFORM ──上下文──► 执行引擎 ──产出──► VERIFY
+  ▲                                      │
+  │                                  通过/失败
+  │                                      │
+  │              ┌──── 通过 ◄────────────┤
+  │              │                       │
+  │              ▼                       ▼
+  │         合并/部署              CORRECT (自修复)
+  │                                      │
+  └──────────── 更新上下文 ◄─────────────┘
+                (错误日志、修复经验)
+</code></pre>
+<p>这个闭环有一个关键特性：<strong>CORRECT 的输出会反馈到 INFORM</strong>。当自修复循环成功修复了一个 CI 错误时，错误日志和修复方案会被记录下来，成为后续 Agent 会话的上下文。这意味着系统从失败中学习——不是通过修改模型权重（那是训练），而是通过丰富上下文（这是 Harness 工程）。</p>
+<p>在前 22 章的框架中，这种「失败经验回馈到上下文」的模式在 Dream 系统中已经出现（Ch 21：Dream 整合最近的会话经验到持久记忆）。OpenHarness 将这个模式从进程内扩展到了系统级：CI 错误日志、Semgrep 扫描结果、PR-Agent 的审查意见——这些都是结构化的反馈信号，可以被注入后续会话的上下文中。</p>
+<p>CONSTRAIN 支柱则独立于这个数据闭环——它是<strong>硬约束</strong>，不因反馈而放松。IAM 权限不会因为 Agent 连续成功 100 次就自动扩大。这对应 Ch 22 的第一条原则「安全优先」：安全边界由人类设定，不由 Agent 的表现动态调整。</p>
+<hr />
+<h2 id="233-核心设计原则"><a class="header" href="#233-核心设计原则">23.3 核心设计原则</a></h2>
+<h3 id="问题-2"><a class="header" href="#问题-2">问题</a></h3>
+<p>四根支柱是组织框架，但还不是设计原则。两个系统可以有同样的四根支柱，但设计哲学完全不同。OpenHarness 的设计决策背后有哪些指导原则？</p>
+<h3 id="思路-2"><a class="header" href="#思路-2">思路</a></h3>
+<p>OpenHarness 遵循两条核心原则，它们是前 22 章设计哲学的浓缩：</p>
+<p><strong>原则一：确定性脚手架包围非确定性行为。</strong></p>
+<p>LLM 的输出本质上是非确定性的——同样的输入可能产生不同的输出，输出质量取决于提示词、上下文、模型状态等多个变量。Harness 的职责不是消除这种非确定性（那会扼杀 LLM 的创造力），而是用<strong>确定性的脚手架</strong>把它包围起来。</p>
+<p>什么是确定性的？IAM 策略是确定性的——要么允许，要么拒绝，没有「大概允许」。CI 测试是确定性的——要么通过，要么失败，没有「大概通过」。NetworkPolicy 是确定性的——要么放行流量，要么丢弃，没有「看情况」。</p>
+<p>什么是非确定性的？Agent 选择哪个工具、生成什么代码、如何分解任务——这些都是非确定性的，也是 LLM 的价值所在。</p>
+<p>OpenHarness 的架构决策都可以用这条原则检验：双 Pod 沙箱是确定性的隔离（Ch 24），CI 流水线是确定性的验证（Ch 25），任务队列的 <code>SELECT ... FOR UPDATE SKIP LOCKED</code> 是确定性的并发控制（Ch 26）。这些确定性组件不依赖 LLM 的判断，即使 LLM 输出完全随机，脚手架仍然能保证系统不会失控。</p>
+<p>回顾 Ch 9 的三层权限防线：白名单（确定性放行）→ 黑名单（确定性拒绝）→ 灰名单（交给用户判断）。在这个设计中，前两层是确定性脚手架，第三层引入了人类判断——也是确定性的，只是判断主体换成了人。没有任何一层依赖模型自己的安全判断。OpenHarness 把这个原则推到了基础设施级别：连网络流量的允许/拒绝都不经过 LLM。</p>
+<p><strong>原则二：Agent 失败时修 Harness 不修 Prompt。</strong></p>
+<p>这是一条反直觉的原则。当 Agent 产出了错误的代码，本能反应是「提示词不够好，要改提示词」。但 OpenHarness 主张：<strong>先检查 Harness 是否提供了足够的约束和上下文</strong>。</p>
+<p>为什么？因为提示词工程的效果是概率性的——你加了一句「请确保代码通过 lint」，Agent 可能 80% 的时候遵守，20% 的时候忽略。而 Harness 工程的效果是确定性的——你在 CI 中加了 lint 检查，100% 的不合规代码都会被拦截。</p>
+<p>这条原则直接对应 Ch 22 的安全优先原则：安全不依赖模型的判断力。推广到 Harness 工程的所有方面：质量不依赖提示词的措辞，而依赖验证流水线的严密性；一致性不依赖 Agent 的自律，而依赖上下文的完整性；可靠性不依赖模型的稳定性，而依赖纠错循环的健壮性。</p>
+<h3 id="实现-1"><a class="header" href="#实现-1">实现</a></h3>
+<p>这两条原则在架构层面产生了一个有趣的推论：<strong>四根支柱的投资优先级是 CONSTRAIN &gt; VERIFY &gt; INFORM &gt; CORRECT</strong>。</p>
+<pre><code>投资优先级（从高到低）：
+
+CONSTRAIN ████████████  ← 第一天就要有，否则 Agent 可能搞破坏
+VERIFY    ████████████  ← 第一天就要有，否则错误无法被发现
+INFORM    ████████      ← 逐步丰富，Agent 会越来越好
+CORRECT   ██████        ← 在 VERIFY 基础上叠加，属于高级优化
+</code></pre>
+<p>原因是：没有约束的 Agent 是危险的（CONSTRAIN 必须先行），没有验证的 Agent 是不可信的（VERIFY 紧随其后），上下文不够丰富的 Agent 只是效率低一些（INFORM 可以渐进），而自动纠错是锦上添花（CORRECT 建立在 VERIFY 能检测到错误的前提上）。</p>
+<p>这个优先级顺序也回应了前 22 章中一个反复出现的主题：Ch 22 的七条原则中，「安全优先」排在第一位不是偶然的——它是所有其他原则的前提。OpenHarness 用四根支柱的投资优先级将这个排序具象化了。</p>
+<hr />
+<h2 id="234-与前-22-章的桥梁理论如何变成基础设施"><a class="header" href="#234-与前-22-章的桥梁理论如何变成基础设施">23.4 与前 22 章的桥梁：理论如何变成基础设施</a></h2>
+<h3 id="问题-3"><a class="header" href="#问题-3">问题</a></h3>
+<p>前 22 章的模式运行在单进程、单机器的环境中。一个 Agent Loop 是一个 TypeScript 的 async generator，一个子 Agent 是一个 fork 出来的上下文对象，权限检查是一个函数调用。但在云上，一切都变了：Agent Loop 运行在 Pod 中，子 Agent 可能在不同节点上，权限检查分布在 IAM、Kyverno、NetworkPolicy 三个层面。从单进程到分布式，模式的本质不变，但实现形式发生了根本性的变化。</p>
+<h3 id="思路-3"><a class="header" href="#思路-3">思路</a></h3>
+<p>让我们逐一审视关键模式在「单进程」和「云部署」之间的映射关系：</p>
+<pre><code>单进程 Harness (前 22 章)          云部署 Harness (OpenHarness)
+──────────────────────────        ──────────────────────────
+
+Tool.checkPermissions()    ────►  IAM Policy + Kyverno Rule
+  函数调用，微秒级                  API 调用，毫秒级
+
+fork() 子 Agent            ────►  双 Pod 模型 (Agent + Sandbox)
+  共享进程内存                      gRPC 通信，共享 PVC
+
+CLAUDE.md 记忆文件         ────►  AGENTS.md + pgvector 知识库
+  本地文件系统读取                  数据库查询 + 向量检索
+
+Dream 后台整合             ────►  自修复循环 + 监控告警
+  fork 子 Agent                    CI 失败检测 → 新任务创建
+
+Mailbox 消息传递           ────►  gRPC + PostgreSQL 任务队列
+  进程内 Actor 模型                 跨 Pod 通信 + 持久化队列
+
+Prompt Cache               ────►  Bedrock 请求级缓存
+  API 层缓存键管理                  模型调用参数一致性
+
+断路器 (3 次上限)          ────►  升级策略 (最多 3 次自修复)
+  循环计数器                        数据库状态机
+</code></pre>
+<p>表面上变了很多，但有一个不变量：<strong>每个模式解决的根本问题没有变</strong>。权限检查仍然是「确定性地拒绝不安全的操作」，fork 隔离仍然是「给子任务一个独立的执行环境」，记忆仍然是「跨时间边界传递上下文」，Dream 仍然是「在后台修复退化」。</p>
+<p>变的是实现的「材料」——从函数调用变成了 API 调用，从进程内存变成了网络通信，从文件锁变成了数据库事务。这种「材料替换、结构不变」的映射关系，正是 Harness 设计模式的价值所在：它们是<strong>与具体技术栈无关的架构骨架</strong>。</p>
+<h3 id="实现-2"><a class="header" href="#实现-2">实现</a></h3>
+<p>这个映射关系也解释了为什么 OpenHarness 选择 Kubernetes 作为部署平台——不是因为 K8s 是流行技术，而是因为 K8s 原生提供了四根支柱所需的基础设施原语：</p>
+<div class="table-wrapper"><table><thead><tr><th>支柱</th><th>需要的基础设施原语</th><th>K8s 提供的对应物</th></tr></thead><tbody>
+<tr><td>CONSTRAIN</td><td>网络隔离、资源限制、策略引擎</td><td>NetworkPolicy, ResourceQuota, Kyverno</td></tr>
+<tr><td>INFORM</td><td>配置注入、卷挂载、服务发现</td><td>ConfigMap, PVC, Service</td></tr>
+<tr><td>VERIFY</td><td>CI/CD 集成、webhook、事件通知</td><td>GitHub Actions (外部) + ArgoCD</td></tr>
+<tr><td>CORRECT</td><td>健康检查、自动重启、度量采集</td><td>livenessProbe, Prometheus Operator</td></tr>
+</tbody></table>
+</div>
+<p>K8s 不是唯一的选择，但它是目前提供这些原语最完整的平台。如果你的场景不需要多租户和复杂的网络隔离（比如个人开发者在单机上运行），Docker Compose 也能实现大部分功能——只是 CONSTRAIN 支柱会弱很多（Docker 的网络隔离远不如 K8s NetworkPolicy 精细）。</p>
+<p>这个「根据支柱需求选择基础设施」的决策过程值得借鉴。不要先选技术栈再想怎么适配，而是先列出四根支柱的需求，再评估哪个平台最自然地满足这些需求。</p>
+<hr />
+<h2 id="235-一个容易被忽视的视角agent-之间的信任模型"><a class="header" href="#235-一个容易被忽视的视角agent-之间的信任模型">23.5 一个容易被忽视的视角：Agent 之间的信任模型</a></h2>
+<h3 id="问题-4"><a class="header" href="#问题-4">问题</a></h3>
+<p>前 22 章讨论的信任模型主要是「人与 Agent」之间的：用户信任 Agent 执行操作，权限系统管理这种信任。但在 OpenHarness 的多 Agent 部署中，还有一种信任关系：<strong>Agent 与 Agent 之间</strong>。Initializer Agent 生成 feature_list.json，Coding Agent 信任这份列表并逐一实现。如果 Initializer 的分解不合理（比如遗漏了关键依赖），Coding Agent 会忠实地执行一个有缺陷的计划。</p>
+<h3 id="思路-4"><a class="header" href="#思路-4">思路</a></h3>
+<p>OpenHarness 用四根支柱的组合来管理 Agent 间信任：</p>
+<ul>
+<li><strong>CONSTRAIN</strong> 限制每个 Agent 的操作范围：Initializer 只能分析和规划，不能修改代码；Coding Agent 只能修改代码，不能改变任务定义。这通过不同的 AGENTS.md 配置和 IAM 角色实现。</li>
+<li><strong>INFORM</strong> 确保 Agent 间共享的信息是结构化的：feature_list.json 有固定的 Schema，progress.md 有固定的格式。结构化信息比自由文本更难被误解。</li>
+<li><strong>VERIFY</strong> 在 Agent 交接点插入检查：Initializer 的输出经过 Schema 验证（格式正确？字段完整？），Coding Agent 的输出经过 CI 验证（代码能编译？测试通过？）。</li>
+<li><strong>CORRECT</strong> 在交接失败时提供回退：如果 Coding Agent 发现某个 feature 无法实现，它更新 progress.md 标记问题，而不是静默跳过。</li>
+</ul>
+<p>这种「在交接点用四根支柱做守卫」的模式，是 Ch 12 fork 隔离模式的云上扩展。Ch 12 中，父子 Agent 的交接通过结构化的 task-notification 消息完成；OpenHarness 中，Agent 间的交接通过结构化的 JSON 文件和 CI 流水线完成。材料不同，结构相同。</p>
+<hr />
+<h2 id="236-本章小结"><a class="header" href="#236-本章小结">23.6 本章小结</a></h2>
+<p>本章完成了三件事：</p>
+<p>第一，<strong>模式归类</strong>。前 22 章的设计模式被映射到四根支柱（CONSTRAIN / INFORM / VERIFY / CORRECT）加一个执行引擎。这个归类让你在面对任何 Harness 设计问题时，都能快速定位它属于哪根支柱。</p>
+<p>第二，<strong>原则提炼</strong>。「确定性脚手架包围非确定性行为」和「Agent 失败时修 Harness 不修 Prompt」这两条原则，是前 22 章设计哲学在部署层面的浓缩。</p>
+<p>第三，<strong>映射建立</strong>。单进程模式到云部署的映射表，展示了 Harness 设计模式的技术栈无关性——函数调用变成了 API 调用，进程内存变成了网络通信，但解决的问题不变。</p>
+<p>后续三章将深入每根支柱的具体实现：Ch 24 聚焦 CONSTRAIN（双 Pod 沙箱和安全），Ch 25 聚焦 VERIFY + CORRECT（自修复循环），Ch 26 把所有支柱串在一起完成一次完整部署。</p>
+<hr />
+<blockquote>
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>本章将前 22 章的模式映射到四根支柱。但有些模式似乎跨越了多根支柱——例如 Ch 11 的 Hook 系统既可以用于 CONSTRAIN（拒绝危险操作），也可以用于 VERIFY（日志审计），甚至可以用于 INFORM（注入上下文）。在你的 Harness 设计中，你会把 Hook 归入哪根支柱？还是让它跨越多根？跨越的代价是什么？</p>
+</li>
+<li>
+<p>「确定性脚手架包围非确定性行为」这条原则意味着不依赖 LLM 来做安全判断。但 Ch 10 的 ML 分类器（自动审批低风险操作）恰恰是用 ML 模型做安全判断。这算不算违反了这条原则？如果不算，边界在哪里？</p>
+</li>
+<li>
+<p>投资优先级 CONSTRAIN &gt; VERIFY &gt; INFORM &gt; CORRECT 假设安全是第一天的硬需求。但如果你在构建一个内部工具（只有信任的开发者使用，没有外部用户），这个优先级还成立吗？哪些支柱可以推迟？推迟的风险是什么？</p>
+</li>
+<li>
+<p>本章提到「Agent 失败时修 Harness 不修 Prompt」。在实践中，区分「提示词不够好」和「Harness 约束不够」并不容易。设计一个诊断流程：给定一个 Agent 错误案例，如何系统性地判断根因在提示词还是在 Harness？</p>
+</li>
+</ol>
+</blockquote>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-9/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-9/chapter-24.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-9/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-9/chapter-24.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

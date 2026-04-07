@@ -1,0 +1,531 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 16: System Prompt Pipeline - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-6/chapter-16.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-16-system-prompt-的组装流水线"><a class="header" href="#chapter-16-system-prompt-的组装流水线">Chapter 16: System Prompt 的组装流水线</a></h1>
+<blockquote>
+<p>核心问题：一个 Agent 的「人格」和「能力边界」是怎样从散落的代码碎片中拼装出来的？哪些可以缓存省钱，哪些必须每次重算？</p>
+</blockquote>
+<pre><code>     ┌────────────────────────────┐
+     │      System Prompt         │
+     │ ★ Assembly Pipeline ★     │  ◄── 本章聚焦
+     │                            │
+     │ [Static Sections]          │
+     │  Identity│Rules│Tools│Style│
+     │ ─── DYNAMIC_BOUNDARY ───   │
+     │ [Dynamic Sections]         │
+     │  Env │ Memory │ MCP        │
+     │            │               │
+     │      Cache Splitter        │
+     │    global / org / null     │
+     └───────────┬────────────────┘
+                 ▼
+           API Request
+</code></pre>
+<h2 id="161-system-prompt-为什么不能是一个字符串"><a class="header" href="#161-system-prompt-为什么不能是一个字符串">16.1 System Prompt 为什么不能是一个字符串</a></h2>
+<p>在 LLM 应用里，System Prompt 就是给模型的「入职说明书」——你是谁、能做什么、怎么做。一个简单的 chatbot 可能只需要一行字：「你是一个友好的助手」。但该 Agent 系统不是聊天机器人，它是一个要在真实代码仓库中干活的 Agent。</p>
+<p>想象一下它的「入职说明书」需要包含什么：</p>
+<ul>
+<li>身份声明和安全红线（「永远不要猜测 URL」）</li>
+<li>工具使用规范（「用 Read 而不是 cat」）</li>
+<li>代码风格纪律（「不要画蛇添足」）</li>
+<li>当前环境快照（Git 分支、操作系统、工作目录）</li>
+<li>用户的个人记忆（AGENT.md 中的项目约定）</li>
+<li>MCP 服务器的工具说明（可能随时连接或断开）</li>
+</ul>
+<p>前三条对所有用户都一样，后三条每个人每次都不同。如果把它们揉成一个大字符串，每次 API 调用都得从头传一遍——LLM API 按输入 token 收费，这意味着每个用户每次提问都在为完全相同的「身份声明」重复付钱。</p>
+<p><strong>核心矛盾</strong>：Prompt 越丰富 Agent 越聪明，但越丰富也越贵。</p>
+<p>该系统的解决方案是把 System Prompt 当作一条<strong>流水线</strong>：不同工位负责不同段落，静态的段落跨用户缓存，动态的段落按需重算。这条流水线的产出不是一个字符串，而是一个<strong>字符串数组</strong>——每个元素是一个独立段落，下游的缓存切分器可以精确地在段落边界上动刀。</p>
+<hr />
+<h2 id="162-两半世界静态人格与动态环境"><a class="header" href="#162-两半世界静态人格与动态环境">16.2 两半世界：静态人格与动态环境</a></h2>
+<h3 id="问题"><a class="header" href="#问题">问题</a></h3>
+<p>流水线的第一个设计决策是：哪些内容不变，哪些内容会变？</p>
+<h3 id="思路"><a class="header" href="#思路">思路</a></h3>
+<p>类比一份员工手册。公司的行为准则（不许受贿、不许泄密）对所有员工都一样，可以印一本通用手册发给所有人。但员工的工位号、部门、直属上级这些信息，每人一份，必须单独打印。</p>
+<p>该系统的 System Prompt 也分成这样两半：</p>
+<div class="table-wrapper"><table><thead><tr><th>区域</th><th>内容</th><th>变化频率</th><th>缓存策略</th></tr></thead><tbody>
+<tr><td>静态半区</td><td>身份声明、安全规则、工具指南、风格要求</td><td>版本发布时才变</td><td><code>cacheScope: 'global'</code> 跨组织共享</td></tr>
+<tr><td>动态半区</td><td>环境信息、记忆、MCP 指令、语言偏好</td><td>每会话甚至每轮变</td><td>不缓存或会话内缓存</td></tr>
+</tbody></table>
+</div>
+<p>两半之间有一条清晰的分界线——一个动态边界标记字符串。</p>
+<h3 id="实现"><a class="header" href="#实现">实现</a></h3>
+<p>系统提示词主入口函数的返回值结构直接体现了这种两分法。静态 section 依次排列，然后是边界标记，最后是动态 section：</p>
+<pre><code>[静态] 身份声明段         — 身份声明
+[静态] 系统规则段         — 系统规则
+[静态] 任务执行纪律段     — 任务执行纪律
+[静态] 操作安全段         — 操作安全
+[静态] 工具使用段         — 工具使用
+[静态] 语气风格段         — 语气风格
+[静态] 输出效率段         — 输出效率
+────── DYNAMIC_BOUNDARY ──────
+[动态] session_guidance   — 会话特定指引
+[动态] memory             — 记忆系统
+[动态] env_info_simple    — 环境信息
+[动态] mcp_instructions   — MCP 指令
+[动态] ...其他
+</code></pre>
+<p>注意：边界标记只在全局缓存可用时才插入。对于不支持全局缓存的第三方 API 提供商，这条线不存在，所有内容退回组织级缓存。这是优雅降级——缓存策略不是硬编码的，而是根据 API 能力自适应的。</p>
+<hr />
+<h2 id="163-静态半区不变的人格基座"><a class="header" href="#163-静态半区不变的人格基座">16.3 静态半区：不变的人格基座</a></h2>
+<h3 id="问题-1"><a class="header" href="#问题-1">问题</a></h3>
+<p>静态区的七个 section 构成了 Agent 的核心人格。它们为什么不是一个大段落而是七个小段落？</p>
+<h3 id="思路-1"><a class="header" href="#思路-1">思路</a></h3>
+<p>分段有两个好处。第一，可维护性——每个 section 是一个独立函数，改「工具指南」不会影响「安全规则」。第二，更微妙的是<strong>排版对模型行为的影响</strong>。工程团队发现，Markdown 的标题层级和列表缩进会影响模型对指令优先级的理解。列表项渲染函数支持二维数组——外层渲染为一级列表项，内层渲染为缩进子项。这种精细控制不是美学追求，而是<strong>语义工程</strong>。</p>
+<h3 id="实现-1"><a class="header" href="#实现-1">实现</a></h3>
+<p>几个值得关注的设计决策：</p>
+<p><strong>环境变量驱动的条件分支</strong>。任务执行纪律段中，<code>process.env.USER_TYPE === 'ant'</code> 决定内部用户是否获得额外的代码风格指导（「默认不写注释」「完成前要验证」）。这个检查看似运行时条件，实则是<strong>编译时常量</strong>——bundler 在打包时把它替换为字面量 <code>true</code> 或 <code>false</code>，不匹配的分支被 dead code elimination 彻底删除。外部用户的安装包里根本不存在这些代码。</p>
+<p><strong>工具名称的动态引用</strong>。工具使用段引用了 <code>FILE_READ_TOOL_NAME</code>、<code>FILE_EDIT_TOOL_NAME</code> 等变量，但仍然放在静态区。为什么？因为工具集在会话启动时确定，之后不再变化。工具<strong>名称</strong>是会话常量，而非运行时变量。</p>
+<p><strong>安全指令的显著位置</strong>。身份声明紧跟一条全大写的安全指令：<code>IMPORTANT: You must NEVER generate or guess URLs</code>。这不是偶然——在 System Prompt 的最前面放置安全约束，利用的是模型对「primacy effect」（首因效应）的敏感性。</p>
+<hr />
+<h2 id="164-边界标记一根看不见的红线"><a class="header" href="#164-边界标记一根看不见的红线">16.4 边界标记：一根看不见的红线</a></h2>
+<h3 id="问题-2"><a class="header" href="#问题-2">问题</a></h3>
+<p>有了静态和动态的概念区分后，下游的缓存系统怎么知道分界线在哪？System Prompt 已经是字符串数组了，但没有任何类型信息标识「这个元素是分界线」。</p>
+<h3 id="思路-2"><a class="header" href="#思路-2">思路</a></h3>
+<p>最简单的方案：放一个<strong>哨兵值</strong>。就像 C 语言用 <code>\0</code> 标记字符串结尾，该系统用一个不可能出现在正常 prompt 中的魔术字符串标记静态区的结束。</p>
+<h3 id="实现-2"><a class="header" href="#实现-2">实现</a></h3>
+<p>在提示词常量模块中定义了这个边界标记：</p>
+<pre><code class="language-pseudocode">define constant DYNAMIC_BOUNDARY_MARKER = '__SYSTEM_PROMPT_DYNAMIC_BOUNDARY__'
+</code></pre>
+<p>这个字符串永远不会出现在发送给模型的 prompt 中——缓存切分函数遍历数组时，遇到它直接跳过。它只作为切分标志存在。</p>
+<p>代码注释包含一段异常严肃的警告：</p>
+<blockquote>
+<p>WARNING: Do not remove or reorder this marker without updating cache logic in the API utility module and the API service module.</p>
+</blockquote>
+<p>这种跨文件的耦合关系揭示了一个工程事实：<strong>prompt 的文本顺序和 API 层的缓存策略是紧密绑定的</strong>。移动一个段落的位置，可能导致缓存命中率崩塌、API 账单飙升。</p>
+<p>另一个精妙的注释解释了为什么某些「看似静态」的内容被放在边界下方：</p>
+<blockquote>
+<p>Session-variant guidance that would fragment the cacheScope:'global' prefix if placed before the dynamic boundary. Each conditional here is a runtime bit that would otherwise multiply the Blake2b prefix hash variants (2^N).</p>
+</blockquote>
+<p>每多一个在静态区内变化的条件分支，全局缓存的变体数量就翻倍。两个条件就是 4 种变体，三个就是 8 种——缓存命中率指数衰减。因此工程团队把所有包含运行时条件的 section 严格隔离在边界下方，哪怕它们在大多数情况下不变。</p>
+<hr />
+<h2 id="165-动态半区注册-解析机制"><a class="header" href="#165-动态半区注册-解析机制">16.5 动态半区：注册-解析机制</a></h2>
+<h3 id="问题-3"><a class="header" href="#问题-3">问题</a></h3>
+<p>动态 section 面临一个矛盾：它们的内容每会话不同，但大多数在会话内保持不变。环境信息（Git 分支、操作系统）在会话开始时采集一次就够了，没必要每轮对话都重新计算。但 MCP 服务器可能在任意两轮对话之间连接或断开，它的指令<strong>必须</strong>每轮重算。</p>
+<p>如何区分这两种情况？</p>
+<h3 id="思路-3"><a class="header" href="#思路-3">思路</a></h3>
+<p>系统设计者实现了一个轻量的<strong>注册-解析</strong>系统。每个动态 section 是一个具名的计算单元，注册时声明自己是否需要每轮重算：</p>
+<div class="table-wrapper"><table><thead><tr><th>注册函数</th><th><code>cacheBreak</code></th><th>含义</th></tr></thead><tbody>
+<tr><td>普通注册</td><td><code>false</code></td><td>首次计算后缓存，会话内不变</td></tr>
+<tr><td>危险注册（DANGEROUS 前缀）</td><td><code>true</code></td><td>每轮重算，可能破坏缓存</td></tr>
+</tbody></table>
+</div>
+<p>函数名里的 <code>DANGEROUS_</code> 前缀是一种<strong>社会工程</strong>——它不影响程序行为，但强制使用者感到不安。更绝的是第三个参数 <code>_reason</code>，运行时完全不使用，纯粹作为<strong>代码级文档</strong>记录破坏缓存的理由。代码审查时，如果看到一个 DANGEROUS 注册没有写清 reason，审查者可以直接打回。</p>
+<h3 id="实现-3"><a class="header" href="#实现-3">实现</a></h3>
+<p>解析逻辑非常简洁：如果 section 不需要 cache break 且缓存中已有值，直接返回缓存；否则执行计算函数并存入缓存。缓存是全局 state 中的一个 <code>Map&lt;string, string | null&gt;</code>，<code>/clear</code> 或 <code>/compact</code> 命令会清空它。</p>
+<p>在整个代码库中，只有一个 section 被标记为 DANGEROUS——MCP 指令：</p>
+<pre><code class="language-pseudocode">register_uncached_section(
+  name = 'mcp_instructions',
+  compute = function():
+    if delta_mode_enabled():
+      return null
+    else:
+      return build_mcp_instructions(active_clients),
+  reason = 'MCP servers connect/disconnect between turns'
+)
+</code></pre>
+<p>注意计算函数内部还有一个 feature flag 检查：如果启用了「增量模式」，MCP 指令通过附件（attachment）注入而非在 System Prompt 中重算。这是团队正在推进的优化——将最后一个 DANGEROUS section 也变为非 DANGEROUS，彻底消除动态区的每轮重算开销。</p>
+<hr />
+<h2 id="166-两条上下文通道"><a class="header" href="#166-两条上下文通道">16.6 两条上下文通道</a></h2>
+<h3 id="问题-4"><a class="header" href="#问题-4">问题</a></h3>
+<p>System Prompt 定义的是 Agent 的通用行为。但每次对话还需要注入会话特定的背景信息——当前 Git 状态、用户的 AGENT.md 规则、今天的日期。这些信息放在哪？</p>
+<h3 id="思路-4"><a class="header" href="#思路-4">思路</a></h3>
+<p>该系统把会话上下文分成两条独立通道，分别通过不同的 API 参数注入：</p>
+<ul>
+<li><strong>systemContext</strong>：追加到 system prompt 后面。包含 Git 状态和调试注入。</li>
+<li><strong>userContext</strong>：作为对话的第一条 user 消息注入。包含 AGENT.md 内容和当前日期。</li>
+</ul>
+<p>为什么要分两条？因为 API 层对 system prompt 和 user message 有不同的缓存策略。system prompt 可以全局缓存，user message 只能请求级缓存。AGENT.md 内容因用户而异，放在 user message 里不会污染全局缓存。</p>
+<h3 id="实现-4"><a class="header" href="#实现-4">实现</a></h3>
+<p>两个函数都用 lodash 的 <code>memoize</code> 包裹，确保每会话只计算一次。</p>
+<p>Git 状态获取函数并行执行五个 git 命令获取分支名、默认分支、文件状态、最近提交和用户名。结果的开头有一句重要的声明：</p>
+<blockquote>
+<p>This is the git status at the start of the conversation. Note that this status is a snapshot in time, and will not update during the conversation.</p>
+</blockquote>
+<p>这是给模型的元信息——告诉它这份 git 状态可能已经过时，需要最新信息时应该自己调用 <code>git status</code> 工具。同时，当 <code>status</code> 超过 2000 字符时会被截断，并附加提示让模型用 BashTool 查看完整状态。这避免了大型 monorepo 中几千行 git status 吞噬上下文窗口。</p>
+<p>用户上下文获取函数加载 AGENT.md 时有两个关闭开关：环境变量 <code>AGENT_DISABLE_CONFIG_FILES</code> 和 <code>--bare</code> 模式。但 <code>--bare</code> 的语义是「跳过自动发现，但尊重显式指定」——如果用户通过 <code>--add-dir</code> 指定了额外目录，即使在 bare 模式下也会加载。</p>
+<p>一个精巧的缓存失效机制：调试注入设置函数在注入调试内容时，主动清除两条上下文通道的 memoize 缓存。这是内部调试功能——通过修改注入内容强制 prompt 变化，破坏 API 层缓存，用于测试缓存行为。</p>
+<hr />
+<h2 id="167-缓存切分一把精确的刀"><a class="header" href="#167-缓存切分一把精确的刀">16.7 缓存切分：一把精确的刀</a></h2>
+<h3 id="问题-5"><a class="header" href="#问题-5">问题</a></h3>
+<p>流水线产出了一个字符串数组。API 调用需要的是带缓存标注的文本块。怎么把数组变成带标注的块？</p>
+<h3 id="思路-5"><a class="header" href="#思路-5">思路</a></h3>
+<p>缓存切分函数就是这把刀。它根据三种信号识别不同类型的块：</p>
+<ol>
+<li>以 <code>x-anthropic-billing-header</code> 开头的 → 计费归属头</li>
+<li>内容匹配 CLI 前缀集合的 → CLI 身份前缀</li>
+<li>在边界标记前/后的 → 静态/动态内容</li>
+</ol>
+<p>切分结果最多四个块，每个带有自己的缓存作用域：</p>
+<div class="table-wrapper"><table><thead><tr><th>块</th><th>cacheScope</th><th>说明</th></tr></thead><tbody>
+<tr><td>计费归属头</td><td><code>null</code></td><td>包含版本指纹，每次不同</td></tr>
+<tr><td>CLI 前缀</td><td><code>null</code> 或 <code>'org'</code></td><td>视模式而定</td></tr>
+<tr><td>静态内容</td><td><code>'global'</code></td><td>跨组织共享的人格基座</td></tr>
+<tr><td>动态内容</td><td><code>null</code></td><td>会话特定，不缓存</td></tr>
+</tbody></table>
+</div>
+<h3 id="实现-5"><a class="header" href="#实现-5">实现</a></h3>
+<p>函数内部有三条代码路径，按优先级：</p>
+<p><strong>路径一：存在 MCP 工具时</strong>（跳过全局缓存标记设为 true）。MCP 工具的 schema 被注入到 tool 参数中，会改变 API 请求的 hash，导致全局缓存失效。此时退回到组织级缓存（<code>'org'</code>），放弃全局共享。</p>
+<p><strong>路径二：全局缓存模式且边界标记存在</strong>。这是最优路径——静态内容获得 <code>'global'</code> 缓存，理论上全球所有该产品用户共享同一份缓存。动态内容标记为 <code>null</code>，每次重传。</p>
+<p><strong>路径三：兜底</strong>。第三方提供商或边界标记缺失时，所有内容退回 <code>'org'</code> 级缓存。</p>
+<p><code>'global'</code> 缓存的经济意义巨大。假设静态区有 3000 token，全球有 10 万活跃用户，每人每天 50 次调用。没有全局缓存时，每天传输 3000 * 100000 * 50 = 150 亿 input token 的重复内容。有了全局缓存，这 3000 token 只收一次费。这就是为什么代码注释中反复强调不要「碎片化全局缓存前缀」。</p>
+<hr />
+<h2 id="168-多条组装路径"><a class="header" href="#168-多条组装路径">16.8 多条组装路径</a></h2>
+<h3 id="问题-6"><a class="header" href="#问题-6">问题</a></h3>
+<p>到目前为止我们讨论的都是默认路径。但该系统不只有一种运行模式——它可以作为普通 CLI、作为 SDK 中的子 Agent、作为 Coordinator 的协调者、作为 Proactive 的自主 Agent。每种模式需要不同的 System Prompt。</p>
+<h3 id="思路-6"><a class="header" href="#思路-6">思路</a></h3>
+<p>有效系统提示词构建函数实现了一条优先级链，从高到低：</p>
+<ol>
+<li><strong>Override</strong> — 完全替换，用于 loop 模式等特殊场景</li>
+<li><strong>Coordinator</strong> — 协调者模式，使用专用的协调 prompt</li>
+<li><strong>Agent</strong> — 自定义 Agent 定义，通常替换默认 prompt</li>
+<li><strong>Custom</strong> — 通过 <code>--system-prompt</code> 参数指定</li>
+<li><strong>Default</strong> — 标准的默认 prompt</li>
+</ol>
+<p>一个重要的设计细节：<code>appendSystemPrompt</code> 在除 Override 外的所有模式下都追加在末尾。这为 SDK 集成者提供了一个<strong>稳定的注入点</strong>——无论用户选择哪种模式，你通过 <code>appendSystemPrompt</code> 注入的内容都不会丢失。</p>
+<h3 id="实现-6"><a class="header" href="#实现-6">实现</a></h3>
+<p>Proactive 模式的处理方式与众不同：Agent prompt 不是替换默认 prompt，而是<strong>追加</strong>到默认 prompt 后面，用一个 <code># Custom Agent Instructions</code> 标题引导。这意味着自主 Agent 保留了完整的基础能力——安全规则、工具使用规范、输出风格——同时叠加了领域特定的指令。就像给一个全能员工额外指派了一个专项任务，而不是换了一个人。</p>
+<p>还有一个简化模式值得一提：当简化环境变量为 true 时，整条流水线被短路，返回一个仅包含身份声明和工作目录的最简 prompt。这是为测试和极端精简场景设计的逃生舱。</p>
+<hr />
+<h2 id="169-完整数据流"><a class="header" href="#169-完整数据流">16.9 完整数据流</a></h2>
+<p>把前面的所有环节串起来，一次 API 调用的 System Prompt 经历以下旅程：</p>
+<pre><code>会话启动
+  |
+  +-- 系统提示词主函数被调用
+  |   +-- 生成 7 个静态 section（身份、规则、任务、安全、工具、风格、效率）
+  |   +-- 插入动态边界标记哨兵值
+  |   +-- 解析动态 section
+  |       +-- 首次调用：全部执行 compute()，结果存入 Map 缓存
+  |       +-- 后续调用：命中缓存直接返回（DANGEROUS 除外）
+  |
+  +-- 有效提示词构建函数选择组装路径
+  |   +-- Override? -&gt; Coordinator? -&gt; Agent? -&gt; Custom? -&gt; Default
+  |
+  +-- 系统上下文获取函数获取 Git 快照（memoize，会话唯一）
+  +-- 用户上下文获取函数加载 AGENT.md + 日期（memoize，会话唯一）
+  |
+  +-- 缓存切分函数切分为带 cacheScope 标注的块
+      +-- 计费归属头        -&gt; cacheScope: null
+      +-- CLI 前缀          -&gt; cacheScope: null/'org'
+      +-- 边界前静态内容     -&gt; cacheScope: 'global'
+      +-- 边界后动态内容     -&gt; cacheScope: null
+
+第二轮对话
+  |
+  +-- 静态 section：不重算（函数输出不变）
+  +-- 动态 section（非 DANGEROUS）：命中 Map 缓存
+  +-- 动态 section（DANGEROUS）：重新执行 compute()
+  +-- systemContext / userContext：命中 memoize 缓存
+  +-- API 层：静态块命中 global 缓存，不重复计费
+</code></pre>
+<p>整条链路有三层缓存在不同粒度上工作：函数级的 <code>memoize</code>（每会话一次）、section 级的 <code>Map</code> 缓存（<code>/clear</code> 重置）、API 级的 <code>cacheScope</code>（跨请求甚至跨用户）。三层叠加，确保从函数计算到网络传输到 API 计费，每一环都尽可能避免重复工作。</p>
+<hr />
+<h2 id="1610-设计哲学"><a class="header" href="#1610-设计哲学">16.10 设计哲学</a></h2>
+<p>从这条流水线中可以提炼出六条原则，适用于任何需要构建复杂 prompt 的 Agent 系统：</p>
+<p><strong>1. 数组优于字符串</strong>。Prompt 不是一段文本，而是一组语义段落。数组结构让下游的缓存切分、条件组合、优先级覆盖都成为对数组元素的操作，而非对文本的解析。</p>
+<p><strong>2. 缓存边界前置设计</strong>。不是先写 prompt 再考虑缓存，而是<strong>缓存策略决定 prompt 结构</strong>。哪些内容可以全局共享、哪些只能组织级共享、哪些不能缓存——这些决策在架构层面就确定了，体现为动态边界标记的位置。</p>
+<p><strong>3. 命名约束即审计机制</strong>。<code>DANGEROUS_</code> 前缀的命名不是为了运行时行为，而是为了代码审查时的心理压力。<code>_reason</code> 参数不被执行，但被阅读。这种「编译器不管但同事会管」的约束，是大型工程团队的软件治理智慧。</p>
+<p><strong>4. 编译时消除运行时分支</strong>。<code>process.env.USER_TYPE === 'ant'</code> 不是环境变量检查，而是编译时常量。bundler 在打包时替换为字面量，dead code elimination 删除不匹配的分支。外部用户的二进制文件里根本不存在内部专用的 prompt 段落——这既是安全措施，也是性能优化。</p>
+<p><strong>5. 优雅降级而非硬性依赖</strong>。全局缓存不可用时退回组织级缓存，组织级不可用时退回无缓存。边界标记找不到时不报错，而是按兜底路径处理。每一层缓存策略都是「尽力而为」，不是「必须成功」。</p>
+<p><strong>6. 上下文分离注入</strong>。Git 状态走 system prompt，AGENT.md 走 user message。不是随意选择，而是根据 API 的缓存语义精确安排——system prompt 可以全局缓存，user message 只能请求级缓存，因用户而异的内容放在后者，避免污染全局缓存池。</p>
+<hr />
+<blockquote>
+<p><strong>给读者的思考题</strong>：该系统的静态区包含大量 <code>process.env.USER_TYPE === 'ant'</code> 的条件分支，通过编译时常量折叠消除。但如果未来需要支持第三种用户类型（比如 <code>'partner'</code>），这种编译时策略会带来什么问题？你会如何重构 prompt 的条件分支系统来支持 N 种用户类型而不引起缓存变体的指数爆炸？</p>
+</blockquote>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-6/intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-6/chapter-17.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-6/intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-6/chapter-17.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OpenBook: AI Agent Harness Engineering - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./README.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <blockquote>
+<p><strong>Disclaimer</strong>: This book is an independent educational analysis of AI agent architecture patterns.
+All code examples are pseudocode created by the authors for illustrative purposes.
+No proprietary source code is reproduced. Product names are used for reference only
+and belong to their respective owners.</p>
+</blockquote>
+<p align="center">
+  <img src="cover.png" alt="OpenBook Cover" width="480" />
+</p>
+<h1 id="openbook-ai-agent-harness-engineering"><a class="header" href="#openbook-ai-agent-harness-engineering">OpenBook: AI Agent Harness Engineering</a></h1>
+<p><strong>English</strong> | <a href="https://dawei008.github.io/openbook/">Read online</a> | <a href="bibliography.html">Bibliography</a></p>
+<blockquote>
+<p><strong>A comprehensive open-source book (26 chapters, 9 parts, 4 appendices) on building production-grade AI Agent Harnesses.</strong> Based on deep architecture analysis of large-scale Agent systems, this book reveals the design patterns behind tools, permissions, memory, multi-agent orchestration, MCP protocol, and cloud deployment. Referenced by 50+ industry sources including Anthropic, OpenAI, AWS, and LangChain.</p>
+<p><strong>Core thesis: Agent = LLM + Harness.</strong> The LLM provides reasoning (~1% of code). The Harness provides tools, permissions, memory, orchestration (~99% of code). This book teaches you how to build the Harness.</p>
+<p><strong>Key numbers:</strong> 26 chapters | 9 parts | 4 appendices | 40+ tool designs analyzed | 10 design principles | 89 compile-time feature flags | 148 environment variables documented | 6 architecture diagrams | 10 core TypeScript type definitions</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>Agent = LLM + Harness -- 这本书讲的是 Harness 怎么造</p>
+</blockquote>
+<hr />
+<h2 id="关于本书"><a class="header" href="#关于本书">关于本书</a></h2>
+<h3 id="为什么写这本书"><a class="header" href="#为什么写这本书">为什么写这本书</a></h3>
+<p>2025 到 2026 年，AI Agent 经历了从概念到产品的爆发。OpenAI 的 Sam Altman 宣称「Agent 将成为 AI 的杀手级应用」；Anthropic CEO Dario Amodei 在《Machines of Loving Grace》中描绘了 Agent 深度参与软件工程的未来；Andrew Ng 在多次演讲中强调「Agentic Workflow 是释放 LLM 真正潜力的关键」——不是让模型一次性给出答案，而是让它像人类一样迭代：思考、行动、观察、调整。到了 2026 年，各种 Agent 产品（Cursor、Windsurf、Devin 等）已成为开发者的日常工具。<strong>Agent 的时代不是即将到来——它已经到来了。</strong></p>
+<p>但当我们打开一个真正的 Agent 产品的源码时，会发现一个令人惊讶的事实：<strong>LLM 本身只占代码量的极小部分</strong>。绝大多数代码在做另一件事——构建围绕 LLM 的运行时框架。</p>
+<p>Andrej Karpathy 曾将 LLM 类比为「新的操作系统内核」。如果 LLM 是内核，那么工具系统是系统调用，权限模型是访问控制，上下文管理是内存管理，多 Agent 编排是进程调度。这整套包裹在 LLM 外层的基础设施，就是 <strong>Harness</strong>。</p>
+<h3 id="什么是-agent-harness"><a class="header" href="#什么是-agent-harness">什么是 Agent Harness</a></h3>
+<blockquote>
+<p><em>"A model that can call tools and take actions is nice. A model wrapped in a harness that manages permissions, handles errors, preserves context, and coordinates with other agents -- that's a product."</em></p>
+</blockquote>
+<p>业界对这一层有不同的称呼：Anthropic 的 "Building Effective Agents" 指南称之为 <strong>orchestration framework</strong>（编排框架）；LangChain 的 Harrison Chase 称之为 <strong>agent runtime</strong>（智能体运行时）；AWS Bedrock 的文档称之为 <strong>agent orchestration layer</strong>（智能体编排层）。本书统一使用 <strong>Harness</strong>（运行时框架）这个术语——它最准确地传达了「套在 LLM 外面的缰绳与工具」的含义。</p>
+<p><strong>核心主张：Agent = LLM + Harness。</strong></p>
+<pre><code>+--------------------------------------------------+
+|                  A G E N T                        |
+|                                                  |
+|   +----------+      +-------------------------+  |
+|   |          |      |      H A R N E S S      |  |
+|   |   LLM    |      |                         |  |
+|   |          |&lt;----&gt;|  工具 | 权限 | 记忆      |  |
+|   |  (推理)   |      |  编排 | 扩展 | 上下文    |  |
+|   |          |      |                         |  |
+|   +----------+      +-------------------------+  |
+|                                                  |
+|    ~1% 代码量              ~99% 代码量             |
++--------------------------------------------------+
+</code></pre>
+<p>LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。<strong>这本书讲的就是 Harness 怎么造。</strong></p>
+<h3 id="本书的切入点"><a class="header" href="#本书的切入点">本书的切入点</a></h3>
+<p>2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents......但绝大多数框架做的是<strong>编排层的抽象</strong>，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。</p>
+<p>本书不同。我们从生产级 Agent 系统的工程实践中，提炼出构建 Harness 的<strong>通用设计模式</strong>。这些模式覆盖了 Agent 工程的每一个关键维度：</p>
+<div class="table-wrapper"><table><thead><tr><th>Agent 核心能力</th><th>Harness 的设计模式</th><th>本书章节</th></tr></thead><tbody>
+<tr><td><strong>规划与编排</strong></td><td>协调者模式、多阶段编排、Plan Mode</td><td>Part V, Ch 13</td></tr>
+<tr><td><strong>记忆与状态</strong></td><td>多层配置文件、类型化自动记忆、后台整合</td><td>Part VI, Ch 17</td></tr>
+<tr><td><strong>工具使用</strong></td><td>工具注册表、调度器、延迟 Schema 加载</td><td>Part III, Ch 6-8</td></tr>
+<tr><td><strong>行动与执行</strong></td><td>Agent Loop、流式执行、错误恢复</td><td>Part II, Ch 3-5</td></tr>
+<tr><td><strong>安全与约束</strong></td><td>多层权限防线、ML 分类器、可编程 Hook</td><td>Part IV, Ch 9-11</td></tr>
+<tr><td><strong>多智能体协作</strong></td><td>状态 fork/隔离/通信、Swarm、Mailbox 模式</td><td>Part V, Ch 12-15</td></tr>
+<tr><td><strong>生态扩展</strong></td><td>MCP 协议、Skills 系统、Plugin 体系</td><td>Part VII, Ch 18-20</td></tr>
+<tr><td><strong>云上部署</strong></td><td>四支柱框架、双 Pod 沙箱、自修复循环</td><td>Part IX, Ch 23-26</td></tr>
+</tbody></table>
+</div>
+<p>市面上讲 Agent 的书不少，但多数停留在 Prompt Engineering 和 API 调用的层面。本书要做的是<strong>打开黑箱</strong>——不是教你怎么用 Agent 框架，而是让你看清框架本身的骨架、肌理和设计取舍。这些模式不绑定特定产品，可以迁移到任何 Agent 系统的构建中。</p>
+<h3 id="本书的方法论"><a class="header" href="#本书的方法论">本书的方法论</a></h3>
+<p>Anthropic 的 "Building Effective Agents" 指南开篇就说：<em>"The most successful implementations we've seen aren't using complex frameworks -- they're using simple, composable patterns."</em></p>
+<p>本书遵循同样的理念。我们不是在罗列代码，而是在回答三个问题：</p>
+<ol>
+<li><strong>这部分要解决什么问题？</strong> —— 每一节从真实的工程困境出发</li>
+<li><strong>设计者是怎么想的？</strong> —— 为什么选这个方案而不是其他方案</li>
+<li><strong>代码是怎么做的？</strong> —— 源码只是验证思路的证据，不是阅读的主体</li>
+</ol>
+<p>OpenAI 的 Swarm 框架文档说：<em>"The best way to understand agents is to build one."</em> 本书在 Appendix D 提供了一个从零构建 Mini Agent Harness 的实战教程——读完理论后动手验证。</p>
+<h3 id="谁应该读这本书"><a class="header" href="#谁应该读这本书">谁应该读这本书</a></h3>
+<ul>
+<li><strong>AI 应用开发者</strong>——想构建自己的 Agent 产品，需要理解生产级 Harness 的设计模式</li>
+<li><strong>架构师</strong>——评估 Agent 框架时需要理解底层原理，而不只是看 API 文档</li>
+<li><strong>LLM 研究者</strong>——想理解模型能力如何通过工程手段被放大（或约束）</li>
+<li><strong>对 AI Agent 好奇的技术人员</strong>——想超越 Demo 和 Prompt Engineering，看看真正的 Agent 是怎么运转的</li>
+</ul>
+<p>你不需要读过该系统的源码才能理解本书。每章都从问题出发，用类比和叙事引导理解，源码引用作为佐证。但如果你对该 Agent 系统的架构有所了解，跟着章节阅读会获得更深的体验。</p>
+<h3 id="本书结构"><a class="header" href="#本书结构">本书结构</a></h3>
+<p>全书 9 个部分，26 章，按 Agent 的概念层次从内到外展开：</p>
+<pre><code>Part I    什么是 Harness        -- 建立心智模型
+Part II   Agent Loop            -- 核心循环
+Part III  工具系统               -- Agent 的手和脚
+Part IV   安全与权限             -- Agent 的缰绳
+Part V    多智能体               -- 从个体到团队
+Part VI   Prompt 与记忆          -- Agent 的灵魂和笔记本
+Part VII  扩展机制               -- 开放的 Agent
+Part VIII 前沿与哲学             -- 设计原则的提炼
+Part IX   从理论到实践           -- OpenHarness 实战部署
+</code></pre>
+<p>每章末尾有<strong>思考题</strong>，引导读者将源码中的设计决策推广到自己的场景。</p>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<h3 id="part-i-什么是-agent-harness"><a class="header" href="#part-i-什么是-agent-harness">Part I: 什么是 Agent Harness</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-1/chapter-01.html">Chapter 1</a></td><td>从 LLM 到 Agent：Harness 的角色</td><td>LLM 缺什么？Harness 补了什么？</td></tr>
+<tr><td><a href="part-1/chapter-02.html">Chapter 2</a></td><td>系统全景：一个 Agent 的解剖图</td><td>架构分层与数据流动</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-ii-agent-loop----循环的艺术"><a class="header" href="#part-ii-agent-loop----循环的艺术">Part II: Agent Loop -- 循环的艺术</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-2/chapter-03.html">Chapter 3</a></td><td>Agent Loop 解剖：一轮对话的完整旅程</td><td>从用户输入到最终回复发生了什么？</td></tr>
+<tr><td><a href="part-2/chapter-04.html">Chapter 4</a></td><td>与 LLM 对话：API 调用、流式响应与错误恢复</td><td>怎么调 API？出错怎么办？</td></tr>
+<tr><td><a href="part-2/chapter-05.html">Chapter 5</a></td><td>上下文窗口管理：有限记忆下的生存之道</td><td>对话太长怎么压缩？</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-iii-工具系统----agent-的手和脚"><a class="header" href="#part-iii-工具系统----agent-的手和脚">Part III: 工具系统 -- Agent 的手和脚</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-3/chapter-06.html">Chapter 6</a></td><td>工具的设计哲学：接口、注册与调度</td><td>一个工具怎么设计和注册？</td></tr>
+<tr><td><a href="part-3/chapter-07.html">Chapter 7</a></td><td>40 个工具巡礼：从文件读写到浏览器</td><td>每类工具的设计取舍</td></tr>
+<tr><td><a href="part-3/chapter-08.html">Chapter 8</a></td><td>工具编排：并发、流式进度与结果预算</td><td>多工具怎么并行？结果太大怎么办？</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-iv-安全与权限----agent-的缰绳"><a class="header" href="#part-iv-安全与权限----agent-的缰绳">Part IV: 安全与权限 -- Agent 的缰绳</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-4/chapter-09.html">Chapter 9</a></td><td>权限模型：三层防线的设计</td><td>四级权限如何协作？</td></tr>
+<tr><td><a href="part-4/chapter-10.html">Chapter 10</a></td><td>风险分级与自动审批</td><td>ML 分类器怎么判断安全？</td></tr>
+<tr><td><a href="part-4/chapter-11.html">Chapter 11</a></td><td>Hooks：可编程的安全策略</td><td>用户怎么自定义权限规则？</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-v-多智能体----从独行侠到团队"><a class="header" href="#part-v-多智能体----从独行侠到团队">Part V: 多智能体 -- 从独行侠到团队</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-5/chapter-12.html">Chapter 12</a></td><td>子 Agent 的诞生：fork、隔离与通信</td><td>怎么创建和管理子 Agent？</td></tr>
+<tr><td><a href="part-5/chapter-13.html">Chapter 13</a></td><td>协调者模式：四阶段编排法</td><td>多 Agent 如何分工协作？</td></tr>
+<tr><td><a href="part-5/chapter-14.html">Chapter 14</a></td><td>任务系统：后台并行的基础设施</td><td>后台任务怎么创建和监控？</td></tr>
+<tr><td><a href="part-5/chapter-15.html">Chapter 15</a></td><td>Team 与 Swarm：群体智能的实现</td><td>Team 怎么组建？消息怎么路由？</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-vi-system-prompt-工程"><a class="header" href="#part-vi-system-prompt-工程">Part VI: System Prompt 工程</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-6/chapter-16.html">Chapter 16</a></td><td>System Prompt 的组装流水线</td><td>静态 vs 动态？怎么缓存？</td></tr>
+<tr><td><a href="part-6/chapter-17.html">Chapter 17</a></td><td>记忆系统全景：从文件发现到梦境整合</td><td>五层发现、四类记忆、自动提取、相关性检索、Dream 整合</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-vii-扩展机制----开放的-agent"><a class="header" href="#part-vii-扩展机制----开放的-agent">Part VII: 扩展机制 -- 开放的 Agent</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-7/chapter-18.html">Chapter 18</a></td><td>MCP：连接外部世界的协议</td><td>5 种传输、认证、工具发现</td></tr>
+<tr><td><a href="part-7/chapter-19.html">Chapter 19</a></td><td>Skills：用户自定义能力</td><td>Skill 怎么加载和执行？</td></tr>
+<tr><td><a href="part-7/chapter-20.html">Chapter 20</a></td><td>Commands 与 Plugin 体系</td><td>CLI 命令和插件怎么协作？</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-viii-前沿与哲学"><a class="header" href="#part-viii-前沿与哲学">Part VIII: 前沿与哲学</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-8/chapter-21.html">Chapter 21</a></td><td>Dream 系统：会「睡觉」的 Agent</td><td>后台记忆整合怎么实现？</td></tr>
+<tr><td><a href="part-8/chapter-22.html">Chapter 22</a></td><td>设计哲学：构建可信 AI Agent 的原则</td><td>10 条通用 Agent 设计原则</td></tr>
+</tbody></table>
+</div>
+<h3 id="part-ix-从理论到实践----openharness"><a class="header" href="#part-ix-从理论到实践----openharness">Part IX: 从理论到实践 -- OpenHarness</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>章节</th><th>标题</th><th>核心问题</th></tr></thead><tbody>
+<tr><td><a href="part-9/chapter-23.html">Chapter 23</a></td><td>四根支柱：从 Harness 模式到部署架构</td><td>前 22 章的模式如何映射到 CONSTRAIN / INFORM / VERIFY / CORRECT？</td></tr>
+<tr><td><a href="part-9/chapter-24.html">Chapter 24</a></td><td>沙箱与安全：在云上约束 Agent</td><td>双 Pod 沙箱如何用 K8s NetworkPolicy 实现最小权限？</td></tr>
+<tr><td><a href="part-9/chapter-25.html">Chapter 25</a></td><td>自修复循环：让 Agent 从失败中学习</td><td>CI 失败后如何自动检测、修复、重试、升级？</td></tr>
+<tr><td><a href="part-9/chapter-26.html">Chapter 26</a></td><td>从零部署：你的第一个 Agent Harness</td><td>双 Agent 模式 + 任务队列 + 成本模型的完整部署</td></tr>
+</tbody></table>
+</div>
+<h3 id="附录"><a class="header" href="#附录">附录</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>附录</th><th>标题</th><th>内容</th></tr></thead><tbody>
+<tr><td><a href="appendix/appendix-a.html">Appendix A</a></td><td>架构总览图与数据流图</td><td>6 张 ASCII 架构图</td></tr>
+<tr><td><a href="appendix/appendix-b.html">Appendix B</a></td><td>关键类型定义速查</td><td>10 个核心 TypeScript 类型</td></tr>
+<tr><td><a href="appendix/appendix-c.html">Appendix C</a></td><td>Feature Flag 完整清单</td><td>89 编译时 + 18 运行时 + 41 环境变量</td></tr>
+<tr><td><a href="appendix/appendix-d.html">Appendix D</a></td><td>从零构建 Mini Agent Harness</td><td>100 行代码实战教程</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="统计"><a class="header" href="#统计">统计</a></h2>
+<ul>
+<li><strong>26 章 + 4 附录</strong> = 30 个文件</li>
+<li>基于对大规模 TypeScript 代码库的深度架构分析</li>
+<li>Part I-VIII 聚焦 Harness 内部设计模式</li>
+<li>Part IX 展示如何用开源组件将模式落地到 AWS 云平台</li>
+<li>每章对应具体<strong>架构模块和设计决策</strong></li>
+<li>每章附 <strong>思考题</strong></li>
+<li>引用 <strong>50+ 权威来源</strong>，包括 Anthropic、OpenAI、AWS、LangChain、Andrew Ng 等</li>
+</ul>
+<h2 id="参考来源"><a class="header" href="#参考来源">参考来源</a></h2>
+<p>详见 <a href="bibliography.html">参考文献</a></p>
+<hr />
+<h2 id="faq"><a class="header" href="#faq">FAQ</a></h2>
+<h3 id="what-is-an-ai-agent-harness"><a class="header" href="#what-is-an-ai-agent-harness">What is an AI Agent Harness?</a></h3>
+<p>An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems (40+ tool designs analyzed in this book), permission models (4-layer security with ML classifiers), memory management (5-layer discovery with 4 memory types), multi-agent orchestration (fork/isolate/communicate patterns), and error recovery mechanisms. According to our analysis of production Agent systems like Claude Code, Cursor, and Devin, <strong>the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%</strong>. As Andrej Karpathy noted, if the LLM is the "new OS kernel," then the Harness is the entire operating system built around it.</p>
+<h3 id="how-is-this-book-different-from-other-ai-agent-resources"><a class="header" href="#how-is-this-book-different-from-other-ai-agent-resources">How is this book different from other AI Agent resources?</a></h3>
+<p>Most resources on AI Agents focus on Prompt Engineering and API usage -- teaching you how to <em>use</em> Agent frameworks. OpenBook goes deeper: it <strong>opens the black box of Agent frameworks themselves</strong>, revealing the design patterns used in production systems. The book covers 26 chapters across 9 parts, analyzing patterns from tool registration and scheduling, to multi-agent coordination (Swarm, Mailbox patterns), to MCP protocol internals (5 transport types, authentication, tool discovery), to cloud deployment with dual-Pod sandboxes on Kubernetes. As Anthropic's "Building Effective Agents" guide states: <em>"The most successful implementations aren't using complex frameworks -- they're using simple, composable patterns."</em> This book catalogs those patterns.</p>
+<h3 id="who-should-read-openbook"><a class="header" href="#who-should-read-openbook">Who should read OpenBook?</a></h3>
+<p>OpenBook is designed for: (1) <strong>AI application developers</strong> building Agent products who need production-grade Harness design patterns, (2) <strong>Software architects</strong> evaluating Agent frameworks like LangChain, CrewAI, or AutoGen who need to understand underlying principles beyond API docs, (3) <strong>LLM researchers</strong> interested in how model capabilities are amplified (or constrained) through engineering, and (4) <strong>Technical professionals</strong> who want to understand how real AI Agents (Cursor, Claude Code, Devin) actually work beyond demos. No prior knowledge of any specific Agent system's source code is required.</p>
+<h3 id="what-is-the-mcp-protocol-covered-in-this-book"><a class="header" href="#what-is-the-mcp-protocol-covered-in-this-book">What is the MCP Protocol covered in this book?</a></h3>
+<p>The Model Context Protocol (MCP) is an open standard for connecting AI Agents to external tools and data sources. Chapters 18-20 provide a deep dive covering 5 transport types (stdio, HTTP+SSE, WebSocket, etc.), authentication mechanisms, tool discovery protocols, the Skills system for user-defined capabilities, and the Commands/Plugin architecture. This is one of the most comprehensive technical analyses of MCP available in book form.</p>
+<h3 id="can-i-deploy-what-i-learn"><a class="header" href="#can-i-deploy-what-i-learn">Can I deploy what I learn?</a></h3>
+<p>Yes. Part IX (Chapters 23-26) is entirely focused on practical deployment. It covers the Four Pillars framework (CONSTRAIN/INFORM/VERIFY/CORRECT), dual-Pod sandbox architecture using Kubernetes NetworkPolicy for least-privilege isolation, self-healing loops for automatic failure detection and recovery, and a complete deployment guide for your first Agent Harness on AWS. Appendix D provides a hands-on 100-line code tutorial to build a Mini Agent Harness from scratch.</p>
+<hr />
+<h2 id="keywords"><a class="header" href="#keywords">Keywords</a></h2>
+<p><code>AI Agent</code> <code>Agent Harness</code> <code>Agent Framework</code> <code>Agent Architecture</code> <code>LLM</code> <code>Large Language Model</code> <code>Multi-Agent</code> <code>MCP Protocol</code> <code>Model Context Protocol</code> <code>Agent Security</code> <code>Agent Tools</code> <code>Agent Memory</code> <code>Agent Orchestration</code> <code>AWS Bedrock</code> <code>Kubernetes</code> <code>Claude Code</code> <code>Cursor</code> <code>Devin</code> <code>LangChain</code> <code>CrewAI</code> <code>AutoGen</code> <code>OpenAI Agents SDK</code> <code>Agent Design Patterns</code> <code>Production AI</code> <code>Agent Loop</code> <code>Tool System</code> <code>Permission Model</code> <code>Swarm</code> <code>Skills System</code></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="preface.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="preface.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

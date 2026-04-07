@@ -1,0 +1,505 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 8: Tool Orchestration - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-3/chapter-08.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-8-工具编排----并发流式进度与结果预算"><a class="header" href="#chapter-8-工具编排----并发流式进度与结果预算">Chapter 8: 工具编排 -- 并发、流式进度与结果预算</a></h1>
+<blockquote>
+<p>LLM 一次可能输出多个 tool_use block。三个文件读取、一条 shell 命令、一次搜索 -- 五个工具调用同时到来。哪些可以并行？执行中怎么报告进度？结果太大怎么控制？</p>
+</blockquote>
+<pre><code>┌─────────────── Harness ───────────────┐
+│                                       │
+│   Agent Loop ──▶ API ──▶ LLM         │
+│       │                               │
+│       ▼                               │
+│   ★ 工具编排层 ★ ◀── 本章在这里        │
+│   ┌──────────────────────────┐       │
+│   │ 并发调度  StreamingToolExec│       │
+│   │ 进度转发  Promise.race    │       │
+│   │ 结果预算  两层防线         │       │
+│   └──────┬───────────────────┘       │
+│          ▼                            │
+│   [ Tool1 ][ Tool2 ][ Tool3 ]       │
+│                                       │
+└───────────────────────────────────────┘
+本章聚焦：多工具并发调度、进度转发与结果预算控制
+</code></pre>
+<h2 id="81-并发执行的状态机"><a class="header" href="#81-并发执行的状态机">8.1 并发执行的状态机</a></h2>
+<p><strong>问题：工具并发执行需要一个怎样的调度器？</strong></p>
+<p>最朴素的方案是 <code>Promise.all</code> -- 把所有工具调用包装成 Promise，并行等待。但这忽略了三个现实：（1）不是所有工具都能并行；（2）一个工具出错可能需要取消其他工具；（3）长时间运行的工具需要实时报告进度。</p>
+<p>StreamingToolExecutor 解决了这三个问题。它的核心是一个四状态的状态机：</p>
+<pre><code>queued -&gt; executing -&gt; completed -&gt; yielded
+</code></pre>
+<p><code>queued</code> 是工具入队后的初始状态。<code>executing</code> 表示执行方法已被调用，Promise 正在运行。<code>completed</code> 表示 Promise 已 resolve，结果已收集。<code>yielded</code> 表示结果已被外部消费，这是终态。</p>
+<p>四个状态比通常的"未开始/进行中/完成"多了一个 <code>yielded</code>。为什么？因为并发工具可能乱序完成，但结果必须按入队顺序交给外层。一个工具虽然 <code>completed</code> 了，但如果前面还有未完成的非并发工具，它的结果暂时不能 yield -- 这个时间差需要一个状态来表达。</p>
+<h3 id="并发判断七行代码的精确规则"><a class="header" href="#并发判断七行代码的精确规则">并发判断：七行代码的精确规则</a></h3>
+<p>调度器的核心判断，仅七行：</p>
+<pre><code class="language-pseudocode">// 并发执行判断（概念示意）
+function canExecuteTool(isConcurrencySafe):
+  executingTools = tools.filter(t -&gt; t.status == 'executing')
+  return (
+    executingTools.length == 0
+    or (isConcurrencySafe and executingTools.every(t -&gt; t.isConcurrencySafe))
+  )
+</code></pre>
+<p>规则翻译成自然语言：如果没有工具在执行，任何工具都可以开始；如果有工具在执行，新工具只有在<strong>自己</strong>和<strong>所有正在执行的工具</strong>都是并发安全的情况下才能开始。非并发安全的工具必须独占执行。</p>
+<p>这是一个"对称的全局检查" -- 不是"我是否安全"，而是"当前环境是否全部安全"。单方面的并发安全声明不够，必须所有参与者一致才能并行。</p>
+<h3 id="队列扫描中的-break-语义"><a class="header" href="#队列扫描中的-break-语义">队列扫描中的 break 语义</a></h3>
+<p>队列处理函数驱动调度：</p>
+<pre><code class="language-pseudocode">// 队列扫描（概念示意）
+function processQueue():
+  for tool in tools:
+    if tool.status != 'queued': continue
+    if canExecuteTool(tool.isConcurrencySafe):
+      await executeTool(tool)
+    else:
+      if not tool.isConcurrencySafe: break  // &lt;-- 关键
+</code></pre>
+<p>注意 <code>break</code> 的条件：遇到一个<strong>非并发安全</strong>的排队工具时，停止扫描。这保证了非并发工具之间的顺序执行。但并发安全的工具不触发 break -- 它们可以"跳过"前面阻塞的非并发工具继续尝试启动（虽然在实践中，如果有非并发工具正在执行，并发判断函数会返回 false）。</p>
+<h3 id="一个具体的调度场景"><a class="header" href="#一个具体的调度场景">一个具体的调度场景</a></h3>
+<p>假设模型一次输出五个 tool_use：</p>
+<pre><code>[Read(a.ts), Read(b.ts), Bash(npm test), Edit(c.ts), Read(d.ts)]
+</code></pre>
+<p>执行流程如下。Read(a.ts) 入队，队列为空，立即执行。Read(b.ts) 入队，a.ts 正在执行且并发安全，自身也并发安全，立即执行。Bash(npm test) 入队，<code>npm test</code> 不是只读命令，<code>isConcurrencySafe</code> 为 false。当前有并发安全工具在执行，并发判断返回 false，排队等待。Edit(c.ts) 入队，非并发安全，排队。队列扫描在 Bash 处 break，Read(d.ts) 暂不被考虑。</p>
+<p>a.ts 和 b.ts 完成后，队列重新扫描。Bash 现在可以执行（没有其他工具在运行）。Bash 完成后，Edit 执行。Edit 完成后，Read(d.ts) 执行。</p>
+<p>写操作保持顺序性，读操作最大化并行度。这就是这七行代码的工程价值。</p>
+<h3 id="并发安全性的判定时机"><a class="header" href="#并发安全性的判定时机">并发安全性的判定时机</a></h3>
+<p>一个容易忽略的细节：并发安全性在工具<strong>入队</strong>时就确定了，不是在执行时。</p>
+<pre><code class="language-pseudocode">// 入队时确定并发安全性（概念示意）
+parsedInput = toolDefinition.inputSchema.safeParse(block.input)
+isConcurrencySafe = parsedInput?.success
+  ? try { Boolean(toolDefinition.isConcurrencySafe(parsedInput.data)) }
+    catch { false }
+  : false
+</code></pre>
+<p>原因是队列调度需要提前知道才能规划。如果等到执行时才判断，调度器就无法在入队阶段做出正确的排队决策。此外，输入解析失败的工具被视为非并发安全（保守策略），异常也被捕获 -- 判断函数抛出时视为不安全。</p>
+<h2 id="82-兄弟取消与三层-abortcontroller"><a class="header" href="#82-兄弟取消与三层-abortcontroller">8.2 兄弟取消与三层 AbortController</a></h2>
+<p><strong>问题：并发执行的工具中，一个出错了，其他正在运行的工具怎么办？</strong></p>
+<p>这个问题的答案取决于"谁出了错"。一个 Read 失败（文件不存在）通常不影响同批的其他操作。但一个 Bash 命令失败（<code>mkdir</code> 报错）经常意味着后续命令也没有意义了。</p>
+<p>StreamingToolExecutor 用三层嵌套的 AbortController 精确控制取消粒度：</p>
+<p><strong>最外层</strong>：绑定到整个 query 的生命周期。用户按 Escape 或系统级取消时触发。</p>
+<p><strong>中间层</strong>：兄弟取消控制器，由构造函数创建为最外层的子 controller。一个 Bash 错误会 abort 这一层，所有兄弟工具的子进程收到信号。</p>
+<p><strong>最内层</strong>：每个工具独立的取消控制器，是中间层的子 controller。单个工具的权限拒绝或超时只影响自己。</p>
+<p>取消触发的逻辑：</p>
+<pre><code class="language-pseudocode">// 兄弟取消触发（概念示意）
+if tool.name == BASH_TOOL:
+  this.hasErrored = true
+  this.erroredToolDescription = getToolDescription(tool)
+  this.siblingAbortController.abort('sibling_error')
+</code></pre>
+<p>只有 Bash 错误触发兄弟取消，Read、WebFetch 等工具的错误不会。理由很直接：Bash 命令经常有隐式依赖链（<code>mkdir</code> 失败后续命令就没意义了），而读操作彼此独立。</p>
+<p>关键的架构约束：中间层的 abort <strong>不会</strong>冒泡到最外层 -- query 循环继续运行。被取消的兄弟工具需要生成合成错误消息，因为 Anthropic API 要求每个 <code>tool_use</code> 都有对应的 <code>tool_result</code>。合成消息根据取消原因定制：兄弟错误、用户中断、streaming fallback 三种情况分别生成不同的错误文本，帮助模型理解发生了什么并决定下一步。</p>
+<h2 id="83-流式进度----不阻塞的实时反馈"><a class="header" href="#83-流式进度----不阻塞的实时反馈">8.3 流式进度 -- 不阻塞的实时反馈</a></h2>
+<p><strong>问题：当 Bash 编译一个大项目需要 30 秒时，用户盯着空白屏幕等待是不可接受的。怎么在工具执行过程中实时展示进度？</strong></p>
+<p>进度系统的设计要解决一个解耦问题：进度的<strong>产生</strong>（工具内部）和进度的<strong>消费</strong>（UI 层）不应该直接耦合。</p>
+<p>产生端很直接：工具的执行方法通过 <code>onProgress</code> 回调发射进度事件。BashTool 发射 Bash 进度（包含 stdout/stderr 片段），AgentTool 发射 Agent 进度（包含子 Agent 状态）。</p>
+<p>消费端的巧妙之处在 StreamingToolExecutor 中。进度消息不进入最终结果数组（那里存放最终结果，需要按入队顺序 yield），而是进入待处理进度数组，并且<strong>立即</strong>唤醒等待者：</p>
+<pre><code class="language-pseudocode">// 进度即时转发（概念示意）
+if update.message.type == 'progress':
+  tool.pendingProgress.append(update.message)
+  if this.progressAvailableResolve:
+    this.progressAvailableResolve()
+    this.progressAvailableResolve = undefined
+</code></pre>
+<p>在结果获取方法中，进度消息无视工具的完成顺序和并发安全性，总是立即被 yield：</p>
+<pre><code class="language-pseudocode">// 进度无视顺序限制（概念示意）
+while tool.pendingProgress.length &gt; 0:
+  progressMessage = tool.pendingProgress.shift()
+  yield { message: progressMessage, newContext: toolUseContext }
+</code></pre>
+<p>最终的等待策略用 <code>Promise.race</code> 同时等待两件事：任何一个工具完成，<strong>或者</strong>任何进度可用。</p>
+<pre><code class="language-pseudocode">// 双通道等待（概念示意）
+progressPromise = new Promise(resolve -&gt;
+  this.progressAvailableResolve = resolve
+)
+if executingPromises.length &gt; 0:
+  await Promise.race([...executingPromises, progressPromise])
+</code></pre>
+<p>这样既不会因为一个慢工具而阻塞进度更新，也不会因为频繁的进度轮询而浪费 CPU。<code>Promise.race</code> 是事件驱动的 -- 无事发生时零开销，有进度时立即响应。</p>
+<h2 id="84-结果预算----两层防线"><a class="header" href="#84-结果预算----两层防线">8.4 结果预算 -- 两层防线</a></h2>
+<p><strong>问题：工具返回了一个 500KB 的日志文件、一次全文搜索的 10 万行结果。这些数据不能直接塞进下一轮 API 请求 -- context 会爆掉，费用也不可控。怎么办？</strong></p>
+<p>系统用两层防线解决这个问题。类比来说：第一层是"个人限额"，第二层是"团队预算"。</p>
+<h3 id="第一层单工具持久化"><a class="header" href="#第一层单工具持久化">第一层：单工具持久化</a></h3>
+<p>结果持久化函数检查每个工具的结果大小。阈值计算遵循三级优先：</p>
+<ol>
+<li>远程动态配置（远程可调，无需部署）</li>
+<li>工具声明的 <code>maxResultSizeChars</code>（每个工具自己定义）</li>
+<li>全局默认值 50,000 字符</li>
+</ol>
+<p><code>Infinity</code> 享有特殊豁免 -- 连远程配置都不能覆盖它。FileReadTool 设置 <code>Infinity</code>，意味着即使远程配置错误地把它的阈值调低，也不会触发持久化循环。</p>
+<p>超过阈值的结果被写入磁盘文件，模型收到的是一个约 2KB 的预览，包含文件路径和头部内容。模型如果需要完整数据，可以用 Read 工具去读那个文件。</p>
+<h3 id="第二层消息级聚合预算"><a class="header" href="#第二层消息级聚合预算">第二层：消息级聚合预算</a></h3>
+<p>第一层解决了单个工具的超大结果。但当 10 个并行 Bash 命令各自返回接近阈值的 40K 字符时，单条用户消息的总大小达到 400K -- 远超合理范围。这就是第二层防线的用武之地。</p>
+<p>聚合预算函数在<strong>消息级别</strong>（不是全局级别）评估预算。默认限额 200,000 字符。</p>
+<p>核心算法的策略是贪心选择：</p>
+<pre><code class="language-pseudocode">// 贪心替换最大结果（概念示意）
+function selectFreshToReplace(fresh, frozenSize, limit):
+  sorted = fresh.sortBy(size, descending)
+  selected = []
+  remaining = frozenSize + fresh.sum(c -&gt; c.size)
+  for candidate in sorted:
+    if remaining &lt;= limit: break
+    selected.append(candidate)
+    remaining -= candidate.size
+  return selected
+</code></pre>
+<p>按大小降序排列，贪心地替换最大的结果，直到总大小降到预算以内。为什么这是最优策略？因为替换一个 200K 的结果（模型可以用 Read 取回）比替换十个 20K 的结果（模型需要十次 Read）更高效 -- 减少了后续的工具调用次数。</p>
+<h2 id="85-预算状态的不可变性----为-prompt-cache-而设计"><a class="header" href="#85-预算状态的不可变性----为-prompt-cache-而设计">8.5 预算状态的不可变性 -- 为 prompt cache 而设计</a></h2>
+<p><strong>问题：预算决策跨多个 turn 累积。如果第 10 轮突然替换了第 3 轮的某个工具结果，会发生什么？</strong></p>
+<p>答案是：prompt cache 全部失效。Anthropic API 的 prompt cache 是 prefix-matching 的 -- 只要之前的 turn 内容不变，cache 就有效。如果预算系统回头修改了早期 turn 的内容，该 turn 之后的所有 cache 都会失效。</p>
+<p>这就是内容替换状态存在的原因：</p>
+<pre><code class="language-pseudocode">// 内容替换状态（概念示意）
+ContentReplacementState = {
+  seenIds: Set&lt;String&gt;           // 已见过的工具调用 ID
+  replacements: Map&lt;String, String&gt;  // 已替换的工具调用 -&gt; 替换内容
+}
+</code></pre>
+<p>每个 <code>tool_use_id</code> 一旦被"看见"，它的命运就被冻结了。分区函数把候选结果分成三类：</p>
+<p><strong>mustReapply</strong> -- 之前替换过的。每次 API 调用都重新应用<strong>完全相同</strong>的替换字符串，保证字节级一致。这是纯 Map 查找，零 I/O，不可能失败。</p>
+<p><strong>frozen</strong> -- 之前看过但<strong>没有</strong>替换的。永远不会被替换 -- 因为模型已经看到了完整内容，后续替换会改变 prompt prefix。</p>
+<p><strong>fresh</strong> -- 首次出现的。这些候选结果参与新的预算决策。</p>
+<p>只有 fresh 类参与新决策。mustReapply 和 frozen 的命运在它们首次被看见时就已经确定了，此后不可更改。对话越长，冻结的决策越多，系统越稳定 -- 不会因为对话变长而改变早期的替换行为。</p>
+<h3 id="消息分组的对齐"><a class="header" href="#消息分组的对齐">消息分组的对齐</a></h3>
+<p>预算是按<strong>API 级消息</strong>评估的，而消息标准化函数会把连续的多个 user message 合并为一个。候选收集函数模拟了这个合并逻辑：只有 assistant 消息才创建分组边界，progress、attachment、system 消息不算。</p>
+<p>设计详细解释了为什么这很重要：如果预算系统在 progress 消息处切割分组，本该在同一条 API 消息中的工具结果会被拆成多组。每组各自在预算以内，但合并后超出 -- 预算形同虚设。分组逻辑必须与序列化逻辑完全对齐。</p>
+<h2 id="86-空结果的防御性处理"><a class="header" href="#86-空结果的防御性处理">8.6 空结果的防御性处理</a></h2>
+<p><strong>问题：工具返回空内容会怎样？</strong></p>
+<p>这看似无关紧要，实际是一个协议级的 bug 源头：</p>
+<pre><code class="language-pseudocode">// 空结果处理（概念示意）
+if isToolResultContentEmpty(content):
+  logEvent('tool_empty_result', { toolName })
+  return {
+    ...toolResultBlock,
+    content: "(" + toolName + " completed with no output)",
+  }
+</code></pre>
+<p>原因是：空的 <code>tool_result</code> 内容在某些模型的 token 序列化中会产生歧义。服务端渲染器在 tool results 后不插入特定标记，空内容导致模式匹配到 turn 边界的停止序列，模型提前结束输出。</p>
+<p>注入一个短标记字符串消除了这种歧义。这不是 UX 优化 -- 它是一个必要的协议修补。</p>
+<p>哪些工具会产生空结果？BashTool 的静默命令（<code>mv</code>、<code>cp</code>、<code>rm</code>、<code>mkdir</code> 等成功后没有输出）。MCP 工具可能返回空数组。REPL 语句可能没有返回值。空判断逻辑覆盖了所有这些情况：undefined、null、空字符串、纯空白字符串、空数组、只包含空文本 block 的数组，都被视为"空"。</p>
+<h2 id="87-从调度到预算的完整流程"><a class="header" href="#87-从调度到预算的完整流程">8.7 从调度到预算的完整流程</a></h2>
+<p>把本章的所有组件串起来，一次 query 中的工具执行全景如下：</p>
+<ol>
+<li><strong>查询模块</strong>发起 API 请求，流式接收响应。</li>
+<li>遇到 <code>tool_use</code> block 时，创建 StreamingToolExecutor。</li>
+<li>每个 <code>tool_use</code> block 通过入队方法入队，此时判定并发安全性。</li>
+<li>队列处理函数根据并发安全性决定立即执行还是排队等待。</li>
+<li>对于每个执行的工具，经历 Schema 验证 -&gt; validateInput -&gt; PreToolUse hooks -&gt; 权限检查 -&gt; call() -&gt; PostToolUse hooks 的完整管线。</li>
+<li>进度消息通过 <code>onProgress</code> 实时转发，<code>Promise.race</code> 确保即时响应。</li>
+<li>工具完成后，结果经过持久化检查处理单工具大小阈值。</li>
+<li>结果获取方法按入队顺序 yield 结果。并发安全工具可能乱序完成，但 yield 顺序不变。</li>
+<li>所有工具完成后，最终结果方法返回结果。</li>
+<li>回到查询模块，聚合预算函数在发送下一轮 API 请求前检查消息级聚合预算。</li>
+<li>超预算的结果被持久化并替换为预览，替换决策记录到内容替换状态。</li>
+<li>下一轮 API 请求发出，模型看到所有工具的结果（完整的或预览的），继续思考和行动。</li>
+</ol>
+<p>这整个流程在每一轮 query 中重复。内容替换状态跨 turn 累积，冻结的决策越来越多，prompt cache 的命中率保持稳定。</p>
+<p>从并发安全的细粒度判断，到进度消息的即时转发，再到两层结果预算的缓存友好设计 -- 每一个决策都在"性能"、"安全"和"缓存稳定性"三角之间寻找平衡。</p>
+<p>工具编排层的核心价值不是让单个工具更快，而是让多个工具以正确的方式协作。它解决的问题本质上是"多 Agent 时代的并发控制" -- 当一个 AI 系统同时操作文件系统、执行命令、搜索代码库时，编排层确保这些操作不会互相踩踏，同时尽可能利用并行性。理解了这套机制，你就理解了为什么 AI Agent 在处理复杂任务时能保持高效和可靠。</p>
+<hr />
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>贪心算法选择最大的结果进行替换。能否构造一个场景，使贪心策略不是最优的？（提示：考虑模型后续 Read 回文件的 token 成本。）</p>
+</li>
+<li>
+<p>内容替换状态的设计为 prompt cache 做了大量牺牲 -- 一旦决定不替换某个结果，即使后续 turn 预算紧张也不能反悔。如果 prompt cache 不存在（比如换一个不支持 prefix caching 的 API），这个设计会怎么简化？</p>
+</li>
+<li>
+<p>StreamingToolExecutor 的 <code>break</code> 语义保证了非并发工具的顺序执行。但如果模型输出的 tool_use 顺序本身就是错误的（比如先 Edit 再 Read，但逻辑上应该先 Read 再 Edit），系统能否检测并纠正？为什么选择不纠正？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-3/chapter-07.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-4/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-3/chapter-07.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-4/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

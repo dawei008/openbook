@@ -1,0 +1,538 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Appendix D: Build Mini Agent Harness - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./appendix/appendix-d.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="appendix-d-从零构建-mini-agent-harness"><a class="header" href="#appendix-d-从零构建-mini-agent-harness">Appendix D: 从零构建 Mini Agent Harness</a></h1>
+<blockquote>
+<p>前面的章节拆解了该 Agent 系统这座大厦的每一根梁柱。现在我们自己动手盖一间小屋——不是一次性贴出 100 行代码，而是逐步构建，每一步解决一个具体问题。</p>
+</blockquote>
+<hr />
+<h2 id="d1-最简-agent-loop10-行"><a class="header" href="#d1-最简-agent-loop10-行">D.1 最简 Agent Loop：10 行</a></h2>
+<h3 id="要解决什么问题"><a class="header" href="#要解决什么问题">要解决什么问题</a></h3>
+<p>Agent 的本质是什么？剥去所有复杂性后，核心只剩一个循环：<strong>把用户的话发给 LLM，如果 LLM 要求调用工具就执行工具，把结果送回去，直到 LLM 不再要求工具调用</strong>。</p>
+<p>这就是该系统查询引擎中作为 AsyncGenerator 循环运转的核心逻辑，只不过它被包裹在错误恢复、自动压缩、流式输出等十几层额外机制中。让我们先抓住骨架。</p>
+<h3 id="实现保存为-mini-agentts"><a class="header" href="#实现保存为-mini-agentts">实现（保存为 <code>mini-agent.ts</code>）</a></h3>
+<pre><code class="language-typescript">// mini-agent.ts  --  需要: npm install @anthropic-ai/sdk
+// 运行: ANTHROPIC_API_KEY=sk-... npx tsx mini-agent.ts "你的问题"
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic();
+const messages: Anthropic.MessageParam[] = [
+  { role: "user", content: process.argv[2] || "当前目录有什么文件？" },
+];
+
+for (let turn = 0; turn &lt; 10; turn++) {
+  const res = await client.messages.create({
+    model: "your-preferred-model",
+    max_tokens: 4096,
+    system: "You are a helpful assistant.",
+    messages,
+  });
+  // 没有工具调用 → 输出文本，结束
+  if (res.stop_reason === "end_turn") {
+    for (const b of res.content) if (b.type === "text") console.log(b.text);
+    break;
+  }
+}
+</code></pre>
+<p>这 10 行代码就是一个能对话的 Agent 骨架。但它有一个致命缺陷：<strong>没有工具</strong>。LLM 只能说话，不能做事。<code>stop_reason</code> 永远是 <code>end_turn</code>，循环只跑一轮。</p>
+<hr />
+<h2 id="d2-加上工具注册15-行"><a class="header" href="#d2-加上工具注册15-行">D.2 加上工具注册：+15 行</a></h2>
+<h3 id="要解决什么问题-1"><a class="header" href="#要解决什么问题-1">要解决什么问题</a></h3>
+<p>Agent 之所以不同于聊天机器人，在于它能<strong>采取行动</strong>。但行动需要结构化描述——LLM 需要知道有哪些工具可用、每个工具接受什么参数。</p>
+<p>该系统的工具核心接口定义了 20+ 个字段的工具接口，外加按名称查找的运行时查找。我们只取最核心的五个字段。</p>
+<h3 id="新增代码"><a class="header" href="#新增代码">新增代码</a></h3>
+<p>在 <code>const client</code> 之前，加入工具注册：</p>
+<pre><code class="language-typescript">import { execSync } from "child_process";
+import { readFileSync } from "fs";
+
+type ToolDef = {
+  name: string;
+  description: string;
+  input_schema: Record&lt;string, unknown&gt;;
+  execute: (input: Record&lt;string, unknown&gt;) =&gt; string;
+  requiresApproval: boolean;       // 后面用到
+};
+
+const registry = new Map&lt;string, ToolDef&gt;();
+const register = (t: ToolDef) =&gt; registry.set(t.name, t);
+
+register({
+  name: "read_file",
+  description: "Read a file at the given path.",
+  input_schema: {
+    type: "object",
+    properties: { file_path: { type: "string" } },
+    required: ["file_path"],
+  },
+  execute: (input) =&gt; {
+    try { return readFileSync(input.file_path as string, "utf-8"); }
+    catch (e) { return `Error: ${(e as Error).message}`; }
+  },
+  requiresApproval: false,
+});
+
+register({
+  name: "run_command",
+  description: "Execute a shell command and return output.",
+  input_schema: {
+    type: "object",
+    properties: { command: { type: "string" } },
+    required: ["command"],
+  },
+  execute: (input) =&gt; {
+    try {
+      return execSync(input.command as string, { encoding: "utf-8", timeout: 10000 });
+    } catch (e) { return `Error: ${(e as Error).message}`; }
+  },
+  requiresApproval: true,
+});
+</code></pre>
+<p><code>registry</code> 是一个 <code>Map&lt;string, ToolDef&gt;</code>——和该系统的工具查找逻辑本质相同，只不过后者还支持 alias 和动态注册。</p>
+<p>现在 LLM 知道有工具可用了，但工具调用后的结果还没送回去。我们需要补上循环的后半段。</p>
+<hr />
+<h2 id="d3-加上结果处理15-行"><a class="header" href="#d3-加上结果处理15-行">D.3 加上结果处理：+15 行</a></h2>
+<h3 id="要解决什么问题-2"><a class="header" href="#要解决什么问题-2">要解决什么问题</a></h3>
+<p>LLM 返回 <code>stop_reason: "tool_use"</code> 时，响应体里包含 <code>tool_use</code> 块——每个块指定工具名、参数和一个唯一 ID。我们需要：执行工具、收集结果、以 <code>tool_result</code> 格式送回。</p>
+<p>该系统中这对应查询引擎的循环体：识别 tool_use 块 -&gt; 查找工具 -&gt; 执行 tool.call() -&gt; 把 ToolResultBlockParam 追加到消息历史。</p>
+<h3 id="修改后的循环"><a class="header" href="#修改后的循环">修改后的循环</a></h3>
+<p>替换原来的 <code>for</code> 循环：</p>
+<pre><code class="language-typescript">const tools = [...registry.values()].map(t =&gt; ({
+  name: t.name, description: t.description, input_schema: t.input_schema,
+}));
+
+for (let turn = 0; turn &lt; 10; turn++) {
+  const res = await client.messages.create({
+    model: "your-preferred-model",
+    max_tokens: 4096,
+    system: "You are a helpful assistant. Use tools when needed.",
+    tools: tools as Anthropic.Tool[],
+    messages,
+  });
+
+  if (res.stop_reason === "end_turn") {
+    for (const b of res.content) if (b.type === "text") console.log(b.text);
+    break;
+  }
+
+  if (res.stop_reason === "tool_use") {
+    messages.push({ role: "assistant", content: res.content });
+    const results: Anthropic.ToolResultBlockParam[] = [];
+
+    for (const b of res.content) {
+      if (b.type !== "tool_use") continue;
+      const tool = registry.get(b.name);
+      const result = tool
+        ? tool.execute(b.input as Record&lt;string, unknown&gt;)
+        : `Unknown tool: ${b.name}`;
+      console.log(`[Tool] ${b.name} → ${result.slice(0, 80)}...`);
+      results.push({ type: "tool_result", tool_use_id: b.id, content: result });
+    }
+
+    messages.push({ role: "user", content: results });
+  }
+}
+</code></pre>
+<p>现在 Agent 能真正工作了——LLM 请求读文件，我们读并返回内容，LLM 基于内容做分析。但有一个严重的安全漏洞：<code>run_command</code> 可以执行任意 shell 命令，包括 <code>rm -rf /</code>。</p>
+<hr />
+<h2 id="d4-加上权限检查10-行"><a class="header" href="#d4-加上权限检查10-行">D.4 加上权限检查：+10 行</a></h2>
+<h3 id="要解决什么问题-3"><a class="header" href="#要解决什么问题-3">要解决什么问题</a></h3>
+<p>Chapter 22 讲了安全优先原则：不确定就问。<code>run_command</code> 是高风险操作——我们不能让 LLM 自己决定是否执行，需要人类确认。</p>
+<p>该系统的权限系统支持三种决策行为（allow/deny/ask）、五种权限模式、风险分级和配置文件规则。我们只实现最核心的一层：按 <code>requiresApproval</code> 标志决定是否询问用户。</p>
+<h3 id="新增代码-1"><a class="header" href="#新增代码-1">新增代码</a></h3>
+<p>在 <code>registry</code> 定义之后、循环之前，加入：</p>
+<pre><code class="language-typescript">import * as readline from "readline";
+
+async function checkPermission(tool: ToolDef, input: Record&lt;string, unknown&gt;): Promise&lt;boolean&gt; {
+  if (!tool.requiresApproval) return true;
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise(resolve =&gt; {
+    const desc = tool.name === "run_command" ? `command: ${input.command}` : tool.name;
+    rl.question(`[Permission] Allow ${desc}? (y/n): `, answer =&gt; {
+      rl.close();
+      resolve(answer.trim().toLowerCase() === "y");
+    });
+  });
+}
+</code></pre>
+<p>然后修改循环中工具执行的部分，把直接调用改为先检查权限：</p>
+<pre><code class="language-typescript">      const tool = registry.get(b.name);
+      if (!tool) {
+        results.push({ type: "tool_result", tool_use_id: b.id, content: `Unknown tool: ${b.name}` });
+        continue;
+      }
+      const allowed = await checkPermission(tool, b.input as Record&lt;string, unknown&gt;);
+      const result = allowed ? tool.execute(b.input as Record&lt;string, unknown&gt;) : "Permission denied by user.";
+</code></pre>
+<p>现在用户可以拒绝危险命令了。但和该系统相比，我们的权限检查是<strong>同步阻塞的</strong>——等待用户输入时整个 Agent 停住。该系统的权限弹窗是异步的，用户思考期间 Agent 可以继续其他工作。这是单线程和异步架构的本质差异。</p>
+<hr />
+<h2 id="d5-完成约-50-行核心逻辑"><a class="header" href="#d5-完成约-50-行核心逻辑">D.5 完成：约 50 行核心逻辑</a></h2>
+<p>四步走完，我们的 mini Agent 具备了：</p>
+<ol>
+<li><strong>消息循环</strong>——对应查询引擎的 AsyncGenerator</li>
+<li><strong>工具注册与发现</strong>——对应工具核心接口 + 名称查找</li>
+<li><strong>工具执行与结果收集</strong>——对应各工具模块的 call()</li>
+<li><strong>基本权限检查</strong>——对应权限系统</li>
+</ol>
+<p>核心模式和该系统完全一致：<strong>不断调用 LLM，直到它不再请求工具调用</strong>。</p>
+<pre><code>while (LLM 返回 tool_use) {
+  对每个 tool_use → 查找工具 → 检查权限 → 执行 → 收集结果
+  将结果追加到消息历史
+  再次调用 LLM
+}
+</code></pre>
+<hr />
+<h2 id="d6-差距在哪里从玩具到生产"><a class="header" href="#d6-差距在哪里从玩具到生产">D.6 差距在哪里：从玩具到生产</a></h2>
+<p>我们的 50 行和该系统的十几万行之间，差距不在于「功能多少」，而在于**「失败时怎么办」<strong>和</strong>「规模大了怎么办」**。按优先级排序：</p>
+<h3 id="p0没有它就不能上线"><a class="header" href="#p0没有它就不能上线">P0：没有它就不能上线</a></h3>
+<p><strong>流式输出</strong>。我们等 API 返回完整响应后才显示。用户等 30 秒看到一大段文字弹出。修复方向：<code>client.messages.stream()</code> + <code>for await</code> 逐 token 处理。该系统将查询函数本身定义为 AsyncGenerator，所有消费者通过 <code>for await</code> 获取流式事件。</p>
+<p><strong>错误恢复</strong>。API 超时、429 限流、500 服务端错误——我们全部直接崩溃。该系统定义了最大输出 token 恢复限制为 3 次，包括触发 reactive compact 来释放空间。最简修复是指数退避重试：</p>
+<pre><code class="language-typescript">async function withRetry&lt;T&gt;(fn: () =&gt; Promise&lt;T&gt;, maxRetries = 3): Promise&lt;T&gt; {
+  for (let i = 0; i &lt; maxRetries; i++) {
+    try { return await fn(); }
+    catch (e) {
+      if (i === maxRetries - 1) throw e;
+      await new Promise(r =&gt; setTimeout(r, Math.min(1000 * 2 ** i, 10000)));
+    }
+  }
+  throw new Error("unreachable");
+}
+</code></pre>
+<p><strong>上下文管理</strong>。对话历史超过模型窗口时我们直接报错。该系统通过自动压缩模块在接近上限时自动压缩——保留 20K tokens 余量，将历史摘要化后继续工作。</p>
+<h3 id="p1没有它用户会流失"><a class="header" href="#p1没有它用户会流失">P1：没有它用户会流失</a></h3>
+<p><strong>成本追踪</strong>。LLM 按 token 计费，用户需要知道每次会话花了多少钱。该系统的成本追踪模块追踪 input/output/cache 各类 token 和美元成本，按模型分类统计。</p>
+<p><strong>子 Agent 隔离</strong>。单线程 Agent 无法同时做多件事。该系统通过 fork 运行函数创建隔离的子 Agent，文件缓存克隆、UI 回调置空、状态独立，只共享 prompt cache。</p>
+<p><strong>权限规则引擎</strong>。我们的 boolean <code>requiresApproval</code> 太粗糙。该系统支持 glob 模式匹配（<code>allow: ["read_file:*"]</code>）、风险分级（LOW / MEDIUM / HIGH）、五种权限模式切换。</p>
+<h3 id="p2没有它也能用有了它竞争力翻倍"><a class="header" href="#p2没有它也能用有了它竞争力翻倍">P2：没有它也能用，有了它竞争力翻倍</a></h3>
+<p><strong>Prompt 缓存优化</strong>。保持系统提示和工具定义的字节级一致性，复用缓存安全参数，甚至统一 fork 前缀占位文本。一个每天运行数百万次的 Agent，缓存优化直接影响运营成本。</p>
+<p><strong>记忆系统</strong>。跨会话的持久记忆，包括自动提取和后台整合（Dream）。五层 AGENT.md 配置覆盖、四种记忆类型、LLM 驱动的检索。</p>
+<p><strong>可扩展工具协议</strong>。MCP 协议动态加载第三方工具，而非硬编码。Skills 用 Markdown 教 Agent 新工作流。Hooks 在关键节点注入自定义策略。</p>
+<hr />
+<h2 id="d7-一个有趣的对照"><a class="header" href="#d7-一个有趣的对照">D.7 一个有趣的对照</a></h2>
+<p>把我们的 mini Agent 和该系统放在一起：</p>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>Mini Agent</th><th>生产级系统</th></tr></thead><tbody>
+<tr><td>核心循环</td><td><code>for</code> + <code>if (stop_reason)</code></td><td>AsyncGenerator + <code>yield</code> 多类型事件</td></tr>
+<tr><td>工具查找</td><td><code>Map.get(name)</code></td><td>名称查找 + alias + 动态注册</td></tr>
+<tr><td>权限模型</td><td><code>boolean requiresApproval</code></td><td>三层防线 + 五种模式 + 风险分级</td></tr>
+<tr><td>错误处理</td><td>崩溃</td><td>重试 + reactive compact + 断路器</td></tr>
+<tr><td>上下文管理</td><td>无</td><td>auto-compact + session memory + blocking limit</td></tr>
+<tr><td>子任务</td><td>无</td><td>fork 隔离 + Mailbox 通信 + Task 注册</td></tr>
+<tr><td>成本</td><td>不追踪</td><td>按模型分类的 token/USD 追踪</td></tr>
+<tr><td>缓存</td><td>无</td><td>缓存安全参数 + 字节级一致前缀</td></tr>
+<tr><td>记忆</td><td>无</td><td>五层配置 + 四种类型 + Dream 整合</td></tr>
+<tr><td>可观测性</td><td><code>console.log</code></td><td>结构化事件 + OTel + 成本 counter</td></tr>
+</tbody></table>
+</div>
+<p>两者的骨架完全一致——都是「LLM 循环 + 工具回调」。所有差异都是对同一类问题的不同深度回答：<strong>失败时怎么办、规模大了怎么办、长期运行怎么办</strong>。</p>
+<p>理解 mini Agent 的四个组件，你就理解了 Agent 的本质。理解该系统在这个骨架上添加的每一层，你就理解了什么叫「生产级」。两者之间的距离，就是软件工程这门手艺要解决的全部问题。</p>
+<hr />
+<blockquote>
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>我们的 mini Agent 的 <code>checkPermission</code> 是同步阻塞的——等待用户输入时循环停住。如何改造为异步非阻塞，让 Agent 在等待用户确认一个工具的同时继续处理其他工具调用？</p>
+</li>
+<li>
+<p>添加一个简易的上下文管理：在每轮循环开始前估算消息总 token 数（可以用字符数 / 4 粗略近似），超过阈值时将历史消息替换为 LLM 生成的摘要。思考：摘要请求本身也消耗 token，如何避免「压缩成本超过压缩收益」的陷阱？</p>
+</li>
+<li>
+<p>尝试给 mini Agent 添加一个最简单的记忆系统：在 <code>~/.mini-agent/memory.json</code> 中保存 key-value 对，新增一个 <code>save_memory</code> 工具和一个 <code>recall_memory</code> 工具。运行几次后思考：没有 Dream 式的整合机制，记忆文件会如何退化？</p>
+</li>
+</ol>
+</blockquote>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../appendix/appendix-c.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../bibliography.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../appendix/appendix-c.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../bibliography.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

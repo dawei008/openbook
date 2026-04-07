@@ -1,0 +1,491 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 22: Design Philosophy - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-8/chapter-22.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-22-设计哲学构建可信-ai-agent-的原则"><a class="header" href="#chapter-22-设计哲学构建可信-ai-agent-的原则">Chapter 22: 设计哲学：构建可信 AI Agent 的原则</a></h1>
+<blockquote>
+<p>前面 21 章拆解了该 Agent 系统的每一个子系统。本章退后一步，从实现中提炼七条设计原则。每条原则不是抽象教条，而是一个故事——什么问题迫使工程师做出了这个选择，系统中如何体现，违反它会发生什么。</p>
+<p>这些原则不来自某个架构设计文档。它们是从大量代码中反复出现的模式中提炼出来的——当你在足够多的地方看到同一种取舍，它就不再是偶然，而是原则。</p>
+<p>关键模块：权限类型定义、查询引擎、fork 子 Agent 工具、消息邮箱、自动压缩服务、成本追踪器。</p>
+</blockquote>
+<pre><code>     ┌─────────────────────────────────┐
+     │    Trustworthy AI Agent         │
+     │                                 │
+     │ ★ Seven Design Principles ★    │  ◄── 本章聚焦
+     │                                 │
+     │  1. Safety First    (Ch.9-10)   │
+     │  2. Streaming First (Ch.6)      │
+     │  3. 3D Extension (MCP/Skill/Hook)│
+     │  4. Isolation &amp; Comm (Ch.12-15) │
+     │  5. Cache = Money   (Ch.16)     │
+     │  6. Graceful Degrade (Ch.8)     │
+     │  7. Observability   (Ch.14)     │
+     │                                 │
+     │  Safe &lt;-&gt; Usable &lt;-&gt; Extensible │
+     └─────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="如何阅读本章"><a class="header" href="#如何阅读本章">如何阅读本章</a></h2>
+<p>每条原则遵循相同的结构：</p>
+<ul>
+<li><strong>问题的起源</strong>：什么场景下、什么痛点迫使了这个设计决策</li>
+<li><strong>设计决策</strong>：系统中如何体现这个原则</li>
+<li><strong>违反会怎样</strong>：如果反向操作，会出什么问题——这帮助理解原则不是审美偏好而是工程必需</li>
+</ul>
+<p>七条原则不是独立的清单项。读完后你会发现它们构成一个有机的整体——安全优先约束了扩展性的边界，流式优先影响了隔离通信的方式，缓存策略是可观测性数据驱动的结果。</p>
+<hr />
+<h2 id="原则一安全优先三层防线的故事"><a class="header" href="#原则一安全优先三层防线的故事">原则一：安全优先——三层防线的故事</a></h2>
+<h3 id="问题的起源"><a class="header" href="#问题的起源">问题的起源</a></h3>
+<p>想象一个场景：用户让 Agent 清理项目中的临时文件。Agent 调用 <code>rm -rf /tmp/project-cache</code>。但如果 Agent 理解错了上下文，把命令构造成了 <code>rm -rf /</code>，会发生什么？</p>
+<p>这不是假设——任何能执行 shell 命令的 Agent 都面临同样的风险。早期的 Agent 框架通常依赖模型自身的「判断力」来避免危险操作，但实践证明这远远不够。模型可能被巧妙的 prompt injection 欺骗，可能在多步推理中丢失安全上下文，可能在处理模糊指令时做出激进的解读。</p>
+<p>问题不在于 LLM 会不会犯错——它一定会。问题在于：<strong>犯错时，系统能否阻止灾难？</strong></p>
+<h3 id="设计决策"><a class="header" href="#设计决策">设计决策</a></h3>
+<p>该系统的权限系统建立在一个核心假设上：<strong>没有工具调用天然安全，安全需要被证明</strong>。</p>
+<p>权限类型定义模块定义了五种权限模式，从最严格到最宽松：<code>plan</code>（只规划不执行）、<code>dontAsk</code>（不确定就拒绝）、<code>default</code>（不确定就问）、<code>acceptEdits</code>（自动接受文件编辑）、<code>bypassPermissions</code>（绕过所有权限）。</p>
+<p>注意默认值是 <code>default</code>——不确定就问。不是 <code>dontAsk</code>（会阻碍正常工作），也不是 <code>acceptEdits</code>（会放行危险操作）。这个默认值编码了一个价值判断：<strong>用户体验上的轻微不便，好过安全上的潜在灾难</strong>。</p>
+<p>三层防线的工作方式是：</p>
+<p><strong>白名单层</strong>：已知安全的操作（读文件、列目录）直接放行，用户无感。</p>
+<p><strong>黑名单层</strong>：已知危险的操作直接拒绝，不给用户选择。这一层的存在意味着系统对某些风险采取了家长式立场——即使用户说「让它做」，系统也会说「不」。</p>
+<p><strong>灰名单层</strong>：不确定的操作暂停，展示风险等级（LOW / MEDIUM / HIGH），附带解释（包含 explanation、reasoning、risk 三个字段），让用户做知情决策。</p>
+<h3 id="违反会怎样"><a class="header" href="#违反会怎样">违反会怎样</a></h3>
+<p>删掉灰名单层，让系统自行判断安全性。结果是两个极端：要么过度保守（频繁误拒，用户抱怨 Agent 不听话），要么过度宽松（偶尔漏放，用户丢数据）。灰名单层的价值不在于它的判断正确性，而在于它把<strong>不确定性的决策权交还给唯一有资格做这个判断的人——用户自己</strong>。</p>
+<p>这条原则的深层含义是：<strong>Agent 的安全性不应该依赖模型的判断力</strong>。模型可能被 prompt injection 欺骗，可能在复杂场景下做出错误推理。权限系统是独立于模型之外的硬约束——无论模型「认为」这个操作多么安全，如果它不在白名单上，系统仍然会要求用户确认。</p>
+<p>这种「不信任模型」的姿态看起来矛盾——你用 LLM 构建了一个产品，却不信任 LLM 的判断？但这正是安全工程的核心：<strong>防御的对象包括你自己的组件</strong>。操作系统不信任应用程序（沙箱隔离），数据库不信任应用层（约束检查），Web 服务器不信任客户端（输入验证）。权限系统不信任模型，只是把这个古老的原则延伸到了 AI 时代。</p>
+<hr />
+<h2 id="原则二流式优先等待是信任的毒药"><a class="header" href="#原则二流式优先等待是信任的毒药">原则二：流式优先——等待是信任的毒药</a></h2>
+<h3 id="问题的起源-1"><a class="header" href="#问题的起源-1">问题的起源</a></h3>
+<p>早期的 AI 聊天界面有一个共同的体验问题：用户发送问题后，面对一个旋转的加载图标，不知道系统在做什么、需要等多久、是不是已经卡死了。Agent 场景更糟——一个任务可能涉及十几轮工具调用，总时长可能几分钟。几分钟的黑屏足以摧毁用户的耐心和信任。</p>
+<h3 id="设计决策-1"><a class="header" href="#设计决策-1">设计决策</a></h3>
+<p>该系统的核心通信原语不是 request-response，而是 AsyncGenerator。查询引擎的核心函数签名说明了一切——它 <code>yield</code> 出五种类型的事件：流式事件（LLM 生成的每个 token）、请求开始事件（API 调用开始）、完整消息、压缩替代消息（被压缩替代的消息）、工具调用摘要消息。</p>
+<p>消费端通过 <code>for await</code> 逐条处理。这意味着 LLM 输出的第一个字出现时用户就能看到，工具开始执行时用户就知道，子 Agent 的中间状态也能实时传递。</p>
+<p>这个设计贯穿了整个系统。不仅主循环是流式的，fork 子 Agent 也是流式的（消息回调在 fork 运行函数中触发），Dream 的进度监控也是流式的（进度观察器在每条消息到达时更新状态）。</p>
+<h3 id="违反会怎样-1"><a class="header" href="#违反会怎样-1">违反会怎样</a></h3>
+<p>把查询函数改成返回 <code>Promise&lt;Message[]&gt;</code>——等所有工具调用完成后一次性返回。技术上完全可行，代码甚至更简单。但用户体验会退化为：发送问题 -&gt; 等待 30 秒 -&gt; 突然出现一大段回复。用户不知道那 30 秒里发生了什么，无法在 Agent 走错方向时及时中断，也无法在看到中间结果后调整指令。<strong>流式不是性能优化，而是信任基础设施</strong>。</p>
+<p>流式优先还有一个隐含的工程收益：<strong>统一的消费模型</strong>。无论是主循环、fork 子 Agent、Dream、还是 SDK 集成，所有消费者都通过 <code>for await</code> 处理同一种事件流。这避免了为不同场景维护不同的消费接口。fork 消费逻辑和主循环消费逻辑几乎一模一样——因为它们面对的是同一种抽象。</p>
+<hr />
+<h2 id="原则三三维扩展协议能力策略各管各的"><a class="header" href="#原则三三维扩展协议能力策略各管各的">原则三：三维扩展——协议、能力、策略各管各的</a></h2>
+<h3 id="问题的起源-2"><a class="header" href="#问题的起源-2">问题的起源</a></h3>
+<p>一个 Agent 框架如果不可扩展，它的寿命取决于开发团队能多快地内置新功能。用户需要连接 Jira？等官方支持。需要一个自定义的代码审查流程？等官方支持。需要在工具调用前做合规检查？等官方支持。</p>
+<p>Agent 框架面临一个经典困境：封闭系统功能有限，开放系统容易失控。如果只有一种扩展方式（比如「写插件」），插件作者会被迫把所有需求塞进同一个接口——安全策略、外部工具、任务知识统统混在一起。</p>
+<h3 id="设计决策-2"><a class="header" href="#设计决策-2">设计决策</a></h3>
+<p>该系统把扩展性分解为三个正交维度：</p>
+<p><strong>MCP（协议级）</strong> 解决的是「连什么」——Agent 能和哪些外部系统交互。MCP 是一个标准化协议，第三方服务只要实现它，就能把自己的能力（工具、资源、提示词）暴露给 Agent。Agent 不需要为每个新服务写适配器——服务端自己实现 MCP 协议，工具就能被自动发现和使用。这是最底层的扩展，改变了 Agent 的能力边界。</p>
+<p><strong>Skills（能力级）</strong> 解决的是「会什么」——Agent 知道哪些工作流程。Skills 是 Markdown 格式的提示词文件，不是代码。一个非程序员可以写一个 Skill 教 Agent「如何在这个项目中做代码审查」，不需要理解 TypeScript 或 API。Skills 甚至可以声明自己需要哪些工具权限，Agent 在执行 Skill 时自动获取这些权限——无需手动配置。</p>
+<p><strong>Hooks（策略级）</strong> 解决的是「怎么决定」——Agent 在关键节点的决策逻辑。Hooks 可以在工具调用前注入检查（「所有写入 production/ 目录的操作必须经过二次确认」），在采样后修改行为，在会话结束时做清理。它改变的不是能力，而是策略。Hooks 是唯一能在不修改 Agent 核心代码的情况下改变其决策行为的机制。</p>
+<h3 id="违反会怎样-2"><a class="header" href="#违反会怎样-2">违反会怎样</a></h3>
+<p>把三个维度合并成一个「插件系统」。结果是：想加一个 Jira 集成，需要写完整的 TypeScript 插件（而 MCP 协议可以让 Jira 服务端自己暴露接口）；想教 Agent 一个新工作流，需要写代码（而 Skills 只需要写 Markdown）；想加一条安全规则，需要修改工具逻辑（而 Hooks 可以在不触碰工具代码的情况下注入策略）。<strong>维度分离的价值在于，每种扩展需求都有最低摩擦的解决路径</strong>。</p>
+<p>一个类比有助于理解三个维度的关系。把 Agent 想象成一个厨师：MCP 是厨房里的设备（烤箱、搅拌机、洗碗机）——决定了厨师「能做什么菜」；Skills 是菜谱——教厨师「怎么做某道菜」；Hooks 是厨房管理规则（过敏原检查、温度标准、卫生流程）——规定厨师「在做菜过程中必须遵守什么」。设备、菜谱、规则各自独立更新，互不干扰。</p>
+<hr />
+<h2 id="原则四隔离与通信fork-的代价和收益"><a class="header" href="#原则四隔离与通信fork-的代价和收益">原则四：隔离与通信——Fork 的代价和收益</a></h2>
+<h3 id="问题的起源-3"><a class="header" href="#问题的起源-3">问题的起源</a></h3>
+<p>该 Agent 系统可以同时做好几件事：回复用户的同时在后台做 Dream，执行工具的同时准备下一步的推测。当 Agent 需要并行处理多个子任务时，一个经典问题浮现：子任务之间如何共享状态？共享内存最快但最危险（竞态条件、数据撕裂），完全隔离最安全但最慢（无法复用信息、无法协调进度）。</p>
+<h3 id="设计决策-3"><a class="header" href="#设计决策-3">设计决策</a></h3>
+<p>系统设计者选择了「默认隔离，显式 opt-in」。子 Agent 上下文创建函数的代码结构清晰地表达了这个立场：</p>
+<p>隔离项（默认）：文件状态缓存克隆、内存附件触发器新建、工具决策置空、UI 回调置空、状态变更回调空函数。</p>
+<p>共享项（需显式声明）：共享应用状态设置、共享响应长度设置、共享中止控制器。每个共享选项都有文档注释说明使用场景。</p>
+<p>当 Agent 之间确实需要通信时，系统提供了 Mailbox——这是 Actor 模型的一个简洁实现。发送方先检查有没有匹配的等待者——有则零延迟直投（消息不经过队列），无则入队等待。接收方先检查队列里有没有匹配的消息——有则立即返回，无则注册等待者挂起。</p>
+<p>这种「先匹配后入队」的顺序很关键。如果总是先入队，再唤醒等待者，消息会在队列中产生不必要的停留——在高频通信场景下影响延迟。直投路径确保了：当有人等待时，消息传递是零拷贝、零排队的。</p>
+<p>一个重要的实现细节：Mailbox 带有修订计数器和订阅信号，允许 UI 组件响应式地渲染消息变化，而不需要轮询。还有一个同步轮询方法——立即返回匹配的消息或 undefined。这让调用者可以在不阻塞的情况下检查是否有待处理的消息，适用于事件循环中的非关键检查。</p>
+<h3 id="违反会怎样-3"><a class="header" href="#违反会怎样-3">违反会怎样</a></h3>
+<p>让子 Agent 直接共享父 Agent 的文件状态缓存（不克隆）。子 Agent 读了一个文件，缓存了内容。同时用户在主 Agent 中修改了这个文件，主 Agent 更新了缓存。子 Agent 下次读取时拿到的是主 Agent 修改后的版本——但子 Agent 的决策是基于修改前的版本做的。这种时间耦合造成的 bug 极难定位，因为单独测试父或子 Agent 都不会出问题，只有并发时才暴露。<strong>隔离的代价是内存（克隆缓存），收益是确定性（行为不依赖并发时序）</strong>。</p>
+<p>子 Agent 上下文创建函数的注释中有三个示例展示了隔离的梯度：全隔离用于后台 Agent（如 session memory），部分共享用于有独立身份但需要交互的 Agent（AgentTool 的异步任务），全共享用于和父 Agent 紧密耦合的交互式 Agent。这不是一刀切，而是按场景选择隔离级别——但默认值始终是最保守的全隔离。</p>
+<hr />
+<h2 id="原则五缓存即省钱prompt-cache-的实际成本影响"><a class="header" href="#原则五缓存即省钱prompt-cache-的实际成本影响">原则五：缓存即省钱——prompt cache 的实际成本影响</a></h2>
+<h3 id="问题的起源-4"><a class="header" href="#问题的起源-4">问题的起源</a></h3>
+<p>LLM API 的定价模型是按 token 计费，input token 和 output token 分开计价。Agent 的循环运行模式意味着每一轮 API 调用都携带完整的系统提示和工具定义——这些内容在每轮之间完全相同。假设系统提示 + 工具定义是 15K tokens，Agent 一个任务运行 10 轮，那就是 150K 重复 input tokens。以主流 LLM 的价格计算，这不是小数目。</p>
+<h3 id="设计决策-4"><a class="header" href="#设计决策-4">设计决策</a></h3>
+<p>该系统围绕 prompt cache 做了系统性优化。核心思路是一句话：<strong>让尽可能多的请求共享尽可能长的前缀</strong>。</p>
+<p>缓存安全参数携带了缓存键的所有组成部分：系统提示、用户上下文、系统上下文、工具定义、消息前缀。Fork 子 Agent 时，这些参数被完整继承。</p>
+<p>更极致的优化在 fork 子 Agent 模块中：所有 fork 子 Agent 的工具结果块使用相同的占位文本。为什么？因为消息前缀是缓存键的一部分。如果每个子 Agent 的工具结果内容不同，它们的消息前缀就不同，缓存就无法共享。统一占位文本让所有子 Agent 产生字节级一致的前缀，只有最后的指令文本不同——最大化缓存命中率。</p>
+<p>Fork 完成后的遥测事件计算并上报缓存命中率，让团队持续监控优化效果。另一个有趣的细节：fork 参数上的最大输出 token 限制注释警告说设置这个参数会改变思考预算（通过 API 调用层的 clamping），而 thinking config 是缓存键的一部分。也就是说，<strong>限制子 Agent 的输出长度会破坏缓存共享</strong>。这种「看似无关的参数通过缓存键产生意外耦合」是生产系统中常见的隐式依赖，只有通过详尽的注释才能防止未来的开发者踩坑。</p>
+<h3 id="违反会怎样-4"><a class="header" href="#违反会怎样-4">违反会怎样</a></h3>
+<p>忽略缓存一致性。每个子 Agent 在工具结果中放入自己的真实上下文描述（「正在做记忆整合」「正在做代码审查」）。技术上信息更丰富，但代价是每个子 Agent 都建立独立的缓存——input token 成本翻倍。对一个每天被数百万用户使用的产品来说，这种「信息丰富」的代价是每月多花六位数美元。<strong>在 LLM 经济学中，字节级一致性是一种商业竞争力</strong>。</p>
+<p>这条原则的一个反直觉推论是：<strong>改系统提示词是一个高成本操作</strong>。每次修改系统提示词，所有用户的所有会话的 prompt cache 都会失效（因为缓存键包含系统提示的完整内容）。在该系统的规模下，一次系统提示词的改动可能导致全球范围内数百万次 cache miss，转化为数万美元的额外成本。这迫使工程师对系统提示词的每一次修改都极其审慎——不仅考虑内容是否正确，还要考虑缓存失效的成本影响。</p>
+<hr />
+<h2 id="原则六优雅降级压缩而非崩溃"><a class="header" href="#原则六优雅降级压缩而非崩溃">原则六：优雅降级——压缩而非崩溃</a></h2>
+<h3 id="问题的起源-5"><a class="header" href="#问题的起源-5">问题的起源</a></h3>
+<p>一个真实的痛点场景：用户和 Agent 进行了一个长达 200 轮的调试会话。经过两个小时的排查，终于定位到了 bug 的根因，正准备让 Agent 写修复代码。此时上下文窗口已经用了 95%。用户发送了下一条消息。传统做法：返回错误「上下文已满，请开始新会话」。用户的反应：200 轮积累的上下文全部丢失，从零开始。两个小时的工作白费。</p>
+<h3 id="设计决策-5"><a class="header" href="#设计决策-5">设计决策</a></h3>
+<p>该系统永远不让用户看到「上下文已满」的错误。它的策略是多层防御式降级——每一层比前一层更激进，但都好过崩溃。</p>
+<p><strong>第一层：主动压缩（proactive auto-compact）。</strong> 在接近上限时自动压缩历史。</p>
+<p>自动压缩模块定义了关键常量：系统始终保留 20K tokens 的余量用于生成压缩摘要。有效窗口大小计算函数在计算可用窗口时就已经扣除了这个余量。</p>
+<p>触发阈值是有效窗口减去约 13K tokens 的缓冲量。这意味着在还剩约 13K tokens 余量时就开始压缩——给压缩过程本身留出足够的运行空间。</p>
+<p><strong>第二层：响应式压缩（reactive compact）。</strong> 当 API 实际返回 <code>prompt_too_long</code> 错误时（主动压缩没来得及或判断失误），立即触发紧急压缩。</p>
+<p><strong>第三层：输出恢复循环。</strong> 查询引擎中定义了最大输出 token 恢复限制为 3 次：当 API 返回 max_output_tokens 错误时，系统不是直接失败，而是最多重试 3 次，每次尝试 reactive compact 来释放空间。</p>
+<p><strong>第四层：断路器。</strong> 自动压缩模块的最大连续失败次数为 3，防止了最后一个极端：如果上下文已经无法恢复（比如单条消息就超过了窗口），无限重试只会浪费 API 调用。注释记录了真实数据：1,279 个会话曾出现 50 次以上的连续失败，最高达 3,272 次，全局每天浪费约 250K 次 API 调用。断路器是对这个真实生产问题的直接回应。</p>
+<p>四层降级构成了一个渐进式的应急响应链：预防 -&gt; 被动修复 -&gt; 有限重试 -&gt; 放弃但不崩溃。每一层都有独立的触发条件和成本上限。</p>
+<h3 id="违反会怎样-5"><a class="header" href="#违反会怎样-5">违反会怎样</a></h3>
+<p>去掉自动压缩，让用户手动管理上下文。结果是：大多数用户不知道「上下文窗口」是什么，更不会在对话快满时主动运行 <code>/compact</code>。他们只会看到一个莫名其妙的错误，然后认为 Agent 不可靠。<strong>降级的目标不是「让用户知道出了问题」，而是「让用户不需要知道出了问题」</strong>。</p>
+<p>降级策略还有一个深层意义：<strong>它定义了系统的信任半径</strong>。用户不需要理解 token 上限、缓存机制、API 限流就能安心使用 Agent。系统把这些技术复杂性吸收了，向用户呈现一个「它就是能用」的简洁界面。这和好的操作系统设计是一个道理——内存不够了不是弹框报错，而是自动换页到磁盘。用户感知到的是「有点慢」，而不是「崩溃了」。</p>
+<p>自动压缩模块中的递归防护也值得一提：会话记忆和压缩这两个查询来源被硬编码排除在自动压缩之外。为什么？因为它们本身就是 fork 子 Agent——如果它们在运行过程中触发自动压缩，压缩又会 fork 一个新的子 Agent，形成递归 fork。递归防护不是性能优化，而是正确性保证。</p>
+<hr />
+<h2 id="原则七可观测性你无法改进你无法测量的东西"><a class="header" href="#原则七可观测性你无法改进你无法测量的东西">原则七：可观测性——你无法改进你无法测量的东西</a></h2>
+<h3 id="问题的起源-6"><a class="header" href="#问题的起源-6">问题的起源</a></h3>
+<p>Peter Drucker 说过：「你无法管理你无法衡量的东西」（You can't manage what you can't measure）。这句话对 AI Agent 尤其适用。</p>
+<p>一个 Agent 在后台运行，消耗 API 费用，修改用户文件，调用外部工具。如果用户不知道它花了多少钱、改了什么、做了多少次 API 调用，这个 Agent 就是一个黑箱。黑箱不值得信任。对工程团队也一样——如果不知道哪些功能消耗了最多资源、哪些路径的错误率最高、缓存策略是否生效，优化就是盲人摸象。</p>
+<h3 id="设计决策-6"><a class="header" href="#设计决策-6">设计决策</a></h3>
+<p>该系统在三个层面构建了可观测性：</p>
+<p><strong>用户层面</strong>：成本追踪模块追踪会话级的完整成本——input tokens、output tokens、cache read tokens、cache creation tokens、web search 请求次数、美元总额。每次会话结束时，持久化函数将所有指标保存到项目配置中，包括按模型分类的用量明细。用户随时可以看到「这次会话花了 $2.37，其中 Sonnet 用了 15K input、3K output」。</p>
+<p><strong>工程层面</strong>：每个关键操作都通过遥测函数记录结构化事件。Dream 有触发/完成/失败事件，fork 有查询度量事件，成本有 OpenTelemetry 的 counter metric。这些数据驱动 A/B 测试、异常检测和性能优化。一个细节：OTel counter 的属性参数区分了 fast mode 和普通模式——speed 标签让团队可以独立分析两种模式下的成本分布。</p>
+<p><strong>运营层面</strong>：断路器的阈值（autocompact 的 3 次连续失败上限）、扫描节流的冷却期（Dream 的 10 分钟间隔）、缓存命中率的监控——这些不是事后添加的，而是在设计阶段就被考虑为系统的一部分。成本格式化函数在会话结束时输出完整的成本报告：总花费、API 耗时、墙钟耗时、代码变更行数、按模型分类的 token 用量。这不仅是给用户看的，也是给团队做性能回归分析的数据源。</p>
+<h3 id="违反会怎样-6"><a class="header" href="#违反会怎样-6">违反会怎样</a></h3>
+<p>去掉成本追踪。用户月底收到一张意外的高额账单，不知道哪些操作导致的。去掉 fork 度量。团队无法发现某个后台任务的缓存命中率从 90% 骤降到 10%（可能因为一次系统提示的小改动破坏了缓存前缀一致性）。去掉断路器。一个边缘场景下的无限重试每天浪费 250K 次 API 调用，直到有人偶然查看日志才发现。<strong>可观测性不是锦上添花，它是生产级系统和玩具项目的分界线</strong>。</p>
+<p>成本追踪系统还有一个被忽视的功能：<strong>跨会话恢复</strong>。持久化函数在会话结束时将所有指标保存到项目配置中，恢复函数在重新连接时读回。这意味着用户中断一个会话后重新连接，累积的成本数据不会丢失。会话 ID 匹配检查防止了跨会话的成本混淆——只有同一个会话的数据才会被恢复。</p>
+<hr />
+<h2 id="七条原则的统一视角"><a class="header" href="#七条原则的统一视角">七条原则的统一视角</a></h2>
+<p>回顾这七条原则，它们不是独立的条目，而是同一棵树上的七根枝干，共享一个根系：<strong>让用户在使用 AI Agent 时感到安全、可控、透明</strong>。</p>
+<div class="table-wrapper"><table><thead><tr><th>原则</th><th>解决的根本问题</th><th>一句话总结</th></tr></thead><tbody>
+<tr><td>安全优先</td><td>Agent 可能犯错</td><td>不确定就问，不让错误变成灾难</td></tr>
+<tr><td>流式优先</td><td>等待摧毁信任</td><td>让用户始终知道 Agent 在做什么</td></tr>
+<tr><td>三维扩展</td><td>定制需求多样</td><td>每种需求有最低摩擦的扩展路径</td></tr>
+<tr><td>隔离通信</td><td>并发引入不确定性</td><td>默认隔离保证确定性，显式共享保证协作</td></tr>
+<tr><td>缓存即省钱</td><td>LLM 按 token 计费</td><td>字节级一致性是商业竞争力</td></tr>
+<tr><td>优雅降级</td><td>失败不可避免</td><td>压缩而非崩溃，重试而非放弃</td></tr>
+<tr><td>可观测性</td><td>黑箱不可信</td><td>测量一切，让用户和团队都能看见</td></tr>
+</tbody></table>
+</div>
+<p>这张表还可以从另一个角度读：每条原则回应的是用户与 Agent 交互中一种特定的<strong>不安感</strong>：</p>
+<ul>
+<li>安全优先回应「它会不会搞坏我的东西？」</li>
+<li>流式优先回应「它是不是卡死了？」</li>
+<li>三维扩展回应「它能不能做我需要的事？」</li>
+<li>隔离通信回应「子任务会不会互相干扰？」</li>
+<li>缓存即省钱回应「它会不会烧掉我的预算？」</li>
+<li>优雅降级回应「对话太长了会不会崩溃？」</li>
+<li>可观测性回应「它到底做了什么、花了多少钱？」</li>
+</ul>
+<p>每消除一种不安感，用户对 Agent 的信任就增加一层。七种不安感全部消除，Agent 才真正成为用户信赖的工作伙伴。</p>
+<p>这些原则是从大量实现代码中逆向提炼的。它们之所以有说服力，是因为它们不是理论——它们在每天被数百万用户使用的产品中经受住了考验。</p>
+<p>如果要把七条压缩成一条，那就是：<strong>可信 AI Agent 的核心不是「更智能」，而是「更可控」</strong>。智能由模型提供，可控由工程保证。模型会不断进步，但可控的工程原则不会过时。</p>
+<h3 id="原则之间的张力"><a class="header" href="#原则之间的张力">原则之间的张力</a></h3>
+<p>值得指出的是，这七条原则之间存在张力：</p>
+<p><strong>安全 vs 体验</strong>。灰名单层的每一次确认弹窗都是对用户流畅体验的打断。该系统通过多种机制缓解这个矛盾：会话级记忆（用户批准过一次的操作在同一会话内不再询问）、规则文件（用户可以预先声明信任的操作模式）、<code>acceptEdits</code> 模式（信任文件编辑但仍检查命令执行）。但矛盾永远无法完全消除——这是一个需要持续调优的平衡点。</p>
+<p><strong>隔离 vs 缓存</strong>。默认隔离意味着子 Agent 有自己的上下文副本，但 prompt cache 又要求请求前缀尽可能一致。缓存安全参数是这两个需求的调和点——隔离运行时状态，共享不可变的请求参数。</p>
+<p><strong>可观测性 vs 隐私</strong>。追踪用户的每一次操作、每一次 API 调用，在透明度上是好事。但如果遥测数据包含了用户的代码内容或文件路径呢？这就从「可观测性」变成了「监控」。注意遥测事件中有一个特殊的类型标注，其冗长的名字本身就是一个防护措施，强迫开发者在每次记录遥测数据时确认「这不包含代码或文件路径」。类型系统成为了隐私合规的执行者。</p>
+<p><strong>降级 vs 准确性</strong>。自动压缩通过摘要替代原始对话来释放空间，但摘要不可避免地丢失细节。一个 200 轮对话中第 37 轮提到的一个关键配置参数，在压缩后可能被省略。系统选择了「继续工作但可能遗漏细节」而非「保留所有细节但无法继续」——这是一个务实的取舍，但用户需要知道压缩发生了（通过 UI 通知），以便在必要时重新提供关键信息。</p>
+<p>承认这些张力不是否定原则的价值——恰恰相反，正是因为存在张力，才需要原则来指导取舍。原则不是万能钥匙，而是在面对冲突时帮你做出一致性决策的导航仪。</p>
+<h3 id="一条未成文的原则"><a class="header" href="#一条未成文的原则">一条未成文的原则</a></h3>
+<p>实现中还有一条贯穿始终但从未被显式声明的原则：<strong>命名即文档</strong>。</p>
+<p><code>Dream</code>、<code>Mailbox</code>、<code>orient/gather/consolidate/prune</code>、缓存安全参数、fork 占位结果——这些名字不需要注释就能传达设计意图。甚至连遥测类型标注也是一种命名文档——它的冗长恰恰是功能：让每个使用它的开发者停下来思考「我要记录的数据真的不包含代码或文件路径吗？」</p>
+<p>好的命名降低了两种成本：新成员理解系统的认知成本，和维护者在修改代码时做出错误假设的风险成本。当你需要在 <code>compaction</code> 和 <code>dream</code> 之间选择一个名字时，选那个能让六个月后的你（或你的继任者）一看就明白的那个。</p>
+<h3 id="给构建者的最后建议"><a class="header" href="#给构建者的最后建议">给构建者的最后建议</a></h3>
+<p>如果你正在构建自己的 AI Agent，不必照搬该系统的每一个实现细节——你的规模、约束和用户群体可能完全不同。但这七条原则值得在设计阶段就纳入考量，因为事后补救的成本远高于提前规划。</p>
+<p>一个实用的方法是：在项目开始时，为每条原则写一句话描述你的系统如何实现它。即使答案是「暂不实现，未来再说」，这种显式的决策记录也比隐式的遗漏好得多。因为遗漏意味着你在不知情的情况下做了一个决定——而那通常不是一个好决定。</p>
+<p>最后回到本章开头的类比：如果代码细节是树叶，这七条原则就是树干。叶子会随季节变化（API 接口会改、工具会增删、模型会升级），但树干提供了稳定的结构。五年后回看该系统的实现，具体的接口和函数名大概面目全非，但这七条原则——安全、流式、扩展、隔离、缓存、降级、可观测——大概率仍然成立。因为它们不是对某个技术选型的偏好，而是对「人类如何信任自主系统」这个根本问题的工程回答。</p>
+<hr />
+<blockquote>
+<p><strong>思考题</strong></p>
+<ol>
+<li>
+<p>「安全优先」原则中的灰名单层依赖用户判断。但如果 Agent 在凌晨 3 点执行一个定时任务，没有用户在场，灰名单层应该如何降级？该系统的五种权限模式中哪一种适合这个场景？如果都不合适，你会设计什么新模式？</p>
+</li>
+<li>
+<p>「缓存即省钱」原则要求所有子 Agent 使用相同的占位文本来保持前缀一致。如果未来需要支持不同模型的子 Agent（比如父用 Opus、子用 Sonnet），模型本身是缓存键的一部分——缓存策略需要如何调整？这种场景下还有可能共享缓存吗？</p>
+</li>
+<li>
+<p>「优雅降级」原则中，自动压缩会丢失对话细节。设计一种机制，让用户能在压缩后「恢复」被压缩的对话段落（类似 undo），同时不破坏当前的上下文窗口预算。这可能吗？</p>
+</li>
+<li>
+<p>选择你正在构建的（或想要构建的）一个 Agent 项目，逐条对照这七条原则，找出最薄弱的一条。设计一个具体的改进方案，评估实现成本和预期收益。</p>
+</li>
+<li>
+<p>本章提到的七条原则之间存在张力（安全 vs 体验、隔离 vs 缓存、可观测性 vs 隐私）。在你的项目中，哪对张力最突出？你目前的平衡点在哪里？如果用户投诉，你会往哪个方向调整？</p>
+</li>
+</ol>
+</blockquote>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-8/chapter-21.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-9/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-8/chapter-21.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-9/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 20: Commands &amp; Plugins - OpenBook: AI Agent Harness Engineering</title>
+
+
+        <!-- Custom HTML head -->
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="OpenBook: A comprehensive open-source book on AI Agent Harness Engineering. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills, and Cloud Deployment on AWS.">
+        <meta name="keywords" content="AI Agent, Agent Harness, LLM, Agent Framework, Agent Architecture, Multi-Agent, MCP Protocol, Agent Security, Agent Tools, AWS Bedrock, AI Engineering, Agent Design Patterns, OpenAI, Anthropic, Claude Code, Cursor, Devin">
+        <meta name="author" content="Dawei">
+        <meta name="robots" content="index, follow">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://dawei008.github.io/openbook/">
+        <meta property="og:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta property="og:description" content="Agent = LLM + Harness. A comprehensive open-source book (26 chapters) on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permissions, Multi-Agent, MCP, Skills, and AWS Deployment.">
+        <meta property="og:image" content="https://dawei008.github.io/openbook/cover.png">
+        <meta property="og:locale" content="zh_CN">
+        <meta property="og:locale:alternate" content="en_US">
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="OpenBook: AI Agent Harness Engineering">
+        <meta name="twitter:description" content="Agent = LLM + Harness. 26 chapters on building production-grade AI Agent Harnesses.">
+        <meta name="twitter:image" content="https://dawei008.github.io/openbook/cover.png">
+        
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "OpenBook: AI Agent Harness Engineering",
+          "alternateName": "OpenBook: \u6784\u5efa AI Agent \u7684 Harness \u5de5\u7a0b\u5b66",
+          "author": {
+            "@type": "Person",
+            "name": "Dawei"
+          },
+          "url": "https://dawei008.github.io/openbook/",
+          "image": "https://dawei008.github.io/openbook/cover.png",
+          "description": "A comprehensive open-source book on building production-grade AI Agent Harnesses. Covers Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, Skills Systems, and Cloud Deployment on AWS.",
+          "inLanguage": ["zh-CN", "en"],
+          "genre": "Technology",
+          "about": [
+            {"@type": "Thing", "name": "AI Agent"},
+            {"@type": "Thing", "name": "Agent Harness"},
+            {"@type": "Thing", "name": "Large Language Models"},
+            {"@type": "Thing", "name": "Multi-Agent Systems"},
+            {"@type": "Thing", "name": "MCP Protocol"}
+          ],
+          "numberOfPages": 30,
+          "bookFormat": "https://schema.org/EBook",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT"
+        }
+        </script>
+        
+        <!-- FAQ Schema for GEO optimization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is an AI Agent Harness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems, permission models, memory management, multi-agent orchestration, and error recovery. According to analysis of production Agent systems like Claude Code and Cursor, the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%. The formula is: Agent = LLM + Harness."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What topics does OpenBook cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook covers 26 chapters across 9 parts: (1) Agent Loop core mechanics, (2) Tool system architecture and execution, (3) Permission models and sandbox isolation, (4) Memory systems and context window management, (5) Multi-agent orchestration and communication, (6) MCP Protocol deep dive (6 chapters), (7) Skills and extension systems, (8) Design philosophy and frontier topics like Dream systems, (9) Practical deployment on AWS with OpenHarness. Plus 4 appendices with architecture diagrams, type definitions, feature flags, and a hands-on mini harness tutorial."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Who should read OpenBook?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OpenBook is designed for AI application developers building Agent products, software architects evaluating Agent frameworks like LangChain or CrewAI, LLM researchers interested in engineering amplification beyond model capabilities, and technical professionals who want to understand how production AI Agents (Cursor, Claude Code, Devin) actually work beyond simple demos."
+              }
+            }
+          ]
+        }
+        </script>
+
+        <meta name="description" content="A comprehensive open-source book on building production-grade AI Agent Harnesses. 26 chapters covering Agent Loop, Tool Systems, Permission Models, Multi-Agent Orchestration, MCP Protocol, and Cloud Deployment.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">OpenBook: AI Agent Harness Engineering</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/dawei008/openbook/edit/main/./part-7/chapter-20.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-20-commands-与-plugin-体系"><a class="header" href="#chapter-20-commands-与-plugin-体系">Chapter 20: Commands 与 Plugin 体系</a></h1>
+<blockquote>
+<p>80+ 个命令如何从一堆 import 变成可发现、可扩展、可控的交互体系？</p>
+</blockquote>
+<pre><code>     ┌──────────────────────────────┐
+     │         User Input           │
+     │            │                 │
+     │      / (slash prefix)        │
+     │            │                 │
+     │ ★ Command System ★          │  ◄── 本章聚焦
+     │ ┌──────────────────────────┐ │
+     │ │ Builtin │ Skill │ Plugin │ │
+     │ │  local  │prompt │  MCP   │ │
+     │ │local-jsx│      │ hooks  │ │
+     │ └─────┬────┬──────┬───────┘ │
+     │       │    │      │         │
+     │   execute inject connect    │
+     │       ▼    ▼      ▼         │
+     │   [Result/Prompt/Service]   │
+     └──────────────────────────────┘
+</code></pre>
+<h2 id="201-问题用户交互的入口"><a class="header" href="#201-问题用户交互的入口">20.1 问题：用户交互的入口</a></h2>
+<p>前两章讲了 Agent 如何连接外部世界（MCP）和安装专业知识（Skills）。但用户怎么触发这一切？</p>
+<p>在该 Agent 系统中输入 <code>/</code>，你会看到数十个可用命令。<code>/commit</code> 生成提交信息，<code>/review</code> 审查代码，<code>/mcp</code> 管理外部服务连接。这些命令是用户与 Agent 交互的「正门」-- 相比自然语言描述意图，命令提供了精确的、可发现的操作入口。</p>
+<p>但这不只是一个「命令注册表」的问题。80+ 个命令来自五种不同来源（内置、Skill、Plugin、工作流、MCP），有些只对特定用户可见，有些在远程模式下被禁用，有些需要运行时条件才能启用。如何组织这些命令，让用户感觉是一个无缝的整体，同时让开发者可以从多个维度扩展？</p>
+<h2 id="202-三种命令类型不同的执行模型"><a class="header" href="#202-三种命令类型不同的执行模型">20.2 三种命令类型：不同的执行模型</a></h2>
+<p>命令类型定义模块定义了命令的类型系统。三种类型对应三种完全不同的执行方式。</p>
+<p><strong>Prompt 命令</strong>。type 为 <code>'prompt'</code>。调用时返回一段文本注入对话，让模型来执行后续操作。Skills 就是这种类型。核心方法是提示词获取函数 -- 它不执行任何操作，只提供指令。模型收到指令后自行决定如何完成任务。</p>
+<p>这是最有意思的类型：命令本身不做事，它只是给模型传递了「做什么」的知识。<code>/review</code> 不是一个 review 程序，它是一段告诉模型如何做 review 的提示词。</p>
+<p><strong>Local 命令</strong>。type 为 <code>'local'</code>。在本地直接执行，不经过模型。<code>/clear</code> 清屏、<code>/cost</code> 显示费用。它们通过 lazy loading 加载实现模块：</p>
+<pre><code class="language-pseudocode">type LocalCommand = {
+    type: 'local'
+    supportsNonInteractive: boolean
+    load: () =&gt; Promise&lt;CommandModule&gt;
+}
+</code></pre>
+<p><code>load</code> 返回一个 Promise -- 命令模块只在真正调用时才被导入。这是性能优化：80+ 个命令如果启动时全部加载，会拖慢启动速度。</p>
+<p><strong>Local-JSX 命令</strong>。type 为 <code>'local-jsx'</code>。渲染交互式 UI（基于 Ink/React）。<code>/mcp</code> 显示 Server 管理界面，<code>/skills</code> 列出可用技能。它们与 local 的区别在于需要 Ink 运行时，这在某些环境中（如远程 bridge）不可用。</p>
+<h2 id="203-命令注册一个-memoized-的大数组"><a class="header" href="#203-命令注册一个-memoized-的大数组">20.3 命令注册：一个 memoized 的大数组</a></h2>
+<p>命令聚合模块开头是一长串 import -- 超过 80 个命令模块。所有命令通过一个 memoized 函数聚合：</p>
+<pre><code class="language-pseudocode">ALL_COMMANDS = memoize((): Command[] =&gt; [
+    addDir, advisor, agents, branch, btw, chrome, clear, ...
+    ...(bridgeEnabled ? [bridgeCmd] : []),
+    ...(voiceEnabled ? [voiceCmd] : []),
+    ...(isInternalUser &amp;&amp; !isDemo ? INTERNAL_COMMANDS : []),
+])
+</code></pre>
+<p>三个设计决策值得关注：</p>
+<p><strong>memoize</strong>。数组只构造一次。因为构造过程涉及 feature flag 检查和条件展开，memoize 避免了重复计算。</p>
+<p><strong>条件展开</strong>。<code>...(feature ? [cmd] : [])</code> 在编译期和运行期双重控制命令的可见性。当 flag 关闭时，对应的 <code>require()</code> 调用在编译期被 dead code elimination 移除 -- 不仅运行时不加载，连代码本身都不出现在产物中。</p>
+<p><strong>为什么是函数而不是常量</strong>。底层函数需要读取配置，而配置在模块初始化时还不可用。用函数包装，延迟到首次调用时才执行。</p>
+<h2 id="204-feature-gated-命令编译期裁剪"><a class="header" href="#204-feature-gated-命令编译期裁剪">20.4 Feature-Gated 命令：编译期裁剪</a></h2>
+<p>命令聚合模块集中展示了 feature flag 控制的命令：</p>
+<pre><code class="language-pseudocode">proactiveCmd = FEATURE('PROACTIVE') || FEATURE('KAIROS')
+    ? require('./commands/proactive') : null
+bridgeCmd = FEATURE('BRIDGE_MODE')
+    ? require('./commands/bridge/index') : null
+voiceCmd = FEATURE('VOICE_MODE')
+    ? require('./commands/voice/index') : null
+</code></pre>
+<p><code>FEATURE()</code> 是编译期常量。这不是运行时检查 -- 当 flag 为 false 时，整个 <code>require()</code> 调用被 bundler 的 dead code elimination 移除。最终产物中不存在这些命令的代码。</p>
+<p>还有一组 internal-only 命令：</p>
+<pre><code class="language-pseudocode">INTERNAL_COMMANDS = [
+    backfillSessions, breakCache, bughunter, commit, commitPushPr, ...
+]
+</code></pre>
+<p>这些只在内部员工环境下加载。与 feature flag 不同，这是运行时检查，因为用户类型是环境变量。</p>
+<h2 id="205-命令聚合五路并行加载"><a class="header" href="#205-命令聚合五路并行加载">20.5 命令聚合：五路并行加载</a></h2>
+<p>加载所有命令的核心函数是获取所有可用命令的入口：</p>
+<pre><code class="language-pseudocode">loadAllCommands = memoize(async (cwd: string): Promise&lt;Command[]&gt; =&gt; {
+    [
+        { skillDirCommands, pluginSkills, bundledSkills, builtinPluginSkills },
+        pluginCommands,
+        workflowCommands,
+    ] = await Promise.all([
+        getSkills(cwd),
+        getPluginCommands(),
+        getWorkflowCommands ? getWorkflowCommands(cwd) : Promise.resolve([]),
+    ])
+
+    return [
+        ...bundledSkills,         // 1. 内置 Skills
+        ...builtinPluginSkills,   // 2. 内置插件 Skills
+        ...skillDirCommands,      // 3. 目录加载的 Skills
+        ...workflowCommands,      // 4. 工作流命令
+        ...pluginCommands,        // 5. 插件命令
+        ...pluginSkills,          // 6. 插件 Skills
+        ...ALL_COMMANDS(),        // 7. 内建命令（最后）
+    ]
+})
+</code></pre>
+<p>拼接顺序暗含优先级：内建命令放在最后。这意味着如果用户定义了一个与内建命令同名的 Skill，用户的 Skill 会被优先匹配 -- 用户意图高于系统默认。</p>
+<p>Skills 加载的错误处理策略值得注意：每一路加载都包裹在 <code>.catch()</code> 中，失败时返回空数组并记录日志，而不是让整个命令系统崩溃。这是防御性编程的范例 -- Skill 加载是非关键路径，一个有问题的 Skill 不应该阻止 <code>/help</code> 或 <code>/clear</code> 的正常使用。</p>
+<h2 id="206-可用性过滤动态的命令可见性"><a class="header" href="#206-可用性过滤动态的命令可见性">20.6 可用性过滤：动态的命令可见性</a></h2>
+<p>命令获取函数在加载基础上添加了两层过滤：</p>
+<pre><code class="language-pseudocode">baseCommands = allCommands.filter(
+    cmd =&gt; meetsAvailability(cmd) &amp;&amp; isEnabled(cmd),
+)
+</code></pre>
+<p><strong>可用性检查函数</strong>根据用户的认证状态过滤命令：</p>
+<pre><code class="language-pseudocode">function meetsAvailability(cmd: Command): boolean {
+    if !cmd.availability: return true
+    for a in cmd.availability:
+        switch a:
+            case 'web-app':
+                if isSubscriber(): return true; break
+            case 'console':
+                if !isSubscriber() &amp;&amp; !isThirdParty() &amp;&amp; isFirstPartyUrl():
+                    return true; break
+    return false
+}
+</code></pre>
+<p>某些命令只对 Web 端订阅者可见，某些只对 API 控制台用户可见。注意这个函数<strong>没有被 memoize</strong> -- 注释明确说明：认证状态可能在会话中改变（用户执行了 <code>/login</code>），每次调用都必须重新评估。</p>
+<p><strong>动态 Skill 插入</strong>。运行时发现的 Skill 被插入到内建命令之前、其他扩展命令之后：</p>
+<pre><code class="language-pseudocode">insertIndex = baseCommands.findIndex(c =&gt; builtInNames.has(c.name))
+return [
+    ...baseCommands.slice(0, insertIndex),
+    ...uniqueDynamicSkills,
+    ...baseCommands.slice(insertIndex),
+]
+</code></pre>
+<p>这个位置选择保证了动态 Skill 不会覆盖内建命令，但在补全列表中会出现在内建命令之前。</p>
+<h2 id="207-安全边界远程模式与-bridge-模式"><a class="header" href="#207-安全边界远程模式与-bridge-模式">20.7 安全边界：远程模式与 Bridge 模式</a></h2>
+<p>不同运行环境下，不同的命令是被允许的。代码定义了明确的安全边界。</p>
+<p><strong>远程安全命令集</strong> -- 在 <code>--remote</code> 模式下可用的命令集合：</p>
+<pre><code class="language-pseudocode">REMOTE_SAFE: Set&lt;Command&gt; = new Set([
+    session, exit, clear, help, theme, color, vim, cost, usage, copy, ...
+])
+</code></pre>
+<p>只有不依赖本地文件系统、git、shell、IDE 或 MCP 的命令才能在远程模式下使用。这不是功能限制，而是安全设计 -- 远程模式下，命令在远端执行，本地资源不可达。</p>
+<p><strong>Bridge 安全命令集</strong> -- 通过远程桥接（移动端/Web 客户端）可用的命令子集：</p>
+<pre><code class="language-pseudocode">BRIDGE_SAFE: Set&lt;Command&gt; = new Set([
+    compact, clear, cost, summary, releaseNotes, files,
+])
+</code></pre>
+<p>Bridge 安全检查函数的逻辑揭示了类型与安全的关系：</p>
+<pre><code class="language-pseudocode">function isBridgeSafe(cmd: Command): boolean {
+    if cmd.type === 'local-jsx': return false    // 渲染 Ink UI 的不行
+    if cmd.type === 'prompt': return true         // Skills 都可以
+    return BRIDGE_SAFE.has(cmd)                   // Local 命令需要显式白名单
+}
+</code></pre>
+<p>local-jsx 命令需要终端渲染能力，在手机上无法工作，所以一律禁止。Prompt 命令只是文本扩展，不涉及 UI，所以全部允许。只有 local 命令需要逐个审查安全性。</p>
+<h2 id="208-plugin-体系比-skill-更重的扩展"><a class="header" href="#208-plugin-体系比-skill-更重的扩展">20.8 Plugin 体系：比 Skill 更重的扩展</a></h2>
+<p>Plugin 是该系统扩展体系中最重量级的单元。一个 Plugin 可以同时提供 Commands、Skills、Hooks 和 MCP Servers -- 四种能力捆绑在一起。</p>
+<p>内置 Plugin 管理模块展示了 Plugin 的核心结构：</p>
+<pre><code class="language-pseudocode">plugin: LoadedPlugin = {
+    name,
+    manifest: { name, description, version },
+    path: BUILTIN_MARKETPLACE,
+    source: pluginId,          // 格式: "name@marketplace"
+    repository: pluginId,
+    enabled: isEnabled,
+    isBuiltin: true,
+    hooksConfig: definition.hooks,
+    mcpServers: definition.mcpServers,
+}
+</code></pre>
+<p>Plugin 启用/禁用遵循三层判断：</p>
+<ol>
+<li><code>isAvailable()</code> -- 运行环境检测。某些 Plugin 只在特定 OS 上可用</li>
+<li>用户设置 -- 用户的显式偏好</li>
+<li>默认状态 -- Plugin 声明的默认值</li>
+</ol>
+<p>先检查能不能用，再检查用户要不要用，最后看默认值。这个顺序保证了环境限制不可被用户覆盖，而用户偏好可以覆盖默认值。</p>
+<p>Plugin 提供的 Skills 通过收集函数聚合 -- 只有启用的 Plugin 的 Skills 才会被加载。将 Plugin Skill 转换为标准 Command 时，source 设为 <code>'bundled'</code> 而不是 <code>'builtin'</code>。注释解释了这个反直觉的选择：</p>
+<pre><code class="language-pseudocode">// 'bundled' not 'builtin' -- 'builtin' in Command.source means hardcoded
+// slash commands (/help, /clear). Using 'bundled' keeps these skills in
+// the Skill tool's listing, analytics name logging, and prompt-truncation
+// exemption.
+</code></pre>
+<p><code>'builtin'</code> 有特殊含义（硬编码的系统命令），用 <code>'bundled'</code> 让 Plugin Skill 保持在技能列表中、分析日志中和 prompt 截断豁免中。命名虽然令人困惑，但语义是精确的。</p>
+<h2 id="209-缓存策略两级清除"><a class="header" href="#209-缓存策略两级清除">20.9 缓存策略：两级清除</a></h2>
+<p>命令系统使用了多层 memoize 缓存。命令聚合模块定义了两级缓存清除：</p>
+<pre><code class="language-pseudocode">function clearMemoizationCaches():
+    loadAllCommands.cache?.clear()
+    getSkillToolList.cache?.clear()
+    getSlashCommandSkills.cache?.clear()
+    clearSkillIndex?.()
+
+function clearAllCaches():
+    clearMemoizationCaches()
+    clearPluginCommandCache()
+    clearPluginSkillsCache()
+    clearSkillDirectoryCaches()
+</code></pre>
+<p><strong>轻量清除</strong>：只清除聚合层的缓存，底层数据源保持不变。用于动态 Skill 发现时 -- 新 Skill 被发现后，聚合层需要知道有新数据，但不需要重新扫描所有目录。</p>
+<p><strong>全量清除</strong>：清除所有层级的缓存，包括 Skill 文件缓存和 Plugin 缓存。用于配置变更或显式刷新。</p>
+<p>注意 Skill 索引清除函数是通过 feature flag 有条件引入的 -- 如果实验性 Skill 搜索未启用，这个清除就不存在。这是又一个编译期裁剪的例子。</p>
+<h2 id="2010-命令查找名称规范名和别名"><a class="header" href="#2010-命令查找名称规范名和别名">20.10 命令查找：名称、规范名和别名</a></h2>
+<p>命令查找函数的查找逻辑涉及三种匹配：</p>
+<pre><code class="language-pseudocode">function findCommand(commandName: string, commands: Command[]): Command | undefined {
+    return commands.find(cmd =&gt;
+        cmd.name === commandName ||
+        getCanonicalName(cmd) === commandName ||
+        cmd.aliases?.includes(commandName),
+    )
+}
+</code></pre>
+<p><code>name</code> 是内部标识符，规范名获取函数返回用户可见的规范名（可能经过格式化），<code>aliases</code> 是别名列表。<code>.find()</code> 返回第一个匹配项 -- 因为加载顺序是 Skills 在前、内建命令在后，同名的 Skill 会「遮蔽」内建命令。这是有意为之的优先级设计。</p>
+<h2 id="2011-三大扩展机制的协同"><a class="header" href="#2011-三大扩展机制的协同">20.11 三大扩展机制的协同</a></h2>
+<p>Commands + Skills + MCP 不是三个独立系统，而是三种不同复杂度的扩展维度。让我们从用户行为的角度理解它们的协同。</p>
+<p><strong>维度一：Commands -- 用户交互层</strong>。用户输入 <code>/review</code>，系统查找到对应的 prompt 命令，调用提示词获取函数，注入对话。如果是 local 命令如 <code>/clear</code>，则直接执行。如果是 local-jsx 命令如 <code>/mcp</code>，则渲染交互式 UI。</p>
+<p><strong>维度二：Skills -- 模型能力层</strong>。模型在工作过程中发现需要特定知识（比如安全审查规则），通过 SkillTool 调用对应的 Skill。Skill 的内容被注入到对话中，模型阅读后自行执行。条件 Skill 在模型碰到匹配文件时自动就位。</p>
+<p><strong>维度三：MCP -- 服务集成层</strong>。模型需要创建 GitHub PR，调用 <code>mcp__github__create_pull_request</code>。请求通过 MCP 协议发送到 GitHub Server，Server 执行 API 调用，结果返回模型。</p>
+<p>三者通过统一的 <code>Command</code> 类型汇合。Skill 是特殊的 Command（type 为 <code>'prompt'</code>），MCP 工具是独立的 Tool（但 MCP Prompts 也变成 Command）。加载时序如下：</p>
+<pre><code>启动
+  |-- 注册内置 Skills
+  |-- 注册内置 Plugins
+  |-- 连接 MCP Servers
+
+运行时
+  |-- 获取所有命令
+  |     |-- 加载 Skills（目录、Plugin、Bundled）
+  |     |-- 加载 Plugin 命令
+  |     |-- 加载内建命令
+  |     |-- 加载动态发现的 Skills
+
+文件操作时
+  |-- 发现新 Skill 目录
+  |-- 激活条件 Skills
+</code></pre>
+<p>名称空间的隔离防止冲突：内建命令用短名称（<code>help</code>、<code>clear</code>），MCP 工具用 <code>mcp__</code> 前缀（<code>mcp__github__create_issue</code>），Skill 用目录名（<code>security-review</code>）。Plugin 命令可以使用任意名称，但如果与已有命令冲突，先注册的优先。</p>
+<p>这个三层架构的关键洞察是：<strong>每一层解决不同的问题</strong>。</p>
+<ul>
+<li>需要精确的用户交互入口？用 Command</li>
+<li>需要可复用的领域知识？用 Skill</li>
+<li>需要外部服务集成？用 MCP</li>
+<li>需要以上全部？用 Plugin 打包</li>
+</ul>
+<p>而且进入门槛是渐进的：从写一个 Markdown 文件（Skill），到配置一个 JSON（MCP），到开发一个完整的插件包（Plugin）。用户可以根据需求选择合适的复杂度。</p>
+<hr />
+<p><strong>本章思考题</strong></p>
+<ol>
+<li>
+<p>命令加载把内建命令放在拼接顺序的最后，允许用户 Skill 遮蔽内建命令。这个设计有什么风险？如果一个恶意的项目级 Skill 把自己命名为 <code>help</code> 或 <code>clear</code>，会发生什么？</p>
+</li>
+<li>
+<p>可用性检查函数不被 memoize，每次调用都重新评估。如果改成 memoize 会出什么问题？反过来，每次都重新评估的性能成本有多大？</p>
+</li>
+<li>
+<p>Bridge 安全策略中，prompt 命令被一律允许而 local-jsx 被一律禁止。如果一个 prompt Skill 包含恶意指令（如「删除所有文件」），这个策略是否足够安全？安全边界应该在哪里？</p>
+</li>
+<li>
+<p>Plugin 系统目前的内置插件初始化是空的（注释说是 scaffolding）。从 bundled skill 迁移到 built-in plugin 的动机可能是什么？两者在可控性上有什么本质区别？</p>
+</li>
+</ol>
+<hr />
+<div id="backlink-home">
+<p><a href="../README.html">← 返回目录</a></p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../part-7/chapter-19.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../part-8/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../part-7/chapter-19.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../part-8/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
