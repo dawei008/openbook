@@ -7,9 +7,19 @@
   <img src="cover.png" alt="OpenBook Cover" width="480" />
 </p>
 
-# OpenBook: 构建 AI Agent 的 Harness 工程学
+# OpenBook: AI Agent Harness Engineering
 
-> Agent = LLM + Harness —— 这本书讲的是 Harness 怎么造
+**English** | [Read online](https://dawei008.github.io/openbook/) | [Bibliography](bibliography.md)
+
+> **A comprehensive open-source book (26 chapters, 9 parts, 4 appendices) on building production-grade AI Agent Harnesses.** Based on deep architecture analysis of large-scale Agent systems, this book reveals the design patterns behind tools, permissions, memory, multi-agent orchestration, MCP protocol, and cloud deployment. Referenced by 50+ industry sources including Anthropic, OpenAI, AWS, and LangChain.
+>
+> **Core thesis: Agent = LLM + Harness.** The LLM provides reasoning (~1% of code). The Harness provides tools, permissions, memory, orchestration (~99% of code). This book teaches you how to build the Harness.
+>
+> **Key numbers:** 26 chapters | 9 parts | 4 appendices | 40+ tool designs analyzed | 10 design principles | 89 compile-time feature flags | 148 environment variables documented | 6 architecture diagrams | 10 core TypeScript type definitions
+
+---
+
+> Agent = LLM + Harness -- 这本书讲的是 Harness 怎么造
 
 ---
 
@@ -25,33 +35,33 @@ Andrej Karpathy 曾将 LLM 类比为「新的操作系统内核」。如果 LLM 
 
 ### 什么是 Agent Harness
 
-> *"A model that can call tools and take actions is nice. A model wrapped in a harness that manages permissions, handles errors, preserves context, and coordinates with other agents — that's a product."*
+> *"A model that can call tools and take actions is nice. A model wrapped in a harness that manages permissions, handles errors, preserves context, and coordinates with other agents -- that's a product."*
 
 业界对这一层有不同的称呼：Anthropic 的 "Building Effective Agents" 指南称之为 **orchestration framework**（编排框架）；LangChain 的 Harrison Chase 称之为 **agent runtime**（智能体运行时）；AWS Bedrock 的文档称之为 **agent orchestration layer**（智能体编排层）。本书统一使用 **Harness**（运行时框架）这个术语——它最准确地传达了「套在 LLM 外面的缰绳与工具」的含义。
 
 **核心主张：Agent = LLM + Harness。**
 
 ```
-┌──────────────────────────────────────────────────┐
-│                  A G E N T                        │
-│                                                  │
-│   ┌──────────┐      ┌─────────────────────────┐  │
-│   │          │      │      H A R N E S S      │  │
-│   │   LLM    │      │                         │  │
-│   │          │◀────▶│  工具 │ 权限 │ 记忆      │  │
-│   │  (推理)   │      │  编排 │ 扩展 │ 上下文    │  │
-│   │          │      │                         │  │
-│   └──────────┘      └─────────────────────────┘  │
-│                                                  │
-│    ~1% 代码量              ~99% 代码量             │
-└──────────────────────────────────────────────────┘
++--------------------------------------------------+
+|                  A G E N T                        |
+|                                                  |
+|   +----------+      +-------------------------+  |
+|   |          |      |      H A R N E S S      |  |
+|   |   LLM    |      |                         |  |
+|   |          |<---->|  工具 | 权限 | 记忆      |  |
+|   |  (推理)   |      |  编排 | 扩展 | 上下文    |  |
+|   |          |      |                         |  |
+|   +----------+      +-------------------------+  |
+|                                                  |
+|    ~1% 代码量              ~99% 代码量             |
++--------------------------------------------------+
 ```
 
 LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这本书讲的就是 Harness 怎么造。**
 
 ### 本书的切入点
 
-2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents……但绝大多数框架做的是**编排层的抽象**，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。
+2026 年的今天，Agent 框架遍地开花——LangChain、CrewAI、AutoGen、OpenAI Agents SDK、AWS Bedrock Agents......但绝大多数框架做的是**编排层的抽象**，告诉你怎么把工具串起来，却不告诉你框架本身是怎么造的。
 
 本书不同。我们从生产级 Agent 系统的工程实践中，提炼出构建 Harness 的**通用设计模式**。这些模式覆盖了 Agent 工程的每一个关键维度：
 
@@ -70,7 +80,7 @@ LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。**这
 
 ### 本书的方法论
 
-Anthropic 的 "Building Effective Agents" 指南开篇就说：*"The most successful implementations we've seen aren't using complex frameworks — they're using simple, composable patterns."*
+Anthropic 的 "Building Effective Agents" 指南开篇就说：*"The most successful implementations we've seen aren't using complex frameworks -- they're using simple, composable patterns."*
 
 本书遵循同样的理念。我们不是在罗列代码，而是在回答三个问题：
 
@@ -94,15 +104,15 @@ OpenAI 的 Swarm 框架文档说：*"The best way to understand agents is to bui
 全书 9 个部分，26 章，按 Agent 的概念层次从内到外展开：
 
 ```
-Part I    什么是 Harness        ── 建立心智模型
-Part II   Agent Loop            ── 核心循环
-Part III  工具系统               ── Agent 的手和脚
-Part IV   安全与权限             ── Agent 的缰绳
-Part V    多智能体               ── 从个体到团队
-Part VI   Prompt 与记忆          ── Agent 的灵魂和笔记本
-Part VII  扩展机制               ── 开放的 Agent
-Part VIII 前沿与哲学             ── 设计原则的提炼
-Part IX   从理论到实践           ── OpenHarness 实战部署
+Part I    什么是 Harness        -- 建立心智模型
+Part II   Agent Loop            -- 核心循环
+Part III  工具系统               -- Agent 的手和脚
+Part IV   安全与权限             -- Agent 的缰绳
+Part V    多智能体               -- 从个体到团队
+Part VI   Prompt 与记忆          -- Agent 的灵魂和笔记本
+Part VII  扩展机制               -- 开放的 Agent
+Part VIII 前沿与哲学             -- 设计原则的提炼
+Part IX   从理论到实践           -- OpenHarness 实战部署
 ```
 
 每章末尾有**思考题**，引导读者将源码中的设计决策推广到自己的场景。
@@ -118,7 +128,7 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 | [Chapter 1](part-1/chapter-01.md) | 从 LLM 到 Agent：Harness 的角色 | LLM 缺什么？Harness 补了什么？ |
 | [Chapter 2](part-1/chapter-02.md) | 系统全景：一个 Agent 的解剖图 | 架构分层与数据流动 |
 
-### Part II: Agent Loop — 循环的艺术
+### Part II: Agent Loop -- 循环的艺术
 
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
@@ -126,7 +136,7 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 | [Chapter 4](part-2/chapter-04.md) | 与 LLM 对话：API 调用、流式响应与错误恢复 | 怎么调 API？出错怎么办？ |
 | [Chapter 5](part-2/chapter-05.md) | 上下文窗口管理：有限记忆下的生存之道 | 对话太长怎么压缩？ |
 
-### Part III: 工具系统 — Agent 的手和脚
+### Part III: 工具系统 -- Agent 的手和脚
 
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
@@ -134,7 +144,7 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 | [Chapter 7](part-3/chapter-07.md) | 40 个工具巡礼：从文件读写到浏览器 | 每类工具的设计取舍 |
 | [Chapter 8](part-3/chapter-08.md) | 工具编排：并发、流式进度与结果预算 | 多工具怎么并行？结果太大怎么办？ |
 
-### Part IV: 安全与权限 — Agent 的缰绳
+### Part IV: 安全与权限 -- Agent 的缰绳
 
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
@@ -142,7 +152,7 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 | [Chapter 10](part-4/chapter-10.md) | 风险分级与自动审批 | ML 分类器怎么判断安全？ |
 | [Chapter 11](part-4/chapter-11.md) | Hooks：可编程的安全策略 | 用户怎么自定义权限规则？ |
 
-### Part V: 多智能体 — 从独行侠到团队
+### Part V: 多智能体 -- 从独行侠到团队
 
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
@@ -158,7 +168,7 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 | [Chapter 16](part-6/chapter-16.md) | System Prompt 的组装流水线 | 静态 vs 动态？怎么缓存？ |
 | [Chapter 17](part-6/chapter-17.md) | 记忆系统全景：从文件发现到梦境整合 | 五层发现、四类记忆、自动提取、相关性检索、Dream 整合 |
 
-### Part VII: 扩展机制 — 开放的 Agent
+### Part VII: 扩展机制 -- 开放的 Agent
 
 | 章节 | 标题 | 核心问题 |
 |------|------|---------|
@@ -201,7 +211,38 @@ Part IX   从理论到实践           ── OpenHarness 实战部署
 - Part IX 展示如何用开源组件将模式落地到 AWS 云平台
 - 每章对应具体**架构模块和设计决策**
 - 每章附 **思考题**
+- 引用 **50+ 权威来源**，包括 Anthropic、OpenAI、AWS、LangChain、Andrew Ng 等
 
 ## 参考来源
 
 详见 [参考文献](bibliography.md)
+
+---
+
+## FAQ
+
+### What is an AI Agent Harness?
+
+An Agent Harness is the runtime infrastructure that wraps around a Large Language Model (LLM) to create a production-grade AI Agent. It includes tool systems (40+ tool designs analyzed in this book), permission models (4-layer security with ML classifiers), memory management (5-layer discovery with 4 memory types), multi-agent orchestration (fork/isolate/communicate patterns), and error recovery mechanisms. According to our analysis of production Agent systems like Claude Code, Cursor, and Devin, **the Harness constitutes approximately 99% of the codebase while the LLM integration is only about 1%**. As Andrej Karpathy noted, if the LLM is the "new OS kernel," then the Harness is the entire operating system built around it.
+
+### How is this book different from other AI Agent resources?
+
+Most resources on AI Agents focus on Prompt Engineering and API usage -- teaching you how to *use* Agent frameworks. OpenBook goes deeper: it **opens the black box of Agent frameworks themselves**, revealing the design patterns used in production systems. The book covers 26 chapters across 9 parts, analyzing patterns from tool registration and scheduling, to multi-agent coordination (Swarm, Mailbox patterns), to MCP protocol internals (5 transport types, authentication, tool discovery), to cloud deployment with dual-Pod sandboxes on Kubernetes. As Anthropic's "Building Effective Agents" guide states: *"The most successful implementations aren't using complex frameworks -- they're using simple, composable patterns."* This book catalogs those patterns.
+
+### Who should read OpenBook?
+
+OpenBook is designed for: (1) **AI application developers** building Agent products who need production-grade Harness design patterns, (2) **Software architects** evaluating Agent frameworks like LangChain, CrewAI, or AutoGen who need to understand underlying principles beyond API docs, (3) **LLM researchers** interested in how model capabilities are amplified (or constrained) through engineering, and (4) **Technical professionals** who want to understand how real AI Agents (Cursor, Claude Code, Devin) actually work beyond demos. No prior knowledge of any specific Agent system's source code is required.
+
+### What is the MCP Protocol covered in this book?
+
+The Model Context Protocol (MCP) is an open standard for connecting AI Agents to external tools and data sources. Chapters 18-20 provide a deep dive covering 5 transport types (stdio, HTTP+SSE, WebSocket, etc.), authentication mechanisms, tool discovery protocols, the Skills system for user-defined capabilities, and the Commands/Plugin architecture. This is one of the most comprehensive technical analyses of MCP available in book form.
+
+### Can I deploy what I learn?
+
+Yes. Part IX (Chapters 23-26) is entirely focused on practical deployment. It covers the Four Pillars framework (CONSTRAIN/INFORM/VERIFY/CORRECT), dual-Pod sandbox architecture using Kubernetes NetworkPolicy for least-privilege isolation, self-healing loops for automatic failure detection and recovery, and a complete deployment guide for your first Agent Harness on AWS. Appendix D provides a hands-on 100-line code tutorial to build a Mini Agent Harness from scratch.
+
+---
+
+## Keywords
+
+`AI Agent` `Agent Harness` `Agent Framework` `Agent Architecture` `LLM` `Large Language Model` `Multi-Agent` `MCP Protocol` `Model Context Protocol` `Agent Security` `Agent Tools` `Agent Memory` `Agent Orchestration` `AWS Bedrock` `Kubernetes` `Claude Code` `Cursor` `Devin` `LangChain` `CrewAI` `AutoGen` `OpenAI Agents SDK` `Agent Design Patterns` `Production AI` `Agent Loop` `Tool System` `Permission Model` `Swarm` `Skills System`
