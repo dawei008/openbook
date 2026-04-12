@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenBook — AI Agent Harness Engineering</title>
+<meta name="description" content="An open-source book on building production-grade AI Agent Harnesses. 26 chapters, bilingual CN/EN.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAFAF8;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --accent: #B8510D;
+    --teal: #1A6B5C;
+    --border: #d2d2d7;
+    --surface: #f5f5f7;
+    --white: #ffffff;
+    --max-w: 980px;
+    --max-w-wide: 1120px;
+  }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* === NAV === */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250, 250, 248, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: var(--max-w-wide);
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  .nav-brand {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-links .lang-switch {
+    font-size: 12px;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 980px;
+    color: var(--text-secondary);
+  }
+
+  .nav-links .lang-switch:hover {
+    background: var(--text);
+    color: var(--white);
+    border-color: var(--text);
+  }
+
+  /* === HERO === */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Noto Serif SC', 'Inter', serif;
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .accent { color: var(--accent); }
+
+  .hero .subtitle {
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .hero .equation {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    color: var(--text-tertiary);
+    margin-bottom: 36px;
+  }
+
+  .hero .equation code {
+    background: var(--surface);
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: var(--text-secondary);
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 24px;
+    border-radius: 980px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+  }
+
+  .btn-primary:hover { background: #9a4309; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .hero-cover {
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .hero-cover img {
+    width: 100%;
+    display: block;
+  }
+
+  /* === STATS === */
+  .stats {
+    background: var(--white);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 48px 24px;
+  }
+
+  .stats-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 48px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin-top: 8px;
+  }
+
+  /* === SECTIONS === */
+  section {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  section h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  section .section-sub {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 17px;
+    max-width: 600px;
+    margin: 0 auto 56px;
+    line-height: 1.6;
+  }
+
+  /* === CONCEPT === */
+  .concept-box {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .concept-box pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    text-align: left;
+    display: inline-block;
+    margin: 24px 0;
+  }
+
+  .concept-box .highlight {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* === TOC === */
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .toc-card {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+
+  .toc-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 20px rgba(184, 81, 13, 0.06);
+    transform: translateY(-1px);
+  }
+
+  .toc-part {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .toc-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .toc-chapters {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    line-height: 1.6;
+  }
+
+  /* === DOWNLOAD === */
+  .download-section {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 56px;
+    text-align: center;
+    max-width: var(--max-w);
+    margin: 0 auto 80px;
+  }
+
+  .download-section h2 { margin-bottom: 12px; }
+
+  .download-section p {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-size: 17px;
+  }
+
+  .download-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* === FOOTER === */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+    line-height: 1.8;
+  }
+
+  footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  footer a:hover { color: var(--text); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .toc-grid { grid-template-columns: 1fr; }
+    .hero { padding: 60px 24px 48px; }
+    .concept-box { padding: 24px; }
+    .download-section { padding: 32px 24px; margin: 0 16px 48px; }
+    .nav-links { gap: 16px; }
+    .nav-links a.hide-mobile { display: none; }
+  }
+
+  /* === ANIMATION === */
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">OpenBook</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#contents">Contents</a>
+      <a href="#download">Download</a>
+      <a href="en/README.md" class="lang-switch">EN</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Harness Engineering</div>
+  <h1>构建 AI Agent 的<br><span class="accent">Harness</span> 工程学</h1>
+  <div class="subtitle">OpenBook</div>
+  <div class="equation"><code>Agent = LLM + Harness</code></div>
+  <div class="hero-actions">
+    <a href="https://dawei008.github.io/openbook/" class="btn btn-primary">在线阅读</a>
+    <a href="OpenBook-zh.pdf" class="btn btn-secondary">中文 PDF</a>
+    <a href="OpenBook-en.pdf" class="btn btn-ghost">English PDF</a>
+  </div>
+  <div class="hero-cover fade-in">
+    <img src="cover.png" alt="OpenBook Cover">
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="fade-in">
+      <div class="stat-number">26</div>
+      <div class="stat-label">Chapters</div>
+    </div>
+    <div class="fade-in">
+      <div class="stat-number">9</div>
+      <div class="stat-label">Parts</div>
+    </div>
+    <div class="fade-in">
+      <div class="stat-number">4</div>
+      <div class="stat-label">Appendices</div>
+    </div>
+    <div class="fade-in">
+      <div class="stat-number">2</div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="fade-in">这本书讲什么</h2>
+  <p class="section-sub fade-in">
+    LLM 提供推理能力，Harness 提供工具、权限、记忆、编排。<br>
+    LLM 占代码量的 1%，Harness 占 99%。这本书讲的是那 99%。
+  </p>
+  <div class="concept-box fade-in">
+    <pre>
+┌──────────────────────────────────────────┐
+│              A G E N T                   │
+│                                          │
+│  ┌────────┐    ┌──────────────────────┐  │
+│  │        │    │    <span class="highlight">H A R N E S S</span>     │  │
+│  │  LLM   │◀──▶│                      │  │
+│  │ (推理)  │    │  工具 · 权限 · 记忆   │  │
+│  │        │    │  编排 · 扩展 · 上下文  │  │
+│  └────────┘    └──────────────────────┘  │
+│                                          │
+│   ~1% code          ~99% code            │
+└──────────────────────────────────────────┘</pre>
+  </div>
+</section>
+
+<!-- CONTENTS -->
+<section id="contents">
+  <h2 class="fade-in">目录</h2>
+  <p class="section-sub fade-in">9 个 Part，从心智模型到云上部署，层层递进</p>
+  <div class="toc-grid">
+    <a href="part-1/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part I</div>
+      <div class="toc-title">什么是 Agent Harness</div>
+      <div class="toc-chapters">Ch 1-2 · 从 LLM 到 Agent · 全景解剖图</div>
+    </a>
+    <a href="part-2/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part II</div>
+      <div class="toc-title">Agent Loop — 循环的艺术</div>
+      <div class="toc-chapters">Ch 3-5 · 对话旅程 · API 调用 · 上下文管理</div>
+    </a>
+    <a href="part-3/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part III</div>
+      <div class="toc-title">工具系统 — Agent 的手和脚</div>
+      <div class="toc-chapters">Ch 6-8 · 设计哲学 · 40 工具巡礼 · 编排</div>
+    </a>
+    <a href="part-4/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part IV</div>
+      <div class="toc-title">安全与权限 — Agent 的缰绳</div>
+      <div class="toc-chapters">Ch 9-11 · 三层防线 · 风险分级 · Hooks</div>
+    </a>
+    <a href="part-5/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part V</div>
+      <div class="toc-title">多智能体 — 从个体到团队</div>
+      <div class="toc-chapters">Ch 12-15 · Fork · 协调者 · 任务 · Swarm</div>
+    </a>
+    <a href="part-6/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part VI</div>
+      <div class="toc-title">Prompt 与记忆</div>
+      <div class="toc-chapters">Ch 16-17 · System Prompt 组装 · 记忆全景</div>
+    </a>
+    <a href="part-7/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part VII</div>
+      <div class="toc-title">扩展机制 — 开放的 Agent</div>
+      <div class="toc-chapters">Ch 18-20 · MCP · Skills · Commands</div>
+    </a>
+    <a href="part-8/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part VIII</div>
+      <div class="toc-title">前沿与哲学</div>
+      <div class="toc-chapters">Ch 21-22 · Dream 系统 · 设计原则</div>
+    </a>
+    <a href="part-9/intro.md" class="toc-card fade-in">
+      <div class="toc-part">Part IX</div>
+      <div class="toc-title">从理论到实践 — OpenHarness</div>
+      <div class="toc-chapters">Ch 23-26 · 四支柱 · 沙箱 · 自修复 · 部署</div>
+    </a>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<div id="download" style="padding: 0 24px;">
+  <div class="download-section fade-in">
+    <h2>下载阅读</h2>
+    <p>中英双语，开源免费，PDF 可离线阅读</p>
+    <div class="download-buttons">
+      <a href="OpenBook-zh.pdf" class="btn btn-primary">下载中文 PDF</a>
+      <a href="OpenBook-en.pdf" class="btn btn-secondary">Download English PDF</a>
+      <a href="https://github.com/dawei008/openbook" class="btn btn-ghost">GitHub</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    OpenBook — An independent educational analysis of AI agent architecture patterns.<br>
+    All code examples are pseudocode. No proprietary source code is reproduced.<br>
+    <a href="bibliography.md">Bibliography</a> · <a href="glossary.md">Glossary</a> · <a href="https://github.com/dawei008/openbook">Source</a>
+  </p>
+</footer>
+
+<script>
+// Intersection Observer for fade-in animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
