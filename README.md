@@ -13,6 +13,11 @@
   <a href="en/README.md"><strong>English</strong></a>
 </p>
 
+<p align="center">
+  📥 <a href="OpenBook-zh.pdf"><strong>下载中文 PDF</strong></a> &nbsp;|&nbsp;
+  📥 <a href="OpenBook-en.pdf"><strong>Download English PDF</strong></a>
+</p>
+
 # OpenBook: 构建 AI Agent 的 Harness 工程学
 
 [在线阅读](https://dawei008.github.io/openbook/) | [参考文献](bibliography.md)

@@ -13,6 +13,11 @@
   <strong>English</strong> (current)
 </p>
 
+<p align="center">
+  📥 <a href="../OpenBook-en.pdf"><strong>Download English PDF</strong></a> &nbsp;|&nbsp;
+  📥 <a href="../OpenBook-zh.pdf"><strong>下载中文 PDF</strong></a>
+</p>
+
 # OpenBook: AI Agent Harness Engineering
 
 [Bibliography](bibliography.md)
