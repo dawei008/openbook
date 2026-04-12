@@ -1,32 +1,28 @@
-> **Disclaimer**: This book is an independent educational analysis of AI agent architecture patterns. 
-> All code examples are pseudocode created by the authors for illustrative purposes. 
-> No proprietary source code is reproduced. Product names are used for reference only 
-> and belong to their respective owners.
+<p align="center">
+  <img src="../cover.png" alt="OpenBook Cover" width="520" />
+</p>
+
+<h1 align="center">OpenBook</h1>
+<h3 align="center">AI Agent Harness Engineering</h3>
 
 <p align="center">
-  <img src="../cover.png" alt="OpenBook Cover" width="480" />
+  <code>Agent = LLM + Harness</code> — This book teaches you how to build the Harness
 </p>
 
 <p align="center">
-  <strong>🌐 Language:</strong>&nbsp;&nbsp;
-  <a href="../README.md"><strong>中文</strong></a> &nbsp;|&nbsp;
-  <strong>English</strong> (current)
+  <a href="../README.md">中文</a> ·
+  <a href="../OpenBook-en.pdf">English PDF</a> ·
+  <a href="../OpenBook-zh.pdf">中文 PDF</a> ·
+  <a href="bibliography.md">Bibliography</a>
 </p>
 
 <p align="center">
-  📥 <a href="../OpenBook-en.pdf"><strong>Download English PDF</strong></a> &nbsp;|&nbsp;
-  📥 <a href="../OpenBook-zh.pdf"><strong>下载中文 PDF</strong></a>
+  <em>26 Chapters · 9 Parts · 4 Appendices · Bilingual (CN/EN)</em>
 </p>
 
-# OpenBook: AI Agent Harness Engineering
+---
 
-[Bibliography](bibliography.md)
-
-> **A comprehensive open-source book (26 chapters, 9 parts, 4 appendices) on building production-grade AI Agent Harnesses.** Based on deep architecture analysis of large-scale Agent systems, this book reveals the design patterns behind tools, permissions, memory, multi-agent orchestration, MCP protocol, and cloud deployment. Referenced by 50+ industry sources including Anthropic, OpenAI, AWS, and LangChain.
->
-> **Core thesis: Agent = LLM + Harness.** The LLM provides reasoning (~1% of code). The Harness provides tools, permissions, memory, orchestration (~99% of code). This book teaches you how to build the Harness.
->
-> **Key numbers:** 26 chapters | 9 parts | 4 appendices | 40+ tool designs analyzed | 10 design principles | 89 compile-time feature flags | 148 environment variables documented | 6 architecture diagrams | 10 core TypeScript type definitions
+> *This is an independent educational analysis of AI agent architecture patterns. All code examples are pseudocode. No proprietary source code is reproduced.*
 
 ---
 

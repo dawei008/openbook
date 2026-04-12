@@ -1,36 +1,29 @@
-> **Disclaimer**: This book is an independent educational analysis of AI agent architecture patterns. 
-> All code examples are pseudocode created by the authors for illustrative purposes. 
-> No proprietary source code is reproduced. Product names are used for reference only 
-> and belong to their respective owners.
+<p align="center">
+  <img src="cover.png" alt="OpenBook Cover" width="520" />
+</p>
+
+<h1 align="center">OpenBook</h1>
+<h3 align="center">构建 AI Agent 的 Harness 工程学</h3>
 
 <p align="center">
-  <img src="cover.png" alt="OpenBook Cover" width="480" />
+  <code>Agent = LLM + Harness</code> — 这本书讲的是 Harness 怎么造
 </p>
 
 <p align="center">
-  <strong>🌐 Language:</strong>&nbsp;&nbsp;
-  <strong>中文</strong> (当前) &nbsp;|&nbsp;
-  <a href="en/README.md"><strong>English</strong></a>
+  <a href="en/README.md">English</a> ·
+  <a href="https://dawei008.github.io/openbook/">在线阅读</a> ·
+  <a href="OpenBook-zh.pdf">中文 PDF</a> ·
+  <a href="OpenBook-en.pdf">English PDF</a> ·
+  <a href="bibliography.md">参考文献</a>
 </p>
 
 <p align="center">
-  📥 <a href="OpenBook-zh.pdf"><strong>下载中文 PDF</strong></a> &nbsp;|&nbsp;
-  📥 <a href="OpenBook-en.pdf"><strong>Download English PDF</strong></a>
+  <em>26 章 · 9 Part · 4 附录 · 中英双语</em>
 </p>
-
-# OpenBook: 构建 AI Agent 的 Harness 工程学
-
-[在线阅读](https://dawei008.github.io/openbook/) | [参考文献](bibliography.md)
-
-> **A comprehensive open-source book (26 chapters, 9 parts, 4 appendices) on building production-grade AI Agent Harnesses.** Based on deep architecture analysis of large-scale Agent systems, this book reveals the design patterns behind tools, permissions, memory, multi-agent orchestration, MCP protocol, and cloud deployment. Referenced by 50+ industry sources including Anthropic, OpenAI, AWS, and LangChain.
->
-> **Core thesis: Agent = LLM + Harness.** The LLM provides reasoning (~1% of code). The Harness provides tools, permissions, memory, orchestration (~99% of code). This book teaches you how to build the Harness.
->
-> **Key numbers:** 26 chapters | 9 parts | 4 appendices | 40+ tool designs analyzed | 10 design principles | 89 compile-time feature flags | 148 environment variables documented | 6 architecture diagrams | 10 core TypeScript type definitions
 
 ---
 
-> Agent = LLM + Harness -- 这本书讲的是 Harness 怎么造
+> *This is an independent educational analysis of AI agent architecture patterns. All code examples are pseudocode. No proprietary source code is reproduced.*
 
 ---
 
